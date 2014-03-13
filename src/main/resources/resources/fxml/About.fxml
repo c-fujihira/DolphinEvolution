@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane id="AnchorPane" fx:id="anchorPane" focusTraversable="true" layoutX="0.0" prefHeight="440.0" prefWidth="505.0" styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="open.dolphin.client.AboutController">
+  <children>
+    <ImageView fitHeight="55.0" fitWidth="97.0" layoutX="28.0" layoutY="371.0" pickOnBounds="true" preserveRatio="true">
+      <image>
+        <Image url="@../images/sandi_logo.gif" preserveRatio="false" smooth="false" />
+      </image>
+    </ImageView>
+    <ImageView fitHeight="121.5" fitWidth="162.0" layoutX="28.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
+      <image>
+        <Image url="@../images/spl_de01.png" />
+      </image>
+    </ImageView>
+    <Text fx:id="companyName" layoutX="216.0" layoutY="420.0" smooth="false" strikethrough="false" strokeType="OUTSIDE" strokeWidth="0.0" text="company name" textAlignment="RIGHT" underline="false" />
+    <Text fx:id="productName" fill="#008799" layoutX="241.0" layoutY="72.0" strokeType="OUTSIDE" strokeWidth="0.0" text="product code">
+      <font>
+        <Font name="System Bold Italic" size="20.0" />
+      </font>
+    </Text>
+    <TextArea fx:id="comment" editable="false" prefHeight="221.0" prefWidth="455.0" text="Comment" wrapText="true" AnchorPane.bottomAnchor="88.0" AnchorPane.leftAnchor="25.0" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="131.0">
+      <effect>
+        <DropShadow />
+      </effect>
+    </TextArea>
+    <Button layoutX="221.0" layoutY="371.0" mnemonicParsing="false" onAction="#close" prefHeight="28.0" prefWidth="64.0" text="閉じる" />
+  </children>
+  <rotationAxis>
+    <Point3D z="1.0" />
+  </rotationAxis>
+  <stylesheets>
+    <URL value="@../styles/About.css" />
+  </stylesheets>
+</AnchorPane>

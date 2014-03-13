@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.web.*?>
+
+<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minWidth="-1.0" pickOnBounds="false" prefHeight="425.0" prefWidth="395.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="open.dolphin.client.ControlPanelController">
+  <children>
+    <WebView fx:id="webView" prefHeight="261.02999880723655" prefWidth="395.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="163.97">
+      <effect>
+        <InnerShadow blurType="ONE_PASS_BOX" height="15.0" radius="7.0" width="15.0" />
+      </effect>
+    </WebView>
+    <Text fx:id="evoDisp" layoutX="6.0" layoutY="156.0" strikethrough="false" strokeType="OUTSIDE" strokeWidth="0.0" text="お知らせ" underline="true">
+      <font>
+        <Font size="14.0" fx:id="x1" />
+      </font>
+    </Text>
+    <TabPane focusTraversable="true" mouseTransparent="false" pickOnBounds="false" prefHeight="142.0" prefWidth="395.0" rotateGraphic="true" tabClosingPolicy="ALL_TABS" visible="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <effect>
+        <InnerShadow blurType="ONE_PASS_BOX" height="15.0" radius="7.0" width="15.0" />
+      </effect>
+      <tabs>
+        <Tab closable="false" text="　設　定　">
+          <content>
+            <AnchorPane id="Content" focusTraversable="true" minHeight="0.0" minWidth="0.0" mouseTransparent="false" pickOnBounds="false" prefHeight="135.0" prefWidth="457.0">
+              <children>
+                <Button cancelButton="false" defaultButton="false" focusTraversable="false" font="$x1" layoutY="8.0" mnemonicParsing="false" onAction="#execPrinterSetup" prefHeight="30.0" prefWidth="120.0" text="ページ設定" textOverrun="ELLIPSIS" wrapText="false" AnchorPane.leftAnchor="10.0" />
+                <Button focusTraversable="false" font="$x1" layoutY="42.0" mnemonicParsing="false" onAction="#execPreference" prefHeight="30.0" prefWidth="120.0" text="環境設定" AnchorPane.leftAnchor="10.0" />
+                <Button focusTraversable="false" layoutY="76.0" mnemonicParsing="false" onAction="#execChangePassword" prefHeight="30.0" prefWidth="120.0" text="プロフィール変更" AnchorPane.leftAnchor="9.0">
+                  <font>
+                    <Font size="13.0" fx:id="x2" />
+                  </font>
+                </Button>
+                <Button focusTraversable="false" font="$x2" layoutY="8.0" mnemonicParsing="false" onAction="#execEditFacilityInfo" prefHeight="30.0" prefWidth="120.0" text="施設情報編集" AnchorPane.leftAnchor="137.0" />
+                <Button focusTraversable="false" layoutY="42.0" mnemonicParsing="false" onAction="#execFetchFacilityCode" prefHeight="30.0" prefWidth="120.0" text="医療機関コード読込" underline="false" wrapText="false" AnchorPane.leftAnchor="136.0">
+                  <font>
+                    <Font size="11.0" />
+                  </font>
+                </Button>
+                <Button focusTraversable="false" font="$x1" layoutY="76.0" mnemonicParsing="false" onAction="#execShowAbout" prefHeight="30.0" prefWidth="120.0" text="情　報" underline="false" wrapText="false" AnchorPane.leftAnchor="136.0" />
+                <Button focusTraversable="false" font="$x1" layoutX="264.0" layoutY="8.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="120.0" text="-" />
+                <Button focusTraversable="false" font="$x1" layoutX="264.0" layoutY="42.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="119.99990000000253" text="-" underline="false" wrapText="false" />
+                <Button focusTraversable="false" font="$x1" layoutX="264.0" layoutY="76.0" mnemonicParsing="false" onAction="#execExit" prefHeight="30.0" prefWidth="120.0" text="終  了" underline="false" wrapText="false" />
+              </children>
+              <rotationAxis>
+                <Point3D />
+              </rotationAxis>
+            </AnchorPane>
+          </content>
+        </Tab>
+      </tabs>
+    </TabPane>
+  </children>
+</AnchorPane>

@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="65.0" prefHeight="65.0" prefWidth="450.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="open.dolphin.client.WatingListViewUpperController">
+  <children>
+    <HBox alignment="CENTER_LEFT" maxHeight="-Infinity" prefHeight="-1.0" prefWidth="149.0" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="1.0" AnchorPane.topAnchor="1.0">
+      <children>
+        <VBox alignment="CENTER" prefHeight="52.0" prefWidth="55.0">
+          <children>
+            <Button fx:id="btn" cancelButton="false" defaultButton="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="51.0" prefWidth="51.0" style="" text="" textAlignment="CENTER" textOverrun="WORD_ELLIPSIS">
+              <effect>
+                <DropShadow />
+              </effect>
+              <graphic>
+                <ImageView fitHeight="48.0" fitWidth="48.0" focusTraversable="true" mouseTransparent="true" pickOnBounds="false" preserveRatio="true" visible="true">
+                  <image>
+                    <Image url="@../images/karte-icon.png" />
+                  </image>
+                </ImageView>
+              </graphic>
+              <tooltip>
+                <Tooltip text="受付一覧を更新します" />
+              </tooltip>
+            </Button>
+          </children>
+        </VBox>
+        <VBox alignment="CENTER_RIGHT" prefHeight="-1.0" prefWidth="-1.0">
+          <children>
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="現在時刻：" textAlignment="LEFT">
+              <font>
+                <Font size="11.0" fx:id="x1" />
+              </font>
+            </Text>
+            <Text font="$x1" strokeType="OUTSIDE" strokeWidth="0.0" text="来院数：" textAlignment="JUSTIFY" />
+            <Text font="$x1" strokeType="OUTSIDE" strokeWidth="0.0" text="診察待：" />
+            <Text font="$x1" strokeType="OUTSIDE" strokeWidth="0.0" text="総待時間：" />
+          </children>
+        </VBox>
+        <VBox alignment="CENTER_LEFT" prefHeight="61.0" prefWidth="38.5">
+          <children>
+            <Text fx:id="nowTime" font="$x1" strokeType="OUTSIDE" strokeWidth="0.0" text="00:00" />
+            <Text fx:id="comePvt" font="$x1" strokeType="OUTSIDE" strokeWidth="0.0" text="0" />
+            <Text fx:id="waitPvt" font="$x1" strokeType="OUTSIDE" strokeWidth="0.0" text="0" />
+            <Text fx:id="waitTime" font="$x1" strokeType="OUTSIDE" strokeWidth="0.0" text="00:00" />
+          </children>
+        </VBox>
+      </children>
+      <padding>
+        <Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
+      </padding>
+    </HBox>
+    <HBox alignment="CENTER_LEFT" minHeight="-1.0" prefHeight="-1.0" prefWidth="-1.0" spacing="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <children>
+        <VBox alignment="CENTER" minHeight="64.0" prefHeight="64.0" prefWidth="-1.0">
+          <children>
+            <HBox prefHeight="-1.0" prefWidth="-1.0" spacing="1.0">
+              <children>
+                <ImageView fitHeight="14.0" fitWidth="18.5" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                    <Image url="@../images/os_flag_yellow_16.png" />
+                  </image>
+                </ImageView>
+                <Text font="$x1" strokeType="OUTSIDE" strokeWidth="0.0" text="：診察終了" />
+              </children>
+              <padding>
+                <Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
+              </padding>
+            </HBox>
+            <HBox prefHeight="-1.0" prefWidth="-1.0" spacing="1.0">
+              <children>
+                <ImageView fitHeight="14.0" fitWidth="18.5" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                    <Image url="@../images/os_server_information_16.png" />
+                  </image>
+                </ImageView>
+                <Text font="$x1" strokeType="OUTSIDE" strokeWidth="0.0" text="：カルテ修正/再保存" />
+              </children>
+            </HBox>
+            <HBox prefHeight="-1.0" prefWidth="-1.0" spacing="1.0">
+              <children>
+                <ImageView fitHeight="14.0" fitWidth="18.5" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                    <Image url="@../images/os_cog_16.png" />
+                  </image>
+                </ImageView>
+                <Text font="$x1" strokeType="OUTSIDE" strokeWidth="0.0" text="：検査/処置中" />
+              </children>
+            </HBox>
+            <HBox prefHeight="-1.0" prefWidth="-1.0" spacing="1.0">
+              <children>
+                <ImageView fitHeight="14.0" fitWidth="18.5" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                    <Image url="@../images/os_network_wireless_16.png" />
+                  </image>
+                </ImageView>
+                <Text font="$x1" strokeType="OUTSIDE" strokeWidth="0.0" text="：他者カルテ編集中" />
+              </children>
+            </HBox>
+          </children>
+          <padding>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+          </padding>
+        </VBox>
+        <VBox alignment="CENTER" prefHeight="-1.0" prefWidth="-1.0">
+          <children>
+            <HBox prefHeight="-1.0" prefWidth="-1.0" spacing="1.0">
+              <children>
+                <ImageView fitHeight="14.0" fitWidth="18.5" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                    <Image url="@../images/os_hot_16.png" />
+                  </image>
+                </ImageView>
+                <Text font="$x1" strokeType="OUTSIDE" strokeWidth="0.0" text="：急患" />
+              </children>
+              <padding>
+                <Insets bottom="1.0" right="1.0" top="1.0" />
+              </padding>
+            </HBox>
+            <HBox prefHeight="-1.0" prefWidth="-1.0" spacing="1.0">
+              <children>
+                <ImageView fitHeight="14.0" fitWidth="18.5" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                    <Image url="@../images/os_cart_16.png" />
+                  </image>
+                </ImageView>
+                <Text font="$x1" strokeType="OUTSIDE" strokeWidth="0.0" text="：外出中(受付済み)" />
+              </children>
+            </HBox>
+            <HBox prefHeight="-1.0" prefWidth="-1.0" spacing="1.0">
+              <children>
+                <ImageView fitHeight="14.0" fitWidth="18.5" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                    <Image url="@../images/os_cancel_16.png" />
+                  </image>
+                </ImageView>
+                <Text font="$x1" strokeType="OUTSIDE" strokeWidth="0.0" text="：キャンセル(受付済み)" />
+              </children>
+            </HBox>
+            <HBox prefHeight="-1.0" prefWidth="-1.0" spacing="1.0">
+              <children>
+                <ImageView fitHeight="14.0" fitWidth="18.5" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                    <Image url="@../images/os_folder_vertical_document_16.png" />
+                  </image>
+                </ImageView>
+                <Text font="$x1" strokeType="OUTSIDE" strokeWidth="0.0" text="：カルテ閲覧中" />
+              </children>
+            </HBox>
+          </children>
+          <padding>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+          </padding>
+        </VBox>
+      </children>
+    </HBox>
+  </children>
+  <padding>
+    <Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
+  </padding>
+</AnchorPane>

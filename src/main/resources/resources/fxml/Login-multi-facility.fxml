@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.collections.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane id="AnchorPane" fx:id="anchorPane" focusTraversable="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="325.0" prefWidth="630.0" styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="open.dolphin.client.MultiFacilityLoginController">
+  <children>
+    <HBox alignment="CENTER" layoutX="351.0" layoutY="150.0" prefHeight="26.0" prefWidth="233.0">
+      <children>
+        <Text fx:id="status" fill="RED" smooth="false" strokeType="OUTSIDE" strokeWidth="0.0" text="Status" textAlignment="CENTER">
+          <font>
+            <Font size="14.0" fx:id="x2" />
+          </font>
+        </Text>
+      </children>
+    </HBox>
+    <ImageView id="splash" fitHeight="181.61264038085938" fitWidth="288.85801957877527" layoutX="11.0" layoutY="54.0" pickOnBounds="true" preserveRatio="true" styleClass="mainFxmlClass">
+      <image>
+        <Image url="@../images/karte-splash.png" />
+      </image>
+    </ImageView>
+    <ProgressIndicator id="progressIn" fx:id="progressIndi" layoutX="584.0" layoutY="282.0" pickOnBounds="false" visible="false">
+      <effect>
+        <DropShadow color="#0029ff" />
+      </effect>
+    </ProgressIndicator>
+    <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#cce0ff" height="136.0" layoutX="319.0" layoutY="14.0" stroke="BLACK" strokeLineCap="SQUARE" strokeLineJoin="MITER" strokeMiterLimit="10.0" strokeType="INSIDE" strokeWidth="1.0" width="298.0" />
+    <Text font="$x2" layoutX="333.0" layoutY="89.0" strokeType="OUTSIDE" strokeWidth="0.0" text="ユーザーID :" />
+    <Text font="$x2" layoutX="337.0" layoutY="126.0" strokeType="OUTSIDE" strokeWidth="0.0" text="パスワード :" />
+    <TextField id="textField" fx:id="userId" disable="false" layoutX="418.0" layoutY="71.0" onKeyPressed="#userIdOnKey" prefHeight="26.0" prefWidth="154.0" promptText="ユーザー ID" style="-fx-font-size: x-large;" styleClass="mainFxmlClass" />
+    <PasswordField id="passwordField" fx:id="pwd" disable="false" layoutX="418.0" layoutY="108.0" onKeyPressed="#pwdOnKey" prefHeight="26.0" prefWidth="154.0" promptText="パスワード" style="-fx-font-size: x-large;" />
+    <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#f5ffcc" height="100.0" layoutX="318.0" layoutY="184.0" stroke="BLACK" strokeLineCap="SQUARE" strokeLineJoin="MITER" strokeType="INSIDE" width="298.0" />
+    <Button fx:id="loginButton" layoutX="518.0" layoutY="200.0" mnemonicParsing="false" onAction="#execLogin" onKeyPressed="#pwdOnLogin" prefHeight="26.0" prefWidth="76.0" text="ログイン">
+      <font>
+        <Font size="12.0" fx:id="x3" />
+      </font>
+    </Button>
+    <Button fx:id="configButton" font="$x3" layoutX="429.0" layoutY="200.0" mnemonicParsing="false" onAction="#execConfig" prefHeight="26.0" prefWidth="76.0" text="設定" />
+    <Button fx:id="buttonAbout" font="$x3" layoutX="336.0" layoutY="238.0" mnemonicParsing="false" onAction="#execAbout" prefHeight="26.0" prefWidth="255.0" text="...について" textOverrun="CLIP" wrapText="true" />
+    <Button fx:id="exitButton" font="$x3" layoutX="339.0" layoutY="200.0" mnemonicParsing="false" onAction="#exitLogin" prefHeight="26.0" prefWidth="76.0" text="終了" textOverrun="CLIP" />
+    <ImageView fitHeight="38.79999936747755" fitWidth="97.0" layoutX="2.0" layoutY="283.0" pickOnBounds="true" preserveRatio="true">
+      <image>
+        <Image url="@../images/javFX-Logo.png" />
+      </image>
+    </ImageView>
+    <Text layoutX="99.0" layoutY="301.0" strokeType="OUTSIDE" strokeWidth="0.0" text="OracleとJavaは、Oracle Corporation 及びその子会社、関連会社の米国及びその他の国における登録商標です。">
+      <font>
+        <Font size="8.0" fx:id="x1" />
+      </font>
+    </Text>
+    <Text font="$x1" layoutX="99.0" layoutY="314.0" strokeType="OUTSIDE" strokeWidth="0.0" text="文中の社名、商品名等は各社の商標または登録商標である場合があります。" />
+    <Text font="$x2" layoutX="336.0" layoutY="48.0" strokeType="OUTSIDE" strokeWidth="0.0" text="医療機関 :" />
+    <ChoiceBox fx:id="multiFacility" layoutX="418.0" layoutY="30.0" prefHeight="26.0" prefWidth="154.0" />
+  </children>
+  <stylesheets>
+    <URL value="@../styles/Login.css" />
+  </stylesheets>
+</AnchorPane>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane id="AnchorPane" fx:id="anchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="440.0" prefWidth="565.0" snapToPixel="false" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="open.dolphin.client.ConnectionTestController">
+  <children>
+    <TextArea id="logs" fx:id="comment" editable="false" layoutX="27.0" layoutY="60.0" prefHeight="292.0" prefWidth="512.0" wrapText="true">
+      <effect>
+        <DropShadow color="#006299" />
+      </effect>
+    </TextArea>
+    <Text layoutX="14.0" layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="通信テスト">
+      <font>
+        <Font size="14.0" fx:id="x1" />
+      </font>
+    </Text>
+    <Button font="$x1" layoutX="196.0" layoutY="382.0" mnemonicParsing="false" onAction="#run" prefHeight="29.0" text="実　行" />
+    <Button font="$x1" layoutX="293.0" layoutY="382.0" minHeight="14" mnemonicParsing="false" onAction="#close" prefHeight="29.0" text="戻　る" />
+  </children>
+</AnchorPane>

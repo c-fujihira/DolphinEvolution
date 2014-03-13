@@ -1,0 +1,714 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.collections.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane id="AnchorPane" fx:id="anchorPane" minHeight="-1.0" prefHeight="670.0" prefWidth="660.0" styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="open.dolphin.client.ConfigController">
+  <children>
+    <TabPane layoutX="14.0" layoutY="17.0" prefHeight="603.0" prefWidth="631.0" tabClosingPolicy="UNAVAILABLE">
+      <effect>
+        <DropShadow color="#006299" height="10.0" radius="4.5" width="10.0" />
+      </effect>
+      <tabs>
+        <Tab style="" text="サーバ">
+          <content>
+            <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="460.0" prefWidth="631.0">
+              <children>
+                <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="155.0" layoutX="16.0" layoutY="44.0" stroke="BLACK" strokeType="OUTSIDE" width="600.0">
+                  <effect>
+                    <DropShadow height="10.0" radius="4.5" width="10.0" />
+                  </effect>
+                </Rectangle>
+                <Text layoutX="46.0" layoutY="83.0" scaleY="1.0" strokeType="OUTSIDE" strokeWidth="0.0" text="医療機関ID :">
+                  <font>
+                    <Font size="14.0" fx:id="x1" />
+                  </font>
+                </Text>
+                <Text font="$x1" layoutX="46.0" layoutY="122.0" strokeType="OUTSIDE" strokeWidth="0.0" text="ユーザーID :" />
+                <Text font="$x1" layoutX="52.0" layoutY="161.0" strokeType="OUTSIDE" strokeWidth="0.0" text="ベースURI :" />
+                <TextField fx:id="svJmariCode" layoutX="143.0" layoutY="69.0" prefHeight="20.0" prefWidth="253.0" promptText="医療機関ID" />
+                <TextField fx:id="svUserId" layoutX="143.0" layoutY="108.0" prefHeight="20.0" prefWidth="253.0" promptText="ユーザーID" />
+                <TextField fx:id="svBaseURI" layoutX="143.0" layoutY="147.0" prefHeight="20.0" prefWidth="253.0" promptText="ベースURL" style="size : 18" />
+                <Text font="$x1" layoutX="18.0" layoutY="24.0" strokeType="OUTSIDE" strokeWidth="0.0" text="接続設定" />
+              </children>
+            </AnchorPane>
+          </content>
+        </Tab>
+        <Tab text="レセコン">
+          <content>
+            <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+              <children>
+                <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="50.0" layoutX="14.0" layoutY="44.0" stroke="BLACK" strokeType="INSIDE" width="603.0">
+                  <effect>
+                    <DropShadow height="10.0" radius="4.5" width="10.0" />
+                  </effect>
+                </Rectangle>
+                <Text font="$x1" layoutX="14.0" layoutY="24.0" strokeType="OUTSIDE" strokeWidth="0.0" text="CLAIM(請求データ）送信設定" />
+                <Text font="$x1" layoutX="58.0" layoutY="76.0" strokeType="OUTSIDE" strokeWidth="0.0" text="診療行為送信：" />
+                <Text font="$x1" layoutX="14.0" layoutY="122.0" strokeType="OUTSIDE" strokeWidth="0.0" text="レセコン設定" />
+                <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="112.5" layoutX="14.0" layoutY="139.0" stroke="BLACK" strokeType="INSIDE" width="603.0">
+                  <effect>
+                    <DropShadow height="10.0" radius="4.5" width="10.0" />
+                  </effect>
+                </Rectangle>
+                <Text font="$x1" layoutX="115.0" layoutY="173.0" strokeType="OUTSIDE" strokeWidth="0.0" text="機種：" />
+                <ChoiceBox fx:id="recClaimModel" layoutX="170.0" layoutY="158.0" prefHeight="20.0" prefWidth="200.0">
+                  <items>
+                    <FXCollections fx:factory="observableArrayList">
+                      <String fx:value="日医標準レセコン(ORCA)" />
+                    </FXCollections>
+                  </items>
+                </ChoiceBox>
+                <Text font="$x1" layoutX="30.0" layoutY="202.0" strokeType="OUTSIDE" strokeWidth="0.0" text="CLAIM診療科コード：" />
+                <RadioButton fx:id="receClaimTrans" font="$x1" layoutX="169.0" layoutY="62.0" mnemonicParsing="false" text="送信する">
+                  <toggleGroup>
+                    <ToggleGroup fx:id="A" />
+                  </toggleGroup>
+                </RadioButton>
+                <RadioButton fx:id="recClaimNotTrans" font="$x1" layoutX="270.0" layoutY="62.0" mnemonicParsing="false" selected="true" text="送信しない" toggleGroup="$A" />
+                <CheckBox fx:id="recClaimCode" font="$x1" layoutX="170.0" layoutY="188.0" mnemonicParsing="false" text="デフォルト01を使用する" />
+                <Text font="$x1" layoutX="72.0" layoutY="230.0" strokeType="OUTSIDE" strokeWidth="0.0" text="医療機関ＩＤ：" />
+                <Text font="$x1" layoutX="169.0" layoutY="230.0" strokeType="OUTSIDE" strokeWidth="0.0" text="JPN" />
+                <TextField fx:id="recJpnCode" layoutX="207.0" layoutY="215.0" prefHeight="20.0" prefWidth="200.0" promptText="12桁の医療機関ID" />
+              </children>
+            </AnchorPane>
+          </content>
+        </Tab>
+        <Tab text="カルテ">
+          <content>
+            <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="575.0" prefWidth="631.0">
+              <children>
+                <TabPane layoutX="26.0" layoutY="26.0" prefHeight="546.0" prefWidth="605.0" tabClosingPolicy="UNAVAILABLE">
+                  <effect>
+                    <DropShadow height="10.0" radius="4.5" width="10.0" />
+                  </effect>
+                  <tabs>
+                    <Tab text="インスペクタ">
+                      <content>
+                        <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="460.0" prefWidth="605.0">
+                          <children>
+                            <ImageView fitHeight="17.12109375" fitWidth="22.828125" layoutX="70.0" layoutY="161.0" pickOnBounds="true" preserveRatio="true" />
+                            <Text font="$x1" layoutX="16.0" layoutY="33.0" strokeType="OUTSIDE" strokeWidth="0.0" text="画面表示位置" />
+                            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="45.0" layoutX="12.0" layoutY="45.0" stroke="BLACK" strokeType="INSIDE" width="585.0">
+                              <effect>
+                                <DropShadow height="10.0" radius="4.5" width="10.0" />
+                              </effect>
+                            </Rectangle>
+                            <RadioButton fx:id="insPlatform" font="$x1" layoutX="118.0" layoutY="59.0" mnemonicParsing="false" text="プラットフォーム制御">
+                              <toggleGroup>
+                                <ToggleGroup fx:id="B" />
+                              </toggleGroup>
+                            </RadioButton>
+                            <RadioButton fx:id="insPosition" font="$x1" layoutX="309.0" layoutY="59.0" mnemonicParsing="false" selected="true" text="位置と大きさを記憶する" toggleGroup="$B" />
+                            <Text font="$x1" layoutX="14.0" layoutY="117.0" strokeType="OUTSIDE" strokeWidth="0.0" text="シェーマデータ" />
+                            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="45.0" layoutX="12.0" layoutY="126.0" stroke="BLACK" strokeType="INSIDE" width="585.0">
+                              <effect>
+                                <DropShadow height="10.0" radius="4.5" width="10.0" />
+                              </effect>
+                            </Rectangle>
+                            <RadioButton fx:id="insCoolEditor" font="$x1" layoutX="118.0" layoutY="140.0" mnemonicParsing="false" selected="true" text="クール">
+                              <toggleGroup>
+                                <ToggleGroup fx:id="C" />
+                              </toggleGroup>
+                            </RadioButton>
+                            <RadioButton fx:id="insSimpleEditor" font="$x1" layoutX="309.0" layoutY="140.0" mnemonicParsing="false" selected="false" text="シンプル" toggleGroup="$C" />
+                            <Text font="$x1" layoutX="16.0" layoutY="197.0" strokeType="OUTSIDE" strokeWidth="0.0" text="予定カルテ" />
+                            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="45.0" layoutX="13.0" layoutY="207.0" stroke="BLACK" strokeType="INSIDE" width="585.0">
+                              <effect>
+                                <DropShadow fx:id="x4" />
+                              </effect>
+                            </Rectangle>
+                            <CheckBox fx:id="insKarteSchedule" font="$x1" layoutX="118.0" layoutY="221.0" mnemonicParsing="false" selected="false" text="予定カルテ機能を使用する" />
+                          </children>
+                        </AnchorPane>
+                      </content>
+                    </Tab>
+                    <Tab text="文書">
+                      <content>
+                        <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                          <children>
+                            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="162.0" layoutX="14.0" layoutY="35.0" stroke="BLACK" strokeType="INSIDE" width="583.0">
+                              <effect>
+                                <DropShadow height="10.0" radius="4.5" width="10.0" />
+                              </effect>
+                            </Rectangle>
+                            <Text font="$x1" layoutX="14.0" layoutY="24.0" strokeType="OUTSIDE" strokeWidth="0.0" text="カルテ" />
+                            <Text font="$x1" layoutX="14.0" layoutY="227.0" strokeType="OUTSIDE" strokeWidth="0.0" text="傷病名" />
+                            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="169.0" layoutX="11.0" layoutY="237.0" stroke="BLACK" strokeType="INSIDE" width="582.9998779296875">
+                              <effect>
+                                <DropShadow height="10.0" radius="4.5" width="10.0" />
+                              </effect>
+                            </Rectangle>
+                            <Text font="$x1" layoutX="128.0" layoutY="73.0" strokeType="OUTSIDE" strokeWidth="0.0" text="文書履歴：" />
+                            <Text font="$x1" layoutX="86.0" layoutY="102.0" strokeType="OUTSIDE" strokeWidth="0.0" text="自動文書取得数：" />
+                            <Text font="$x1" layoutX="103.0" layoutY="134.0" strokeType="OUTSIDE" strokeWidth="0.0" text="スクロール方向：" />
+                            <Text font="$x1" layoutX="100.0" layoutY="167.0" strokeType="OUTSIDE" strokeWidth="0.0" text="文書抽出期間：" />
+                            <RadioButton fx:id="docAscending" font="$x1" layoutX="204.0" layoutY="59.0" mnemonicParsing="false" text="昇順">
+                              <toggleGroup>
+                                <ToggleGroup fx:id="D" />
+                              </toggleGroup>
+                            </RadioButton>
+                            <RadioButton fx:id="docDescending" font="$x1" layoutX="268.0" layoutY="59.0" mnemonicParsing="false" selected="true" text="降順" toggleGroup="$D" />
+                            <ChoiceBox fx:id="docAutoGetnum" layoutX="204.0" layoutY="87.0" prefHeight="20.0" prefWidth="63.0" rotate="0.0">
+                              <items>
+                                <FXCollections fx:factory="observableArrayList">
+                                  <String fx:value="10" />
+                                  <String fx:value="20" />
+                                  <String fx:value="50" />
+                                  <String fx:value="100" />
+                                </FXCollections>
+                              </items>
+                            </ChoiceBox>
+                            <RadioButton fx:id="docPerpendicular" font="$x1" layoutX="204.0" layoutY="122.0" mnemonicParsing="false" selected="true" text="垂直">
+                              <toggleGroup>
+                                <ToggleGroup fx:id="E" />
+                              </toggleGroup>
+                            </RadioButton>
+                            <RadioButton fx:id="docLevel" font="$x1" layoutX="268.0" layoutY="122.0" mnemonicParsing="false" selected="false" text="水平" toggleGroup="$E" />
+                            <ChoiceBox fx:id="docIntVal" layoutX="204.0" layoutY="152.0" prefHeight="20.0" prefWidth="63.0">
+                              <items>
+                                <FXCollections fx:factory="observableArrayList">
+                                  <String fx:value="アイテム1" />
+                                  <String fx:value="アイテム2" />
+                                  <String fx:value="アイテム3" />
+                                </FXCollections>
+                              </items>
+                            </ChoiceBox>
+                            <Text font="$x1" layoutX="142.0" layoutY="265.0" strokeType="OUTSIDE" strokeWidth="0.0" text="表示順：" />
+                            <Text font="$x1" layoutX="128.0" layoutY="297.0" strokeType="OUTSIDE" strokeWidth="0.0" text="抽出期間：" />
+                            <Text font="$x1" layoutX="114.0" layoutY="356.0" strokeType="OUTSIDE" strokeWidth="0.0" text="転帰入力時：" />
+                            <Text font="$x1" layoutX="97.0" layoutY="387.0" strokeType="OUTSIDE" strokeWidth="0.0" text="入力する日(前)：" />
+                            <RadioButton fx:id="docDicknessAscending" font="$x1" layoutX="204.0" layoutY="253.0" mnemonicParsing="false" text="昇順">
+                              <toggleGroup>
+                                <ToggleGroup fx:id="F" />
+                              </toggleGroup>
+                            </RadioButton>
+                            <RadioButton fx:id="docSicknessDescending" font="$x1" layoutX="268.0" layoutY="253.0" mnemonicParsing="false" selected="true" text="降順" toggleGroup="$F" />
+                            <ChoiceBox fx:id="docSicknessTime" layoutX="204.0" layoutY="284.0" prefHeight="20.0" prefWidth="63.0">
+                              <items>
+                                <FXCollections fx:factory="observableArrayList">
+                                  <String fx:value="アイテム1" />
+                                  <String fx:value="アイテム2" />
+                                  <String fx:value="アイテム3" />
+                                </FXCollections>
+                              </items>
+                            </ChoiceBox>
+                            <CheckBox fx:id="docSicknessActive" font="$x1" layoutX="204.0" layoutY="313.0" mnemonicParsing="false" text="アクティブ病名のみ表示" />
+                            <CheckBox fx:id="docOutcomeDate" font="$x1" layoutX="204.0" layoutY="342.0" mnemonicParsing="false" onMouseClicked="#setDocEnddateDisable" text="終了日を自動入力する" />
+                            <ChoiceBox fx:id="docEnddate" layoutX="204.0" layoutY="372.0" prefHeight="20.0" prefWidth="63.0">
+                              <items>
+                                <FXCollections fx:factory="observableArrayList">
+                                  <String fx:value="アイテム1" />
+                                  <String fx:value="アイテム2" />
+                                  <String fx:value="アイテム3" />
+                                </FXCollections>
+                              </items>
+                            </ChoiceBox>
+                          </children>
+                        </AnchorPane>
+                      </content>
+                    </Tab>
+                    <Tab text="診療行為">
+                      <content>
+                        <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="515.0" prefWidth="605.0">
+                          <children>
+                            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="70.0" layoutX="14.0" layoutY="35.0" stroke="BLACK" strokeType="INSIDE" width="583.0">
+                              <effect>
+                                <DropShadow height="10.0" radius="4.5" width="10.0" />
+                              </effect>
+                            </Rectangle>
+                            <Text font="$x1" layoutX="14.0" layoutY="23.0" strokeType="OUTSIDE" strokeWidth="0.0" text="カルテ保存時に設定するタイトル" />
+                            <Text font="$x1" layoutX="14.0" layoutY="129.0" strokeType="OUTSIDE" strokeWidth="0.0" text="診療行為送信のデフォルトチェック設定" />
+                            <Text font="$x1" layoutX="14.0" layoutY="267.0" strokeType="OUTSIDE" strokeWidth="0.0" text="仮保存ボタン押下時の診療行為送信(除く予定カルテ）" />
+                            <Text font="$x1" layoutX="14.0" layoutY="353.0" strokeType="OUTSIDE" strokeWidth="0.0" text="併用禁忌チェック" />
+                            <Text font="$x1" layoutX="14.0" layoutY="435.0" strokeType="OUTSIDE" strokeWidth="0.0" text="適用保険のカラーリング" />
+                            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="97.0" layoutX="14.0" layoutY="144.0" stroke="BLACK" strokeType="INSIDE" width="583.0">
+                              <effect>
+                                <DropShadow height="10.0" radius="4.5" width="10.0" />
+                              </effect>
+                            </Rectangle>
+                            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="46.0" layoutX="14.0" layoutY="282.0" stroke="BLACK" strokeType="INSIDE" width="583.0">
+                              <effect>
+                                <DropShadow height="10.0" radius="4.5" width="10.0" />
+                              </effect>
+                            </Rectangle>
+                            <CheckBox fx:id="medResHead" font="$x1" layoutX="113.0" layoutY="45.0" mnemonicParsing="false" onMouseClicked="#setMedResHeadDisable" selected="true" text="カルテの先頭15文字を使用する" />
+                            <Text font="$x1" layoutX="114.0" layoutY="84.0" strokeType="OUTSIDE" strokeWidth="0.0" text="デフォルトのタイトル：" />
+                            <TextField fx:id="medResProgressnote" layoutX="291.0" layoutY="69.0" prefHeight="20.0" prefWidth="200.0" promptText="経過記録" />
+                            <Text font="$x1" layoutX="176.0" layoutY="167.0" strokeType="OUTSIDE" strokeWidth="0.0" text="保存時：" />
+                            <Text font="$x1" layoutX="177.0" layoutY="195.0" strokeType="OUTSIDE" strokeWidth="0.0" text="修正時：" />
+                            <Text font="$x1" layoutX="119.0" layoutY="222.0" strokeType="OUTSIDE" strokeWidth="0.0" text="予定カルテの場合：" />
+                            <RadioButton fx:id="medResSaveTransmit" font="$x1" layoutX="233.0" layoutY="154.0" mnemonicParsing="false" selected="true" text="送信する">
+                              <toggleGroup>
+                                <ToggleGroup fx:id="G" />
+                              </toggleGroup>
+                            </RadioButton>
+                            <RadioButton fx:id="medResSaveNoTransmit" font="$x1" layoutX="318.0" layoutY="154.0" mnemonicParsing="false" selected="false" text="送信しない" toggleGroup="$G" />
+                            <RadioButton fx:id="medResTransmitMod" font="$x1" layoutX="233.0" layoutY="181.0" mnemonicParsing="false" text="送信する">
+                              <toggleGroup>
+                                <ToggleGroup fx:id="H" />
+                              </toggleGroup>
+                            </RadioButton>
+                            <RadioButton fx:id="medResTransmitNoMod" font="$x1" layoutX="318.0" layoutY="181.0" mnemonicParsing="false" selected="true" text="送信しない" toggleGroup="$H" />
+                            <RadioButton fx:id="medResScheduleTransmit" font="$x1" layoutX="233.0" layoutY="208.0" mnemonicParsing="false" selected="true" text="送信する">
+                              <toggleGroup>
+                                <ToggleGroup fx:id="I" />
+                              </toggleGroup>
+                            </RadioButton>
+                            <RadioButton fx:id="medResScheduleNotTransmit" font="$x1" layoutX="318.0" layoutY="208.0" mnemonicParsing="false" selected="false" text="送信しない" toggleGroup="$I" />
+                            <RadioButton fx:id="medResTemporarySelect" font="$x1" layoutX="143.0" layoutY="295.0" mnemonicParsing="false" text="選択(チェック)に従う">
+                              <toggleGroup>
+                                <ToggleGroup fx:id="J" />
+                              </toggleGroup>
+                            </RadioButton>
+                            <RadioButton fx:id="medResTemporaryNotTransmit" font="$x1" layoutX="324.0" layoutY="295.0" mnemonicParsing="false" selected="true" text="送信しない" toggleGroup="$J" />
+                            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="46.0" layoutX="15.0" layoutY="365.0" stroke="BLACK" strokeType="INSIDE" width="583.0">
+                              <effect>
+                                <DropShadow height="10.0" radius="4.5" width="10.0" />
+                              </effect>
+                            </Rectangle>
+                            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="46.0" layoutX="15.0" layoutY="450.0" stroke="BLACK" strokeType="INSIDE" width="583.0">
+                              <effect>
+                                <DropShadow height="10.0" radius="4.5" width="10.0" />
+                              </effect>
+                            </Rectangle>
+                            <CheckBox fx:id="medResCombined" font="$x1" layoutX="143.0" layoutY="380.0" mnemonicParsing="false" selected="false" text="カルテ保存時に相互作用チェックを行う" />
+                            <CheckBox fx:id="medResCostPrice" font="$x1" layoutX="143.0" layoutY="465.0" mnemonicParsing="false" selected="true" text="実費(黄)" />
+                            <CheckBox fx:id="medResAccident" font="$x1" layoutX="233.0" layoutY="465.0" mnemonicParsing="false" text="労災(橙)" />
+                            <CheckBox fx:id="medResInsurance" font="$x1" layoutX="324.0" layoutY="465.0" mnemonicParsing="false" text="自賠責(青)" />
+                          </children>
+                        </AnchorPane>
+                      </content>
+                    </Tab>
+                    <Tab text="その他">
+                      <content>
+                        <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                          <children>
+                            <Text font="$x1" layoutX="14.0" layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="新規カルテ作成時" />
+                            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="102.0" layoutX="14.0" layoutY="35.0" stroke="BLACK" strokeType="INSIDE" width="583.0">
+                              <effect>
+                                <DropShadow height="10.0" radius="4.5" width="10.0" />
+                              </effect>
+                            </Rectangle>
+                            <CheckBox fx:id="etcDialog" font="$x1" layoutX="51.0" layoutY="48.0" mnemonicParsing="false" onMouseClicked="#setEtcAltogetherDisable" text="確認ダイアログを表示しない" />
+                            <Text font="$x1" layoutX="14.0" layoutY="162.0" strokeType="OUTSIDE" strokeWidth="0.0" text="カルテ保存時" />
+                            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="133.0" layoutX="14.0" layoutY="173.0" stroke="BLACK" strokeType="INSIDE" width="583.0">
+                              <effect>
+                                <DropShadow height="10.0" radius="4.5" width="10.0" />
+                              </effect>
+                            </Rectangle>
+                            <Text font="$x1" layoutX="14.0" layoutY="329.0" strokeType="OUTSIDE" strokeWidth="0.0" text="年齢" />
+                            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="44.0" layoutX="14.0" layoutY="342.0" stroke="BLACK" strokeType="INSIDE" width="583.0">
+                              <effect>
+                                <DropShadow height="10.0" radius="4.5" width="10.0" />
+                              </effect>
+                            </Rectangle>
+                            <Text font="$x1" layoutX="15.0" layoutY="411.0" strokeType="OUTSIDE" strokeWidth="0.0" text="２号カルテ" />
+                            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="44.0" layoutX="14.0" layoutY="423.0" stroke="BLACK" strokeType="INSIDE" width="583.0">
+                              <effect>
+                                <DropShadow height="10.0" radius="4.5" width="10.0" />
+                              </effect>
+                            </Rectangle>
+                            <Text font="$x1" layoutX="51.0" layoutY="91.0" strokeType="OUTSIDE" strokeWidth="0.0" text="作成方法：" />
+                            <Text font="$x1" layoutX="51.0" layoutY="117.0" strokeType="OUTSIDE" strokeWidth="0.0" text="配置方法：" />
+                            <RadioButton fx:id="etcAltogether" font="$x1" layoutX="123.0" layoutY="77.0" mnemonicParsing="false" text="全てコピー">
+                              <toggleGroup>
+                                <ToggleGroup fx:id="K" />
+                              </toggleGroup>
+                            </RadioButton>
+                            <RadioButton fx:id="etcLastPrescription" font="$x1" layoutX="300.0" layoutY="77.0" mnemonicParsing="false" text="前回処方を適用" toggleGroup="$K" />
+                            <RadioButton fx:id="etcBlankNewKarte" font="$x1" layoutX="441.0" layoutY="78.0" mnemonicParsing="false" selected="true" text="空白の新規カルテ" toggleGroup="$K" />
+                            <RadioButton fx:id="etcAnotherWindow" font="$x1" layoutX="123.0" layoutY="105.0" mnemonicParsing="false" selected="true" text="別ウィンドウで編集">
+                              <toggleGroup>
+                                <ToggleGroup fx:id="L" />
+                              </toggleGroup>
+                            </RadioButton>
+                            <RadioButton fx:id="etcTabPanel" font="$x1" layoutX="300.0" layoutY="105.0" mnemonicParsing="false" text="タブパネルへ追加" toggleGroup="$L" />
+                            <CheckBox fx:id="etcClosesAutomatically" font="$x1" layoutX="51.0" layoutY="186.0" mnemonicParsing="false" text="編集ウィンドウを自動的に閉じる" />
+                            <CheckBox fx:id="etcKarteSaveDialog" font="$x1" layoutX="51.0" layoutY="212.0" mnemonicParsing="false" onMouseClicked="#setEtcKarteSaveDialogDisable" text="確認ダイアログを表示しない" />
+                            <Text font="$x1" layoutX="51.0" layoutY="257.0" strokeType="OUTSIDE" strokeWidth="0.0" text="印刷枚数：" />
+                            <TextField fx:id="etcPrintingSheets" layoutX="121.0" layoutY="242.0" prefHeight="20.0" prefWidth="21.0" text="0" />
+                            <Text font="$x1" layoutX="79.0" layoutY="286.0" strokeType="OUTSIDE" strokeWidth="0.0" text="動作：" />
+                            <RadioButton fx:id="etcOperationAllcopy" font="$x1" layoutX="123.0" layoutY="272.0" mnemonicParsing="false" selected="true" text="全てコピー">
+                              <toggleGroup>
+                                <ToggleGroup fx:id="M" />
+                              </toggleGroup>
+                            </RadioButton>
+                            <RadioButton fx:id="etcOperationPrescription" font="$x1" layoutX="226.0" layoutY="272.0" mnemonicParsing="false" selected="false" text="前回処方を適用" toggleGroup="$M" />
+                            <Text font="$x1" layoutX="84.0" layoutY="369.0" strokeType="OUTSIDE" strokeWidth="0.0" text="月例を表示する年齢：" />
+                            <TextField fx:id="etcAgeOfTheMoon" alignment="CENTER_RIGHT" layoutX="229.0" layoutY="355.0" prefHeight="20.0" prefWidth="35.0" text="0" />
+                            <Text font="$x1" layoutX="281.0" layoutY="370.0" strokeType="OUTSIDE" strokeWidth="0.0" text="歳未満" />
+                            <Text font="$x1" layoutX="100.0" layoutY="450.0" strokeType="OUTSIDE" strokeWidth="0.0" text="文字サイズ：" />
+                            <RadioButton fx:id="etcFontSmall" font="$x1" layoutX="184.0" layoutY="436.0" mnemonicParsing="false" selected="true" text="小">
+                              <toggleGroup>
+                                <ToggleGroup fx:id="N" />
+                              </toggleGroup>
+                            </RadioButton>
+                            <RadioButton fx:id="etcFontMiddle" font="$x1" layoutX="232.0" layoutY="437.0" mnemonicParsing="false" text="中" toggleGroup="$N" />
+                            <RadioButton fx:id="etcFontLarge" font="$x1" layoutX="281.0" layoutY="437.0" mnemonicParsing="false" text="大" toggleGroup="$N" />
+                          </children>
+                        </AnchorPane>
+                      </content>
+                    </Tab>
+                    <Tab text="印刷">
+                      <content>
+                        <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                          <children>
+                            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="55.0" layoutX="14.0" layoutY="39.0" stroke="BLACK" strokeType="INSIDE" width="583.0">
+                              <effect>
+                                <DropShadow height="10.0" radius="4.5" width="10.0" />
+                              </effect>
+                            </Rectangle>
+                            <Text font="$x1" layoutX="14.0" layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="印刷方法" />
+                            <Text font="$x1" layoutX="14.0" layoutY="124.0" strokeType="OUTSIDE" strokeWidth="0.0" text="印刷ダイアログ" />
+                            <Text font="$x1" layoutX="39.0" layoutY="72.0" strokeType="OUTSIDE" strokeWidth="0.0" text="種類：" />
+                            <RadioButton fx:id="printWindows" font="$x1" layoutX="111.0" layoutY="58.0" mnemonicParsing="false" selected="true" text="Windows印刷">
+                              <toggleGroup>
+                                <ToggleGroup fx:id="O" />
+                              </toggleGroup>
+                            </RadioButton>
+                            <RadioButton fx:id="printWindowsMac" font="$x1" layoutX="237.0" layoutY="58.0" mnemonicParsing="false" text="Windows/Mac印刷" toggleGroup="$O" />
+                            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="55.0" layoutX="12.0" layoutY="137.0" stroke="BLACK" strokeType="INSIDE" width="583.0">
+                              <effect>
+                                <DropShadow height="10.0" radius="4.5" width="10.0" />
+                              </effect>
+                            </Rectangle>
+                            <CheckBox fx:id="printView" font="$x1" layoutX="111.0" layoutY="156.0" mnemonicParsing="false" text="Windows/Mac印刷を選択した場合、印刷ダイアログを表示しない" />
+                            <Text font="$x1" layoutX="14.0" layoutY="225.0" strokeType="OUTSIDE" strokeWidth="0.0" text="PDF" />
+                            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="55.0" layoutX="14.0" layoutY="238.0" stroke="BLACK" strokeType="INSIDE" width="583.0">
+                              <effect>
+                                <DropShadow height="10.0" radius="4.5" width="10.0" />
+                              </effect>
+                            </Rectangle>
+                            <CheckBox id="printView" fx:id="pdfView" font="$x1" layoutX="111.0" layoutY="249.0" mnemonicParsing="false" text="Windows/Mac印刷を選択した場合、印刷せずにPDF表示を行う" />
+                            <Text font="$x1" layoutX="111.0" layoutY="283.0" strokeType="OUTSIDE" strokeWidth="0.0" text="デフォルト文字サイズ：" />
+                            <TextField id="etcAgeOfTheMoon" fx:id="pdfViewTextSize" alignment="CENTER_RIGHT" layoutX="235.0" layoutY="269.0" prefHeight="20.0" prefWidth="35.0" text="0" />
+                            <Text font="$x1" layoutX="14.0" layoutY="329.0" strokeType="OUTSIDE" strokeWidth="0.0" text="ラボテストのリスト印刷" />
+                            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="55.0" layoutX="14.0" layoutY="342.0" stroke="BLACK" strokeType="INSIDE" width="583.0">
+                              <effect>
+                                <DropShadow height="10.0" radius="4.5" width="10.0" />
+                              </effect>
+                            </Rectangle>
+                            <CheckBox id="printView" fx:id="laboPrintConvPdf" font="$x1" layoutX="111.0" layoutY="361.0" mnemonicParsing="false" text="PDF変換" />
+                          </children>
+                        </AnchorPane>
+                      </content>
+                    </Tab>
+                  </tabs>
+                </TabPane>
+              </children>
+            </AnchorPane>
+          </content>
+        </Tab>
+        <Tab text="スタンプ">
+          <content>
+            <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+              <children>
+                <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="135.0" layoutX="11.0" layoutY="41.0" stroke="BLACK" strokeType="OUTSIDE" width="610.0">
+                  <effect>
+                    <DropShadow height="10.0" radius="4.5" width="10.0" />
+                  </effect>
+                </Rectangle>
+                <Text font="$x1" layoutX="14.0" layoutY="24.0" strokeType="OUTSIDE" strokeWidth="0.0" text="スタンプ動作設定" />
+                <Text font="$x1" layoutX="38.0" layoutY="69.0" strokeType="OUTSIDE" strokeWidth="0.0" text="スタンプ上にDnDした場合：" />
+                <RadioButton fx:id="stampReplaces" font="$x1" layoutX="231.0" layoutY="55.0" mnemonicParsing="false" text="置き換える">
+                  <toggleGroup>
+                    <ToggleGroup fx:id="P" />
+                  </toggleGroup>
+                </RadioButton>
+                <RadioButton fx:id="stampWarning" font="$x1" layoutX="340.0" layoutY="55.0" mnemonicParsing="false" selected="true" text="警告する" toggleGroup="$P" />
+                <CheckBox fx:id="stampDnd" font="$x1" layoutX="38.0" layoutY="82.0" mnemonicParsing="false" selected="true" text="DnD時にスタンプの間隔を空ける" />
+                <CheckBox fx:id="stampSpecimen" font="$x1" layoutX="38.0" layoutY="112.0" mnemonicParsing="false" selected="true" text="検体検査の項目を折りたたみ表示する" />
+                <CheckBox fx:id="stampStampname" font="$x1" layoutX="38.0" layoutY="138.0" mnemonicParsing="false" selected="true" text="カルテ展開時にスタンプ名を表示する" />
+                <Text font="$x1" layoutX="10.0" layoutY="201.0" strokeType="OUTSIDE" strokeWidth="0.0" text="スタンプ動作設定" />
+                <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="108.0" layoutX="11.0" layoutY="220.0" stroke="BLACK" strokeType="OUTSIDE" width="610.0">
+                  <effect>
+                    <DropShadow height="10.0" radius="4.5" width="10.0" />
+                  </effect>
+                </Rectangle>
+                <Text font="$x1" layoutX="113.0" layoutY="245.0" strokeType="OUTSIDE" strokeWidth="0.0" text="錠剤の場合：" />
+                <Text font="$x1" layoutX="340.0" layoutY="246.0" strokeType="OUTSIDE" strokeWidth="0.0" text="水薬の場合：" />
+                <Text font="$x1" layoutX="113.0" layoutY="278.0" strokeType="OUTSIDE" strokeWidth="0.0" text="散薬の場合：" />
+                <Text font="$x1" layoutX="325.0" layoutY="280.0" strokeType="OUTSIDE" strokeWidth="0.0" text="カプセルの場合：" />
+                <Text font="$x1" layoutX="123.0" layoutY="311.0" strokeType="OUTSIDE" strokeWidth="0.0" text="処方日数：" />
+                <TextField fx:id="stampTablet" alignment="CENTER_RIGHT" layoutX="209.0" layoutY="233.0" prefHeight="20.0" prefWidth="35.0" text="0">
+                  <effect>
+                    <DropShadow color="#ccfff9" height="10.0" radius="4.5" width="10.0" fx:id="x2" />
+                  </effect>
+                </TextField>
+                <TextField fx:id="stampLiquidmedicine" alignment="CENTER_RIGHT" effect="$x2" layoutX="436.0" layoutY="233.0" prefHeight="20.0" prefWidth="35.0" text="0" />
+                <TextField fx:id="stampPowder" alignment="CENTER_RIGHT" effect="$x2" layoutX="209.0" layoutY="264.0" prefHeight="20.0" prefWidth="35.0" text="0" />
+                <TextField fx:id="stampCapsule" alignment="CENTER_RIGHT" effect="$x2" layoutX="436.0" layoutY="265.0" prefHeight="20.0" prefWidth="35.0" text="0" />
+                <TextField fx:id="stampPrescriptiondays" alignment="CENTER_RIGHT" effect="$x2" layoutX="209.0" layoutY="296.0" prefHeight="20.0" prefWidth="35.0" text="0" />
+                <Text font="$x1" layoutX="263.0" layoutY="248.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Ｔ" />
+                <Text font="$x1" layoutX="490.0" layoutY="246.0" strokeType="OUTSIDE" strokeWidth="0.0" text="ｍｌ" />
+                <Text font="$x1" layoutX="263.0" layoutY="277.0" strokeType="OUTSIDE" strokeWidth="0.0" text="ｇ" />
+                <Text font="$x1" layoutX="490.0" layoutY="280.0" scaleX="1.0" strokeType="OUTSIDE" strokeWidth="0.0" text="カプセル" />
+                <Text font="$x1" layoutX="263.0" layoutY="311.0" scaleX="1.0" strokeType="OUTSIDE" strokeWidth="0.0" text="日/回" />
+                <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="40.0" layoutX="11.0" layoutY="368.0" stroke="BLACK" strokeType="OUTSIDE" width="303.5">
+                  <effect>
+                    <DropShadow height="10.0" radius="4.5" width="10.0" />
+                  </effect>
+                </Rectangle>
+                <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="40.03125" layoutX="327.0" layoutY="368.0" stroke="BLACK" strokeType="OUTSIDE" width="294.0">
+                  <effect>
+                    <DropShadow height="10.0" radius="4.5" width="10.0" />
+                  </effect>
+                </Rectangle>
+                <Text font="$x1" layoutX="14.0" layoutY="353.0" scaleX="1.0" scaleY="1.0000087193080358" strokeType="OUTSIDE" strokeWidth="0.0" text="処方" />
+                <Text font="$x1" layoutX="326.0" layoutY="353.0" strokeType="OUTSIDE" strokeWidth="0.0" text="スタンプエディタのボタンタイプ" />
+                <RadioButton fx:id="stampIcon" font="$x1" layoutX="397.0" layoutY="380.0" mnemonicParsing="false" selected="true" text="アイコン">
+                  <toggleGroup>
+                    <ToggleGroup fx:id="Q" />
+                  </toggleGroup>
+                </RadioButton>
+                <RadioButton fx:id="stampText" font="$x1" layoutX="486.0" layoutY="380.0" mnemonicParsing="false" text="テキスト" toggleGroup="$Q" />
+                <CheckBox fx:id="stampDirection" font="$x1" layoutX="93.0" layoutY="380.0" mnemonicParsing="false" text="同じ用法にまとめる" />
+                <Text font="$x1" layoutX="14.0" layoutY="431.0" strokeType="OUTSIDE" strokeWidth="0.0" text="マスター検索" />
+                <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="40.03125" layoutX="12.0" layoutY="445.0" stroke="BLACK" strokeType="OUTSIDE" width="610.0">
+                  <effect>
+                    <DropShadow height="10.0" radius="4.5" width="10.0" />
+                  </effect>
+                </Rectangle>
+                <CheckBox fx:id="stampMaster" font="$x1" layoutX="209.0" layoutY="457.0" mnemonicParsing="false" selected="true" text="マスター項目をカラーリングする" />
+                <Text font="$x1" layoutX="15.0" layoutY="506.0" strokeType="OUTSIDE" strokeWidth="0.0" text="検体検査" />
+                <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="40.03125" layoutX="13.0" layoutY="520.0" stroke="BLACK" strokeType="OUTSIDE" width="610.0">
+                  <effect>
+                    <DropShadow height="10.0" radius="4.5" width="10.0" />
+                  </effect>
+                </Rectangle>
+                <CheckBox id="stampMaster" fx:id="mergeWithLabotest" font="$x1" layoutX="210.0" layoutY="532.0" mnemonicParsing="false" selected="false" text="同じ検体検査をまとめる" />
+              </children>
+            </AnchorPane>
+          </content>
+        </Tab>
+        <Tab text="紹介状">
+          <content>
+            <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+              <children>
+                <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="88.0" layoutX="12.0" layoutY="43.0" stroke="BLACK" strokeType="OUTSIDE" width="610.0">
+                  <effect>
+                    <DropShadow height="10.0" radius="4.5" width="10.0" />
+                  </effect>
+                </Rectangle>
+                <Text font="$x1" layoutX="14.0" layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="診療情報提供書" />
+                <Text font="$x1" layoutX="95.0" layoutY="69.0" strokeType="OUTSIDE" strokeWidth="0.0" text="宛先敬称：" />
+                <RadioButton fx:id="introGokika" font="$x1" layoutX="177.0" layoutY="54.0" mnemonicParsing="false" selected="true" text="御机下">
+                  <toggleGroup>
+                    <ToggleGroup fx:id="R" />
+                  </toggleGroup>
+                </RadioButton>
+                <RadioButton fx:id="introGozisi" font="$x1" layoutX="272.0" layoutY="54.0" mnemonicParsing="false" text="御侍史" toggleGroup="$R" />
+                <RadioButton fx:id="introNothing" font="$x1" layoutX="360.0" layoutY="54.0" mnemonicParsing="false" text="無し(先生のみ)" toggleGroup="$R" />
+                <Text font="$x1" layoutX="30.0" layoutY="94.0" strokeType="OUTSIDE" strokeWidth="0.0" text="PDF印刷時の挨拶文：" />
+                <CheckBox fx:id="introLetterPdf" font="$x1" layoutX="177.0" layoutY="79.0" mnemonicParsing="false" selected="true" text="入れる" />
+                <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="56.0" layoutX="11.0" layoutY="178.0" stroke="BLACK" strokeType="OUTSIDE" width="610.0">
+                  <effect>
+                    <DropShadow height="10.0" radius="4.5" width="10.0" />
+                  </effect>
+                </Rectangle>
+                <Text font="$x1" layoutX="15.0" layoutY="161.0" strokeType="OUTSIDE" strokeWidth="0.0" text="ブレイン文書" />
+                <Text font="$x1" layoutX="122.0" layoutY="212.0" strokeType="OUTSIDE" strokeWidth="0.0" text="宛先敬称：" />
+                <RadioButton fx:id="introLetterOn" font="$x1" layoutX="210.0" layoutY="198.0" mnemonicParsing="false" selected="true" text="有り">
+                  <toggleGroup>
+                    <ToggleGroup fx:id="S" />
+                  </toggleGroup>
+                </RadioButton>
+                <RadioButton fx:id="introLetterOff" font="$x1" layoutX="305.0" layoutY="198.0" mnemonicParsing="false" text="無し" toggleGroup="$S" />
+                <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="56.0" layoutX="13.0" layoutY="280.0" stroke="BLACK" strokeType="OUTSIDE" width="610.0">
+                  <effect>
+                    <DropShadow height="10.0" radius="4.5" width="10.0" />
+                  </effect>
+                </Rectangle>
+                <Text font="$x1" layoutX="15.0" layoutY="263.0" strokeType="OUTSIDE" strokeWidth="0.0" text="診断書" />
+                <Text font="$x1" layoutX="80.0" layoutY="313.0" strokeType="OUTSIDE" strokeWidth="0.0" text="フォントサイズ：" />
+                <RadioButton fx:id="introLetterSmall" font="$x1" layoutX="210.0" layoutY="298.0" mnemonicParsing="false" text="小">
+                  <toggleGroup>
+                    <ToggleGroup fx:id="T" />
+                  </toggleGroup>
+                </RadioButton>
+                <RadioButton fx:id="introLetterBig" font="$x1" layoutX="305.0" layoutY="299.0" mnemonicParsing="false" selected="true" text="大" toggleGroup="$T" />
+                <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="56.0" layoutX="13.0" layoutY="381.0" stroke="BLACK" strokeType="OUTSIDE" width="610.0">
+                  <effect>
+                    <DropShadow height="10.0" radius="4.5" width="10.0" />
+                  </effect>
+                </Rectangle>
+                <Text font="$x1" layoutX="15.0" layoutY="364.0" strokeType="OUTSIDE" strokeWidth="0.0" text="紹介状等のPDF/OpenDocumentの出力先" />
+                <Text font="$x1" layoutX="25.0" layoutY="414.0" strokeType="OUTSIDE" strokeWidth="0.0" text="出力先：" />
+                <TextField fx:id="introOutput" layoutX="96.0" layoutY="399.0" prefHeight="20.0" prefWidth="425.0" promptText="出力先" />
+                <Button layoutX="534.0" layoutY="400.0" mnemonicParsing="false" onAction="#introSetDirNameOutPut" prefHeight="20.0" prefWidth="74.0" text="選択..." />
+                <Text font="$x1" layoutX="56.0" layoutY="118.0" strokeType="OUTSIDE" strokeWidth="0.0" text="電話番号の出力：" />
+                <RadioButton id="introGokika" fx:id="lerrerTelOufPdfOn" font="$x1" layoutX="176.0" layoutY="104.0" mnemonicParsing="false" selected="true" text="有り">
+                  <toggleGroup>
+                    <ToggleGroup fx:id="x6" />
+                  </toggleGroup>
+                </RadioButton>
+                <RadioButton id="introGozisi" fx:id="lerrerTelOufPdfOff" font="$x1" layoutX="271.0" layoutY="104.0" mnemonicParsing="false" text="無し" toggleGroup="$x6" />
+              </children>
+            </AnchorPane>
+          </content>
+        </Tab>
+        <Tab text="コード">
+          <content>
+            <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+              <children>
+                <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="54.0" layoutX="11.0" layoutY="43.0" stroke="BLACK" strokeType="OUTSIDE" width="610.0">
+                  <effect>
+                    <DropShadow height="10.0" radius="4.5" width="10.0" />
+                  </effect>
+                </Rectangle>
+                <Text font="$x1" layoutX="13.0" layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="修飾キー + スペース = 補完ポップアップ" />
+                <Text font="$x1" layoutX="86.0" layoutY="76.0" strokeType="OUTSIDE" strokeWidth="0.0" text="修飾キー：" />
+                <RadioButton fx:id="codeControl" font="$x1" layoutX="176.0" layoutY="61.0" mnemonicParsing="false" selected="true" text="コントロール">
+                  <toggleGroup>
+                    <ToggleGroup fx:id="U" />
+                  </toggleGroup>
+                </RadioButton>
+                <RadioButton fx:id="codeMeta" font="$x1" layoutX="337.0" layoutY="62.0" mnemonicParsing="false" text="メタ" toggleGroup="$U" />
+                <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="299.0" layoutX="11.0" layoutY="142.0" stroke="BLACK" strokeType="OUTSIDE" width="610.0">
+                  <effect>
+                    <DropShadow height="10.0" radius="4.5" width="10.0" />
+                  </effect>
+                </Rectangle>
+                <Text font="$x1" layoutX="13.0" layoutY="125.0" strokeType="OUTSIDE" strokeWidth="0.0" text="スタンプ箱のキーワード" />
+                <Text font="$x1" layoutX="106.0" layoutY="181.0" strokeType="OUTSIDE" strokeWidth="0.0" text="テキスト：" />
+                <Text font="$x1" layoutX="134.0" layoutY="213.0" strokeType="OUTSIDE" strokeWidth="0.0" text="汎用：" />
+                <Text font="$x1" layoutX="120.0" layoutY="279.0" strokeType="OUTSIDE" strokeWidth="0.0" text="放射線：" />
+                <Text font="$x1" layoutX="134.0" layoutY="246.0" strokeType="OUTSIDE" strokeWidth="0.0" text="処置：" />
+                <Text font="$x1" layoutX="106.0" layoutY="311.0" strokeType="OUTSIDE" strokeWidth="0.0" text="生体検査：" />
+                <Text font="$x1" layoutX="134.0" layoutY="343.0" strokeType="OUTSIDE" strokeWidth="0.0" text="注射：" />
+                <Text font="$x1" layoutX="123.0" layoutY="409.0" strokeType="OUTSIDE" strokeWidth="0.0" text="ORCA：" />
+                <Text font="$x1" layoutX="120.0" layoutY="376.0" strokeType="OUTSIDE" strokeWidth="0.0" text="診断料：" />
+                <TextField fx:id="codeTx" layoutX="186.0" layoutY="166.0" prefHeight="20.0" prefWidth="43.0" text="ｔｘ">
+                  <effect>
+                    <DropShadow color="#99f3ff" height="10.0" radius="4.5" width="10.0" />
+                  </effect>
+                </TextField>
+                <TextField fx:id="codeGen" layoutX="186.0" layoutY="198.0" prefHeight="20.0" prefWidth="43.0" text="gen">
+                  <effect>
+                    <DropShadow color="#99daff" height="10.0" radius="4.5" width="10.0" fx:id="x3" />
+                  </effect>
+                </TextField>
+                <TextField fx:id="codeTr" effect="$x3" layoutX="186.0" layoutY="231.0" prefHeight="20.0" prefWidth="43.0" text="tr" />
+                <TextField fx:id="codeRad" effect="$x3" layoutX="186.0" layoutY="264.0" prefHeight="20.0" prefWidth="43.0" text="rad" />
+                <TextField fx:id="codePhy" effect="$x3" layoutX="186.0" layoutY="296.0" prefHeight="20.0" prefWidth="43.0" text="phy" />
+                <TextField fx:id="codeInj" effect="$x3" layoutX="186.0" layoutY="328.0" prefHeight="20.0" prefWidth="43.0" text="inj" />
+                <TextField fx:id="codeBase" effect="$x3" layoutX="186.0" layoutY="361.0" prefHeight="20.0" prefWidth="43.0" text="base" />
+                <TextField fx:id="codeOrca" effect="$x3" layoutX="186.0" layoutY="394.0" prefHeight="20.0" prefWidth="43.0" text="orca" />
+                <Text font="$x1" layoutX="309.0" layoutY="181.0" strokeType="OUTSIDE" strokeWidth="0.0" text="パス：" />
+                <Text font="$x1" layoutX="295.0" layoutY="213.0" strokeType="OUTSIDE" strokeWidth="0.0" text="その他：" />
+                <Text font="$x1" layoutX="281.0" layoutY="279.0" strokeType="OUTSIDE" strokeWidth="0.0" text="検体検査：" />
+                <Text font="$x1" layoutX="309.0" layoutY="246.0" strokeType="OUTSIDE" strokeWidth="0.0" text="手術：" />
+                <Text font="$x1" layoutX="281.0" layoutY="311.0" strokeType="OUTSIDE" strokeWidth="0.0" text="細菌検査：" />
+                <Text font="$x1" layoutX="309.0" layoutY="343.0" strokeType="OUTSIDE" strokeWidth="0.0" text="処方：" />
+                <Text font="$x1" layoutX="267.0" layoutY="376.0" strokeType="OUTSIDE" strokeWidth="0.0" text="指導・在宅：" />
+                <TextField fx:id="codePat" layoutX="357.0" layoutY="166.0" prefHeight="20.0" prefWidth="43.0" text="pat">
+                  <effect>
+                    <DropShadow color="#ccf9ff" fx:id="x5" />
+                  </effect>
+                </TextField>
+                <TextField fx:id="codeOth" effect="$x5" layoutX="357.0" layoutY="198.0" prefHeight="20.0" prefWidth="43.0" text="oth" />
+                <TextField fx:id="codeSur" effect="$x5" layoutX="357.0" layoutY="231.0" prefHeight="20.0" prefWidth="43.0" text="sur" />
+                <TextField fx:id="codeLab" effect="$x5" layoutX="357.0" layoutY="264.0" prefHeight="20.0" prefWidth="43.0" text="lab" />
+                <TextField fx:id="codeBac" effect="$x5" layoutX="357.0" layoutY="296.0" prefHeight="20.0" prefWidth="43.0" text="bac" />
+                <TextField fx:id="codeRp" effect="$x5" layoutX="357.0" layoutY="328.0" prefHeight="20.0" prefWidth="43.0" text="rp" />
+                <TextField fx:id="codeIns" effect="$x5" layoutX="357.0" layoutY="361.0" prefHeight="20.0" prefWidth="43.0" text="ins" />
+              </children>
+            </AnchorPane>
+          </content>
+        </Tab>
+        <Tab text="リレー等">
+          <content>
+            <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+              <children>
+                <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="116.0" layoutX="12.0" layoutY="45.0" stroke="BLACK" strokeType="OUTSIDE" width="600.0">
+                  <effect>
+                    <DropShadow height="10.0" radius="4.5" width="10.0" />
+                  </effect>
+                </Rectangle>
+                <Text font="$x1" layoutX="14.0" layoutY="25.0" strokeType="OUTSIDE" strokeWidth="0.0" text="MML出力" />
+                <CheckBox fx:id="relayMml" font="$x1" layoutX="56.0" layoutY="58.0" mnemonicParsing="false" onMouseClicked="#setRelayIntroOutputDisable" text="カルテの保存時にMML出力を行う" />
+                <Text font="$x1" layoutX="56.0" layoutY="110.0" strokeType="OUTSIDE" strokeWidth="0.0" text="出力先ディレクトリ：" />
+                <TextField fx:id="relayMmlOutput" layoutX="212.0" layoutY="93.0" prefHeight="20.0" prefWidth="295.0" promptText="出力先" />
+                <Button fx:id="relayMmlSelect" layoutX="521.0" layoutY="92.0" mnemonicParsing="false" onAction="#setDirNameRelayMmlOutput" prefHeight="20.0" prefWidth="74.0" text="選択..." />
+                <Text font="$x1" layoutX="112.0" layoutY="144.0" strokeType="OUTSIDE" strokeWidth="0.0" text="バージョン：" />
+                <RadioButton fx:id="relayMmlVersion" font="$x1" layoutX="212.0" layoutY="130.0" mnemonicParsing="false" selected="true" text="2.3">
+                  <toggleGroup>
+                    <ToggleGroup fx:id="V" />
+                  </toggleGroup>
+                </RadioButton>
+                <RadioButton fx:id="relayMmlVersionThree" font="$x1" layoutX="281.0" layoutY="130.0" mnemonicParsing="false" selected="false" text="3.0" toggleGroup="$V" />
+                <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="88.0" layoutX="12.0" layoutY="215.0" stroke="BLACK" strokeType="OUTSIDE" width="600.0">
+                  <effect>
+                    <DropShadow height="10.0" radius="4.5" width="10.0" />
+                  </effect>
+                </Rectangle>
+                <Text font="$x1" layoutX="18.0" layoutY="195.0" strokeType="OUTSIDE" strokeWidth="0.0" text="カルテPDF出力" />
+                <CheckBox fx:id="relayPdfCheck" font="$x1" layoutX="56.0" layoutY="228.0" mnemonicParsing="false" onMouseClicked="#setRelayKartePdfSendDirDisable" text="カルテの保存時にPDF出力を行う" />
+                <Text font="$x1" layoutX="50.0" layoutY="276.0" strokeType="OUTSIDE" strokeWidth="0.0" text="出力先ディレクトリ：" />
+                <TextField fx:id="relayPdfOutput" layoutX="212.0" layoutY="261.0" prefHeight="20.0" prefWidth="295.0" promptText="出力先" />
+                <Button fx:id="relayPdfSelect" layoutX="521.0" layoutY="261.0" mnemonicParsing="false" onAction="#setDirNameRelayPdfOutput" prefHeight="20.0" prefWidth="74.0" text="選択..." />
+                <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="116.0" layoutX="12.0" layoutY="354.0" stroke="BLACK" strokeType="OUTSIDE" width="600.0">
+                  <effect>
+                    <DropShadow height="10.0" radius="4.5" width="10.0" />
+                  </effect>
+                </Rectangle>
+                <Text font="$x1" layoutX="18.0" layoutY="334.0" strokeType="OUTSIDE" strokeWidth="0.0" text="受付リレー" />
+                <CheckBox fx:id="relayRelay" font="$x1" layoutX="56.0" layoutY="367.0" mnemonicParsing="false" onMouseClicked="#setPvtRelayDirectoryDisable" text="このマシンで受付情報をリレーする" />
+                <Text font="$x1" layoutX="56.0" layoutY="417.0" strokeType="OUTSIDE" strokeWidth="0.0" text="出力先ディレクトリ：" />
+                <TextField fx:id="relayOutput" layoutX="212.0" layoutY="402.0" prefHeight="20.0" prefWidth="295.0" promptText="出力先" />
+                <Button fx:id="relaySelect" layoutX="521.0" layoutY="402.0" mnemonicParsing="false" onAction="#setDirNameRelayOutput" prefHeight="20.0" prefWidth="74.0" text="選択..." />
+                <Text font="$x1" layoutX="54.0" layoutY="453.0" strokeType="OUTSIDE" strokeWidth="0.0" text="エンコーディング：" />
+                <RadioButton fx:id="relayEncUtf" font="$x1" layoutX="184.0" layoutY="439.0" mnemonicParsing="false" selected="true" text="UTF-8">
+                  <toggleGroup>
+                    <ToggleGroup fx:id="W" />
+                  </toggleGroup>
+                </RadioButton>
+                <RadioButton fx:id="relayEncShift" font="$x1" layoutX="268.0" layoutY="439.0" mnemonicParsing="false" text="SHIFT-JIS" toggleGroup="$W" />
+                <RadioButton fx:id="relayEncEuc" font="$x1" layoutX="368.0" layoutY="439.0" mnemonicParsing="false" text="EUC-JP" toggleGroup="$W" />
+              </children>
+            </AnchorPane>
+          </content>
+        </Tab>
+        <Tab text="Evolution">
+          <content>
+            <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+              <children>
+                <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="115.0" layoutX="12.0" layoutY="45.0" stroke="BLACK" strokeType="OUTSIDE" width="600.0">
+                  <effect>
+                    <DropShadow height="10.0" radius="4.5" width="10.0" />
+                  </effect>
+                </Rectangle>
+                <Text font="$x1" layoutX="14.0" layoutY="25.0" strokeType="OUTSIDE" strokeWidth="0.0" text="外部連携" />
+                <Text font="$x1" layoutX="58.0" layoutY="119.0" strokeType="OUTSIDE" strokeWidth="0.0" text="連携URL：" />
+                <TextField id="relayMmlOutput" fx:id="evoUrl" layoutX="150.0" layoutY="104.0" prefHeight="20.0" prefWidth="413.0" promptText="URL" />
+                <Text font="$x1" layoutX="69.0" layoutY="86.0" strokeType="OUTSIDE" strokeWidth="0.0" text="表示名：" />
+                <TextField id="relayMmlOutput" fx:id="evoDsp" disable="false" editable="true" layoutX="150.0" layoutY="71.0" prefHeight="20.0" prefWidth="200.0" promptText="表示名" />
+              </children>
+            </AnchorPane>
+          </content>
+        </Tab>
+      </tabs>
+    </TabPane>
+    <Button layoutX="426.0" layoutY="629.0" mnemonicParsing="false" onAction="#close" prefHeight="30.0" prefWidth="97.0" text="キャンセル" />
+    <Button layoutX="537.0" layoutY="629.0" mnemonicParsing="false" onAction="#applyAndClose" prefHeight="30.0" prefWidth="97.0" text="完　了" />
+    <HBox alignment="CENTER" layoutX="14.0" layoutY="633.0" prefHeight="21.0" prefWidth="276.0">
+      <children>
+        <Text fx:id="status" fill="RED" font="$x1" strokeType="OUTSIDE" strokeWidth="0.0" text="Status" />
+      </children>
+    </HBox>
+  </children>
+  <stylesheets>
+    <URL value="@../styles/Config.css" />
+  </stylesheets>
+</AnchorPane>

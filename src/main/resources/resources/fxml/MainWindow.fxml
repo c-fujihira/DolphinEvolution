@@ -1,0 +1,459 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.collections.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.web.*?>
+
+<AnchorPane fx:id="mainPane" prefHeight="500.0" prefWidth="1200.0" styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml" fx:controller="open.dolphin.client.MainWindowController">
+  <children>
+    <MenuBar blendMode="HARD_LIGHT" focusTraversable="false" layoutY="0.0" prefHeight="20.0" prefWidth="1200.0" useSystemMenuBar="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+      <menus>
+        <Menu disable="false" mnemonicParsing="false" text="ファイル">
+          <items>
+            <MenuItem mnemonicParsing="false" text="新規カルテ" />
+            <MenuItem mnemonicParsing="false" text="新規文書" />
+            <MenuItem mnemonicParsing="false" text="開く" />
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem mnemonicParsing="false" text="閉じる" />
+            <MenuItem mnemonicParsing="false" text="保存" />
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem mnemonicParsing="false" text="削除" />
+            <MenuItem mnemonicParsing="false" text="ページ設定" />
+            <MenuItem mnemonicParsing="false" text="プリント..." />
+            <MenuItem mnemonicParsing="false" onAction="#close" text="終了" />
+          </items>
+        </Menu>
+        <Menu mnemonicParsing="false" text="編集">
+          <items>
+            <MenuItem mnemonicParsing="false" text="修正" />
+            <MenuItem mnemonicParsing="false" text="元に戻す" />
+            <MenuItem mnemonicParsing="false" text="再実行" />
+            <MenuItem mnemonicParsing="false" text="カット" />
+            <MenuItem mnemonicParsing="false" text="コピー" />
+            <MenuItem mnemonicParsing="false" text="ペースト" />
+          </items>
+        </Menu>
+        <Menu mnemonicParsing="false" text="カルテ">
+          <items>
+            <MenuItem mnemonicParsing="false" text="処方日数変更" />
+            <MenuItem mnemonicParsing="false" text="CLAIM送信" />
+            <MenuItem mnemonicParsing="false" text="相互作用チェック" />
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem mnemonicParsing="false" text="昇順" />
+            <MenuItem mnemonicParsing="false" text="降順" />
+            <MenuItem mnemonicParsing="false" text="修正履歴表示" />
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem mnemonicParsing="false" text="環境設定" />
+          </items>
+        </Menu>
+        <Menu mnemonicParsing="false" text="ツール">
+          <items>
+            <MenuItem mnemonicParsing="false" text="スタンプボックス" />
+            <MenuItem mnemonicParsing="false" text="シェーマボックス" />
+            <MenuItem mnemonicParsing="false" text="プロフィール変更" />
+            <MenuItem mnemonicParsing="false" text="施設情報編集" />
+            <MenuItem mnemonicParsing="false" text="院内ユーザー登録" />
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem mnemonicParsing="false" text="保険医療機関コード読み込み" />
+          </items>
+        </Menu>
+        <Menu mnemonicParsing="false" text="ヘルプ">
+          <items>
+            <MenuItem mnemonicParsing="false" text="OpenDolphin" />
+            <MenuItem mnemonicParsing="false" text="ORCA" />
+            <MenuItem mnemonicParsing="false" text="CLAIM規格" />
+            <MenuItem mnemonicParsing="false" text="情報..." />
+          </items>
+        </Menu>
+      </menus>
+    </MenuBar>
+    <SplitPane dividerPositions="" focusTraversable="true" orientation="VERTICAL" prefHeight="-1.0" prefWidth="-1.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="20.0">
+      <items>
+        <AnchorPane fx:id="ListnerWindow" minHeight="-1.0" minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0">
+          <children>
+            <TabPane prefHeight="678.0" prefWidth="1198.0" tabClosingPolicy="UNAVAILABLE" tabMaxHeight="20.0" tabMinHeight="20.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+              <tabs>
+                <Tab text="受付リスト">
+                  <content>
+                    <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                      <children>
+                        <SplitPane dividerPositions="" focusTraversable="true" orientation="VERTICAL" prefHeight="606.0" prefWidth="1198.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="45.0">
+                          <items>
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="609.0" prefWidth="1196.0">
+                              <children>
+                                <TableView id="" fx:id="ReceptView" disable="false" editable="false" focusTraversable="false" prefHeight="319.0" prefWidth="1196.0" rotate="0.0" style="" tableMenuButtonVisible="true" visible="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                  <columns>
+                                    <TableColumn editable="false" maxWidth="5000.0" minWidth="10.0" prefWidth="45.0" style="" text="受付" fx:id="recept" />
+                                    <TableColumn editable="false" maxWidth="150.0" prefWidth="125.0" text="来院時間" fx:id="visitTime" />
+                                    <TableColumn editable="false" maxWidth="5000.0" minWidth="10.0" prefWidth="65.0" text="患者ID" fx:id="clientId" />
+                                    <TableColumn editable="false" maxWidth="5000.0" minWidth="10.0" prefWidth="96.0" text="氏名" fx:id="name" />
+                                    <TableColumn editable="false" maxWidth="120.0" minWidth="10.0" prefWidth="90.0" text="性別" fx:id="sex" />
+                                    <TableColumn editable="false" prefWidth="75.0" text="保険" fx:id="insurance" />
+                                    <TableColumn editable="false" prefWidth="75.0" text="生年月日" fx:id="birthDay" />
+                                    <TableColumn editable="false" prefWidth="75.0" text="担当医" fx:id="physicianInCharge" />
+                                    <TableColumn editable="false" prefWidth="75.0" text="診療科" fx:id="clinicalDepartments" />
+                                    <TableColumn editable="false" prefWidth="75.0" text="予約" fx:id="reservation" />
+                                    <TableColumn editable="false" maxWidth="5000.0" minWidth="10.0" prefWidth="59.0" text="メモ" fx:id="memo" />
+                                    <TableColumn editable="false" maxWidth="5000.0" minWidth="10.0" prefWidth="75.0" text="状態" fx:id="status" />
+                                  </columns>
+                                  <rotationAxis>
+                                    <Point3D z="1.0" />
+                                  </rotationAxis>
+                                  <stylesheets>
+                                    <URL value="@../styles/MainWindow.css" />
+                                  </stylesheets>
+                                </TableView>
+                              </children>
+                            </AnchorPane>
+                          </items>
+                        </SplitPane>
+                        <AnchorPane layoutX="14.0" layoutY="1.0" prefHeight="32.0" prefWidth="1200.0" />
+                        <AnchorPane layoutY="1.0" minHeight="-Infinity" prefHeight="40.0" prefWidth="1200.0" visible="true" AnchorPane.leftAnchor="-4.0" AnchorPane.rightAnchor="2.0">
+                          <children>
+                            <HBox alignment="CENTER_LEFT" layoutX="0.0" layoutY="0.0" prefHeight="-1.0" prefWidth="-1.0" spacing="5.0">
+                              <children>
+                                <Button id="ReceptBtn" focusTraversable="false" minHeight="-1.0" minWidth="-1.0" mnemonicParsing="false" onAction="#receptUpdate" prefHeight="35.0" prefWidth="45.0" text="" textAlignment="CENTER">
+                                  <font>
+                                    <Font size="10.0" />
+                                  </font>
+                                </Button>
+                                <HBox alignment="CENTER" maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" HBox.hgrow="NEVER">
+                                  <children>
+                                    <Text id="ReceptStatus" strokeType="OUTSIDE" strokeWidth="0.0" text="Status">
+                                      <font>
+                                        <Font size="14.0" fx:id="x11" />
+                                      </font>
+                                    </Text>
+                                  </children>
+                                  <HBox.margin>
+                                    <Insets fx:id="x1" />
+                                  </HBox.margin>
+                                </HBox>
+                              </children>
+                              <padding>
+                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" fx:id="x6" />
+                              </padding>
+                            </HBox>
+                            <HBox layoutY="0.0" minHeight="-Infinity" prefHeight="40.0" prefWidth="-1.0" AnchorPane.rightAnchor="0.0">
+                              <children>
+                                <VBox prefHeight="-1.0" prefWidth="-1.0">
+                                  <children>
+                                    <HBox prefHeight="-1.0" prefWidth="-1.0">
+                                      <children>
+                                        <ImageView fitHeight="14.0" fitWidth="18.666666666666664" pickOnBounds="true" preserveRatio="true">
+                                          <image>
+                                            <Image url="@../images/os_flag_yellow_16.png" />
+                                          </image>
+                                        </ImageView>
+                                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="：診察終了">
+                                          <font>
+                                            <Font size="11.0" fx:id="x2" />
+                                          </font>
+                                        </Text>
+                                      </children>
+                                    </HBox>
+                                    <HBox prefHeight="-1.0" prefWidth="-1.0">
+                                      <children>
+                                        <ImageView fitHeight="14.0" fitWidth="18.666666666666664" pickOnBounds="true" preserveRatio="true">
+                                          <image>
+                                            <Image url="@../images/os_server_information_16.png" />
+                                          </image>
+                                        </ImageView>
+                                        <Text font="$x2" strokeType="OUTSIDE" strokeWidth="0.0" text="：カルテ修正/再保存" />
+                                      </children>
+                                    </HBox>
+                                  </children>
+                                  <padding>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                  </padding>
+                                </VBox>
+                                <VBox padding="$x6" prefHeight="-1.0" prefWidth="-1.0">
+                                  <children>
+                                    <HBox prefHeight="-1.0" prefWidth="-1.0">
+                                      <children>
+                                        <ImageView fitHeight="14.0" fitWidth="18.666666666666664" pickOnBounds="true" preserveRatio="true">
+                                          <image>
+                                            <Image url="@../images/os_cog_16.png" />
+                                          </image>
+                                        </ImageView>
+                                        <Text font="$x2" strokeType="OUTSIDE" strokeWidth="0.0" text="：検査/処置中" />
+                                      </children>
+                                    </HBox>
+                                    <HBox prefHeight="-1.0" prefWidth="-1.0">
+                                      <children>
+                                        <ImageView fitHeight="14.0" fitWidth="18.666666666666664" pickOnBounds="true" preserveRatio="true">
+                                          <image>
+                                            <Image url="@../images/os_network_wireless_16.png" />
+                                          </image>
+                                        </ImageView>
+                                        <Text font="$x2" strokeType="OUTSIDE" strokeWidth="0.0" text="：他者カルテ閲覧中" />
+                                      </children>
+                                    </HBox>
+                                  </children>
+                                </VBox>
+                                <VBox padding="$x6" prefHeight="-1.0" prefWidth="-1.0">
+                                  <children>
+                                    <HBox prefHeight="-1.0" prefWidth="-1.0">
+                                      <children>
+                                        <ImageView fitHeight="14.0" fitWidth="18.666666666666664" pickOnBounds="true" preserveRatio="true">
+                                          <image>
+                                            <Image url="@../images/os_hot_16.png" />
+                                          </image>
+                                        </ImageView>
+                                        <Text font="$x2" strokeType="OUTSIDE" strokeWidth="0.0" text="：急患" />
+                                      </children>
+                                    </HBox>
+                                    <HBox prefHeight="-1.0" prefWidth="-1.0">
+                                      <children>
+                                        <ImageView fitHeight="14.0" fitWidth="18.666666666666664" pickOnBounds="true" preserveRatio="true">
+                                          <image>
+                                            <Image url="@../images/os_cart_16.png" />
+                                          </image>
+                                        </ImageView>
+                                        <Text font="$x2" strokeType="OUTSIDE" strokeWidth="0.0" text="：外出中(受付済み)" />
+                                      </children>
+                                    </HBox>
+                                  </children>
+                                </VBox>
+                                <VBox prefHeight="-1.0" prefWidth="-1.0">
+                                  <children>
+                                    <HBox prefHeight="-1.0" prefWidth="-1.0">
+                                      <children>
+                                        <ImageView fitHeight="14.0" fitWidth="18.666666666666664" pickOnBounds="true" preserveRatio="true">
+                                          <image>
+                                            <Image url="@../images/os_cancel_16.png" />
+                                          </image>
+                                        </ImageView>
+                                        <Text font="$x2" strokeType="OUTSIDE" strokeWidth="0.0" text="：キャンセル(受付済み)" />
+                                      </children>
+                                    </HBox>
+                                    <HBox prefHeight="-1.0" prefWidth="-1.0">
+                                      <children>
+                                        <ImageView fitHeight="14.0" fitWidth="18.666666666666664" pickOnBounds="true" preserveRatio="true">
+                                          <image>
+                                            <Image url="@../images/os_folder_vertical_document_16.png" />
+                                          </image>
+                                        </ImageView>
+                                        <Text font="$x2" strokeType="OUTSIDE" strokeWidth="0.0" text="：カルテ閲覧中" />
+                                      </children>
+                                    </HBox>
+                                  </children>
+                                  <padding>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                  </padding>
+                                </VBox>
+                              </children>
+                              <padding>
+                                <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                              </padding>
+                            </HBox>
+                          </children>
+                        </AnchorPane>
+                      </children>
+                    </AnchorPane>
+                  </content>
+                </Tab>
+                <Tab fx:id="patientSearchTab" text="患者検索">
+                  <content>
+                    <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                      <children>
+                        <SplitPane dividerPositions="" focusTraversable="true" orientation="VERTICAL" prefHeight="606.0" prefWidth="1198.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="45.0">
+                          <items>
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="609.0" prefWidth="1196.0">
+                              <children>
+                                <TableView id="patientSearchView" fx:id="PatientSearchView" focusTraversable="false" prefHeight="322.0" prefWidth="1196.0" tableMenuButtonVisible="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                  <columns>
+                                    <TableColumn prefWidth="75.0" text="患者ID" fx:id="clientId1" />
+                                    <TableColumn maxWidth="5000.0" minWidth="10.0" prefWidth="190.0" text="氏名" fx:id="name1" />
+                                    <TableColumn maxWidth="5000.0" minWidth="10.0" prefWidth="190.0" text="カナ" fx:id="kana1" />
+                                    <TableColumn prefWidth="75.0" text="性別" fx:id="sex1" />
+                                    <TableColumn maxWidth="5000.0" minWidth="10.0" prefWidth="124.0" text="生年月日" fx:id="birthDay1" />
+                                    <TableColumn prefWidth="75.0" text="受信日" fx:id="receiveDay1" />
+                                    <TableColumn prefWidth="75.0" text="状態" fx:id="status1" />
+                                  </columns>
+                                </TableView>
+                              </children>
+                            </AnchorPane>
+                          </items>
+                        </SplitPane>
+                        <AnchorPane layoutX="14.0" layoutY="1.0" prefHeight="32.0" prefWidth="1170.0">
+                          <children>
+                            <BorderPane layoutY="0.0" prefHeight="40.0" prefWidth="1200.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                              <center>
+                                <HBox alignment="CENTER_LEFT" prefHeight="32.0" prefWidth="1170.0">
+                                  <children>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="デフォルトソート：" />
+                                    <ChoiceBox focusTraversable="false" prefHeight="24.0" prefWidth="73.0">
+                                      <items>
+                                        <FXCollections fx:factory="observableArrayList">
+                                          <String fx:value="アイテム1" />
+                                          <String fx:value="アイテム2" />
+                                          <String fx:value="アイテム3" />
+                                        </FXCollections>
+                                      </items>
+                                    </ChoiceBox>
+                                    <Region prefHeight="20.0" prefWidth="20.0" />
+                                    <HBox alignment="CENTER_LEFT" prefHeight="75.0" prefWidth="646.0">
+                                      <children>
+                                        <CheckBox focusTraversable="false" mnemonicParsing="false" prefWidth="83.0" text="自動IME" wrapText="false">
+                                          <font>
+                                            <Font size="12.0" fx:id="x7" />
+                                          </font>
+                                        </CheckBox>
+                                        <Region prefHeight="20.0" prefWidth="20.0" />
+                                        <TextField prefHeight="24.0" prefWidth="147.0">
+                                          <effect>
+                                            <DropShadow>
+                                              <color>
+                                                <Color blue="0.600" green="0.384" red="0.000" fx:id="x3" />
+                                              </color>
+                                            </DropShadow>
+                                          </effect>
+                                        </TextField>
+                                        <Region prefHeight="20.0" prefWidth="20.0" />
+                                        <Button focusTraversable="false" mnemonicParsing="false" prefHeight="24.0" text="仮保存カルテ" />
+                                      </children>
+                                    </HBox>
+                                  </children>
+                                  <padding>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                  </padding>
+                                </HBox>
+                              </center>
+                            </BorderPane>
+                          </children>
+                        </AnchorPane>
+                      </children>
+                    </AnchorPane>
+                  </content>
+                </Tab>
+                <Tab fx:id="patientFutureTab" text="予定患者">
+                  <content>
+                    <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                      <children>
+                        <SplitPane dividerPositions="" focusTraversable="true" orientation="VERTICAL" prefHeight="605.0" prefWidth="1198.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="46.0">
+                          <items>
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="234.0" prefWidth="1196.0">
+                              <children>
+                                <TableView fx:id="PatientFutureView" focusTraversable="false" prefHeight="299.0" prefWidth="1196.0" tableMenuButtonVisible="true" visible="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                  <columns>
+                                    <TableColumn maxWidth="5000.0" minWidth="10.0" prefWidth="65.0" text="患者ID" fx:id="clientId2" />
+                                    <TableColumn maxWidth="5000.0" minWidth="10.0" prefWidth="150.0" text="氏名" fx:id="name2" />
+                                    <TableColumn maxWidth="5000.0" minWidth="10.0" prefWidth="150.0" text="カナ" fx:id="kana2" />
+                                    <TableColumn maxWidth="5000.0" minWidth="10.0" prefWidth="60.0" text="性別" fx:id="sex2" />
+                                    <TableColumn prefWidth="75.0" text="保険" fx:id="insurance2" />
+                                    <TableColumn maxWidth="5000.0" minWidth="10.0" prefWidth="124.0" text="生年月日" fx:id="birthDay2" />
+                                    <TableColumn prefWidth="75.0" text="担当医" fx:id="physicianInCharge2" />
+                                    <TableColumn prefWidth="75.0" text="診療科" fx:id="clinicalDepartments2" />
+                                    <TableColumn prefWidth="75.0" text="カルテ" fx:id="karte2" />
+                                  </columns>
+                                </TableView>
+                              </children>
+                            </AnchorPane>
+                          </items>
+                        </SplitPane>
+                        <AnchorPane layoutX="2.0" layoutY="0.0" minHeight="0.0" minWidth="0.0" prefHeight="37.0" prefWidth="723.0">
+                          <children>
+                            <BorderPane prefHeight="321.0" prefWidth="1196.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                              <center>
+                                <HBox alignment="CENTER_LEFT" prefHeight="51.0" prefWidth="691.0">
+                                  <children>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="予定日：" />
+                                    <Region prefHeight="20.0" prefWidth="20.0" />
+                                    <TextField fx:id="dateField" prefHeight="20.0" prefWidth="235.0">
+                                      <effect>
+                                        <DropShadow color="$x3" />
+                                      </effect>
+                                    </TextField>
+                                    <Region prefHeight="20.0" prefWidth="20.0" />
+                                    <Text font="$x7" strokeType="OUTSIDE" strokeWidth="0.0" text="0件" />
+                                    <Region prefHeight="20.0" prefWidth="20.0" />
+                                    <Button fx:id="updatePatientFutureButton" focusTraversable="false" mnemonicParsing="false" onAction="#updatePatientFuture" prefHeight="24.0" text="更　新" />
+                                    <Region prefHeight="20.0" prefWidth="20.0" />
+                                    <Button focusTraversable="false" mnemonicParsing="false" prefHeight="24.0" text="処方適用" />
+                                    <Region prefHeight="20.0" prefWidth="20.0" />
+                                    <CheckBox focusTraversable="false" font="$x7" mnemonicParsing="false" prefWidth="108.0" text="CLAIM送信" wrapText="false" />
+                                  </children>
+                                  <padding>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" fx:id="x4" />
+                                  </padding>
+                                </HBox>
+                              </center>
+                            </BorderPane>
+                          </children>
+                        </AnchorPane>
+                      </children>
+                    </AnchorPane>
+                  </content>
+                </Tab>
+                <Tab fx:id="labRecieverTab" text="ラボレシーバ">
+                  <content>
+                    <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                      <children>
+                        <SplitPane dividerPositions="" focusTraversable="true" orientation="VERTICAL" prefHeight="605.0" prefWidth="1198.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="46.0">
+                          <items>
+                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                              <children>
+                                <TableView fx:id="LabRecieverView" focusTraversable="false" prefHeight="322.0" prefWidth="1196.0" tableMenuButtonVisible="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                  <columns>
+                                    <TableColumn maxWidth="5000.0" minWidth="10.0" prefWidth="65.0" text="ラボ" fx:id="lab3" />
+                                    <TableColumn maxWidth="5000.0" minWidth="10.0" prefWidth="150.0" text="患者ID" fx:id="clientId3" />
+                                    <TableColumn maxWidth="5000.0" minWidth="10.0" prefWidth="150.0" text="カナ" fx:id="kana3" />
+                                    <TableColumn maxWidth="5000.0" minWidth="10.0" prefWidth="60.0" text="カルテ・カナ" fx:id="karteKana3" />
+                                    <TableColumn prefWidth="75.0" text="性別" fx:id="sex3" />
+                                    <TableColumn maxWidth="5000.0" minWidth="10.0" prefWidth="124.0" text="カルテ・性別" fx:id="karteSex3" />
+                                    <TableColumn prefWidth="75.0" text="検体採取日" fx:id="sampleGetDay3" />
+                                    <TableColumn prefWidth="75.0" text="登録" fx:id="register3" />
+                                    <TableColumn prefWidth="75.0" text="状態" fx:id="status3" />
+                                  </columns>
+                                </TableView>
+                              </children>
+                            </AnchorPane>
+                          </items>
+                        </SplitPane>
+                        <AnchorPane layoutX="6.0" layoutY="2.0" prefHeight="44.0" prefWidth="1198.0">
+                          <children>
+                            <BorderPane layoutY="0.0" prefHeight="40.0" prefWidth="850.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0">
+                              <top>
+                                <HBox alignment="CENTER_LEFT" minHeight="30.0" padding="$x4" prefHeight="30.0" prefWidth="1188.0">
+                                  <children>
+                                    <Button fx:id="fileChooseButton" focusTraversable="false" mnemonicParsing="false" onAction="#fileChoose" prefHeight="24.0" prefWidth="149.0" text="検査結果ファイル選択" />
+                                    <Region prefHeight="20.0" prefWidth="20.0" />
+                                    <Label font="$x11" prefWidth="26.0" text="→" />
+                                    <Region prefHeight="20.0" prefWidth="20.0" />
+                                    <Button fx:id="registerButton" focusTraversable="false" mnemonicParsing="false" onAction="#registerInspectionResult" prefHeight="24.0" text="登　録" />
+                                    <Region prefHeight="20.0" prefWidth="20.0" />
+                                    <Button id="ｃｓｖFileClear" fx:id="ileClearButton" focusTraversable="false" mnemonicParsing="false" onAction="#fileClear" prefHeight="24.0" text="クリア" />
+                                  </children>
+                                </HBox>
+                              </top>
+                            </BorderPane>
+                            <Label id="ｃｓｖFile" fx:id="choiceFile" layoutX="109.0" layoutY="30.0" prefWidth="494.0" text="未選択" />
+                            <Label layoutX="31.0" layoutY="30.0" text="選択ファイル：" />
+                          </children>
+                        </AnchorPane>
+                      </children>
+                    </AnchorPane>
+                  </content>
+                </Tab>
+              </tabs>
+            </TabPane>
+          </children>
+        </AnchorPane>
+      </items>
+    </SplitPane>
+  </children>
+  <stylesheets>
+    <URL value="@../styles/MainWindow.css" />
+  </stylesheets>
+</AnchorPane>
