@@ -20,7 +20,7 @@
     </ImageView>
     <ImageView fitHeight="121.5" fitWidth="162.0" layoutX="28.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
       <image>
-        <Image url="@../images/spl_de01.png" />
+        <Image url="@../images/karte-splash.png" />
       </image>
     </ImageView>
     <Text fx:id="companyName" layoutX="216.0" layoutY="420.0" smooth="false" strikethrough="false" strokeType="OUTSIDE" strokeWidth="0.0" text="company name" textAlignment="RIGHT" underline="false" />

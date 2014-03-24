@@ -75,7 +75,7 @@ public final class ChartMediator extends MenuSupport implements UndoableEditList
     
     public enum CompState{NONE, SOA, SOA_TEXT, SCHEMA, P, P_TEXT, STAMP};
     
-    private static final int[] FONT_SIZE = {10, 12, 13, 16, 18, 24, 36};
+    private static final int[] FONT_SIZE = {8, 10, 12, 18, 24, 36, 48};
 
     private static final String PERMANENT_FOCUS_OWNER = "permanentFocusOwner";
 
@@ -234,6 +234,9 @@ public final class ChartMediator extends MenuSupport implements UndoableEditList
                 selectedMenu.addSeparator();
                 // StampBox の全ツリーを取得する
                 List<StampTree> trees = getStampBox().getAllTrees();
+                if(trees == null){
+                    return;
+                }
                 // ツリーをイテレートする
                 for (StampTree tree : trees) {
 
@@ -739,9 +742,6 @@ public final class ChartMediator extends MenuSupport implements UndoableEditList
                         ActionEvent.ACTION_PERFORMED,
                         null));
             }
-            if (curSize == 6) {
-                enabledAction("fontLarger", false);
-            }
         }
     }
 
@@ -757,9 +757,6 @@ public final class ChartMediator extends MenuSupport implements UndoableEditList
                 a.actionPerformed(new ActionEvent(focusOwner,
                         ActionEvent.ACTION_PERFORMED,
                         null));
-            }
-            if (curSize == 0) {
-                enabledAction("fontSmaller", false);
             }
         }
     }

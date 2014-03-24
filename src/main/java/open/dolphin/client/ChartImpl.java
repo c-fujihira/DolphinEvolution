@@ -67,6 +67,12 @@ import open.dolphin.helper.WindowSupport;
 import open.dolphin.impl.genesys.GenesysLinkDocument;
 import open.dolphin.impl.img.DefaultBrowserEx;
 import open.dolphin.infomodel.*;
+import static open.dolphin.infomodel.IInfoModel.INSURANCE_SELF;
+import static open.dolphin.infomodel.IInfoModel.INSURANCE_SELF_CODE;
+import static open.dolphin.infomodel.IInfoModel.INSURANCE_SYS;
+import static open.dolphin.infomodel.IInfoModel.PARENT_OLD_EDITION;
+import static open.dolphin.infomodel.IInfoModel.PURPOSE_RECORD;
+import static open.dolphin.infomodel.IInfoModel.STATUS_NONE;
 import open.dolphin.plugin.PluginLister;
 import open.dolphin.plugin.PluginLoader;
 import open.dolphin.project.Project;
@@ -320,6 +326,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
      */
     @Override
     public void setChartState(int chartState) {
+        this.chartState = chartState;
     }
 
     /**
@@ -644,6 +651,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
         appMenu.build(myMenuBar);
         mediator.registerActions(appMenu.getActionMap());
         myToolPanel = appMenu.getToolPanelProduct();
+        myToolPanel.add(myMenuBar);
         myToolPanel.add(inspector.getBasicInfoInspector().getPanel(), 0);
         
         // adminとそれ以外

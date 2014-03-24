@@ -2763,4 +2763,11 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel, NC
             currentState.controlMenu();
         }
     }
+
+    /**
+     * 修正履歴の表示モードにする。
+     */
+    public void showModified() {
+        karteDocumentViewer.showModified();
+    }
 }

@@ -1103,7 +1103,7 @@ public class WindowsMenuFactory extends AbstractMenuFactory {
             undoBtn.setAction(action);
             
             // configure the Action with the accelerator (aka: short cut)
-            action.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control U"));
+            action.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control Z"));
             // manually register the accelerator in the button's component input map
             undoBtn.getActionMap().put("myAction", action);
             undoBtn.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
@@ -1130,7 +1130,7 @@ public class WindowsMenuFactory extends AbstractMenuFactory {
             redoBtn.setAction(action);
             
             // configure the Action with the accelerator (aka: short cut)
-            action.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control R"));
+            action.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control Y"));
             // manually register the accelerator in the button's component input map
             redoBtn.getActionMap().put("myAction", action);
             redoBtn.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
@@ -1231,6 +1231,7 @@ public class WindowsMenuFactory extends AbstractMenuFactory {
         
         // Karte
         JMenu karte = new JMenu();
+        karte.setIcon(new ImageIcon(ClientContext.getClientContextStub().getImageResource("order-149.png")));
         karte.setName("karteMenu");
 
         //-------------------
@@ -1301,58 +1302,58 @@ public class WindowsMenuFactory extends AbstractMenuFactory {
         actionMap.get("showModified").putValue("menuItem",showModified);
         karte.add(showModified);
         
-        karte.add(new JSeparator());
+//        karte.add(new JSeparator());
+//        
+//        // 環境設定 
+//        JMenuItem setKarteEnviroment = new JMenuItem();
+//        setKarteEnviroment.setName("setKarteEnviroment");
+//        setKarteEnviroment.setAction(actionMap.get("setKarteEnviroment"));
+//        setAccelerator(setKarteEnviroment, KeyEvent.VK_E);
+//        karte.add(setKarteEnviroment);
         
-        // 環境設定 
-        JMenuItem setKarteEnviroment = new JMenuItem();
-        setKarteEnviroment.setName("setKarteEnviroment");
-        setKarteEnviroment.setAction(actionMap.get("setKarteEnviroment"));
-        setAccelerator(setKarteEnviroment, KeyEvent.VK_E);
-        karte.add(setKarteEnviroment);
-        
-        //masuda^
-        // Look&Feel
-        JMenu lookAndFeel = new JMenu();
-        //lookAndFeel.setName("lookAndFeel");
-        lookAndFeel.setText("ルック & フィール");
-        karte.add(lookAndFeel);
-
-        JRadioButtonMenuItem nimbusLaf = new JRadioButtonMenuItem();
-        nimbusLaf.setName("nimbusLookAndFeel");
-        nimbusLaf.setAction(actionMap.get("nimbusLookAndFeel"));
-        lookAndFeel.add(nimbusLaf);
-
-        JRadioButtonMenuItem nativeLaf = new JRadioButtonMenuItem();
-        nativeLaf.setName("nativeLookAndFeel");
-        nativeLaf.setAction(actionMap.get("nativeLookAndFeel"));
-        lookAndFeel.add(nativeLaf);
-
-//        JRadioButtonMenuItem quaquaLaf = new JRadioButtonMenuItem();
-//        quaquaLaf.setName("quaquaLookAndFeel");
-//        quaquaLaf.setAction(actionMap.get("quaquaLookAndFeel"));
-//        lookAndFeel.add(quaquaLaf);
-
-        ButtonGroup lafbg = new ButtonGroup();
-        lafbg.add(nimbusLaf);
-        lafbg.add(nativeLaf);
-//        lafbg.add(quaquaLaf);
-
-        String systemLaf = UIManager.getSystemLookAndFeelClassName();
-//        String quaquaCls = "ch.randelshofer.quaqua.QuaquaLookAndFeel";
-//        String nimbusCls = "com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel";
-        String nimbusCls = "javax.swing.plaf.metal.MetalLookAndFeel";
-       
-        //String userLaf = Project.getString("lookAndFeel", nimbusCls);
-        String userLaf = Project.getString("lookAndFeel");
-
-        if (userLaf!=null && userLaf.equals(systemLaf)) {
-            nativeLaf.setSelected(true);
-//        } else if (userLaf.equals(quaquaCls)) {
-//            quaquaLaf.setSelected(true);
-        } else {
-            nimbusLaf.setSelected(true);
-        }
-//masuda$
+//        //masuda^
+//        // Look&Feel
+//        JMenu lookAndFeel = new JMenu();
+//        //lookAndFeel.setName("lookAndFeel");
+//        lookAndFeel.setText("ルック & フィール");
+//        karte.add(lookAndFeel);
+//
+//        JRadioButtonMenuItem nimbusLaf = new JRadioButtonMenuItem();
+//        nimbusLaf.setName("nimbusLookAndFeel");
+//        nimbusLaf.setAction(actionMap.get("nimbusLookAndFeel"));
+//        lookAndFeel.add(nimbusLaf);
+//
+//        JRadioButtonMenuItem nativeLaf = new JRadioButtonMenuItem();
+//        nativeLaf.setName("nativeLookAndFeel");
+//        nativeLaf.setAction(actionMap.get("nativeLookAndFeel"));
+//        lookAndFeel.add(nativeLaf);
+//
+////        JRadioButtonMenuItem quaquaLaf = new JRadioButtonMenuItem();
+////        quaquaLaf.setName("quaquaLookAndFeel");
+////        quaquaLaf.setAction(actionMap.get("quaquaLookAndFeel"));
+////        lookAndFeel.add(quaquaLaf);
+//
+//        ButtonGroup lafbg = new ButtonGroup();
+//        lafbg.add(nimbusLaf);
+//        lafbg.add(nativeLaf);
+////        lafbg.add(quaquaLaf);
+//
+//        String systemLaf = UIManager.getSystemLookAndFeelClassName();
+////        String quaquaCls = "ch.randelshofer.quaqua.QuaquaLookAndFeel";
+////        String nimbusCls = "com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel";
+//        String nimbusCls = "javax.swing.plaf.metal.MetalLookAndFeel";
+//       
+//        //String userLaf = Project.getString("lookAndFeel", nimbusCls);
+//        String userLaf = Project.getString("lookAndFeel");
+//
+//        if (userLaf!=null && userLaf.equals(systemLaf)) {
+//            nativeLaf.setSelected(true);
+////        } else if (userLaf.equals(quaquaCls)) {
+////            quaquaLaf.setSelected(true);
+//        } else {
+//            nimbusLaf.setSelected(true);
+//        }
+////masuda$
 
         /******************************************************/
         
@@ -1387,6 +1388,7 @@ public class WindowsMenuFactory extends AbstractMenuFactory {
         
         // Text
         JMenu text = new JMenu();
+        text.setIcon(new ImageIcon(ClientContext.getClientContextStub().getImageResource("pen.png")));
         text.setName("textMenu");
         if (chart != null) {
             text.addMenuListener(chart);
@@ -1401,20 +1403,20 @@ public class WindowsMenuFactory extends AbstractMenuFactory {
         JMenuItem fontLarger = new JMenuItem();
         fontLarger.setName("fontLarger");
         fontLarger.setAction(actionMap.get("fontLarger"));
-        //setAccelerator(fontLarger, KeyEvent.VK_PLUS, true);
+        setAccelerator(fontLarger, KeyEvent.VK_COMMA);
         size.add(fontLarger);
         
         JMenuItem fontSmaller = new JMenuItem();
         fontSmaller.setName("fontSmaller");
         fontSmaller.setAction(actionMap.get("fontSmaller"));
-        //setAccelerator(fontSmaller, KeyEvent.VK_MINUS);
+        setAccelerator(fontSmaller, KeyEvent.VK_PERIOD);
         size.add(fontSmaller);
         
         JMenuItem fontStandard = new JMenuItem();
         fontStandard.setName("fontStandard");
         fontStandard.setAction(actionMap.get("fontStandard"));
-        //setAccelerator(fontStandard, KeyEvent.VK_NUMBER_SIGN, true);
-        size.add(fontStandard);  
+        setAccelerator(fontStandard, KeyEvent.VK_SLASH);
+        size.add(fontStandard);
         
         //// style ////
         JMenu style = new JMenu();
@@ -1607,14 +1609,19 @@ public class WindowsMenuFactory extends AbstractMenuFactory {
         
         /******************************************************/
         
-        menuBar.add(file,   0);
-        menuBar.add(edit,   1);
-        menuBar.add(karte,  2);
-        menuBar.add(insert, 3);
-        menuBar.add(text,   4);
-        menuBar.add(tool,   5);
-        // 6 = Window
-        menuBar.add(help,   7);
+//        menuBar.add(file,   0);
+//        menuBar.add(edit,   1);
+//        menuBar.add(karte,  2);
+//        menuBar.add(insert, 3);
+//        menuBar.add(text,   4);
+//        menuBar.add(tool,   5);
+//        // 6 = Window
+//        menuBar.add(help,   7);
+
+        // Window削除
+        menuBar.remove(0);
+        menuBar.add(karte,  0);
+        menuBar.add(text,   1);
         
         /******************************************************/
         file.setText(resource.getString("fileMenu.text"));

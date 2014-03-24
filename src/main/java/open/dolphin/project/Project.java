@@ -322,6 +322,10 @@ public class Project {
     public static String getBaseURI() {
         return stub.getBaseURI();
     }
+    
+    public static String getServerURI() {
+        return stub.getServerURI();
+    }
 
     //- 有効なアドレスかどうか
     private static boolean claimAddressIsValid() {

@@ -75,7 +75,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
     public Evolution getApp() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
     @Override
     public void setBaseTabPane(MyJTabbedPane tabpane) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -105,74 +105,79 @@ public class EditorFrame extends AbstractMainTool implements Chart {
     public void setChartEventHandler(ChartEventHandler scl) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
     // このクラスの２つのモード（状態）でメニューの制御に使用する
-    public enum EditorMode {BROWSER, EDITOR};
-    
+    public enum EditorMode {
+
+        BROWSER, EDITOR
+    };
+
     // 全インスタンスを保持するリスト
     private static List<Chart> allEditorFrames = new CopyOnWriteArrayList<Chart>();
 
     private static final String PROP_FRMAE_BOUNDS = "editorFrame.bounds";
-    
+
     // このフレームの実のコンテキストチャート
     private Chart realChart;
-    
+
     // このフレームに表示する KarteView オブジェクト
     private KarteViewer view;
-    
+
     // このフレームに表示する KarteEditor オブジェクト
     private KarteEditor editor;
-    
+
     // ToolBar パネル
     private JPanel myToolPanel;
-    
+
     // スクローラコンポーネント
     private JScrollPane scroller;
-    
+
     // Status パネル
     private IStatusPanel statusPanel;
-    
+
     // このフレームの動作モード
     private EditorMode mode;
-    
+
     // WindowSupport オブジェクト
     private WindowSupport windowSupport;
-    
+
     // Mediator オブジェクト
     private ChartMediator mediator;
-    
+
     // Block GlassPane 
     private BlockGlass blockGlass;
-    
+
     // 親チャートの位置 
     private Point parentLoc;
-    
+
     private JPanel content;
-    
-    
+
     /**
      * 全インスタンスを保持するリストを返す。
+     *
      * @return 全インスタンスを保持するリスト
      */
     public static List<Chart> getAllEditorFrames() {
         return allEditorFrames;
     }
-    
+
     private static PageFormat pageFormat = null;
+
     static {
         PrinterJob printJob = PrinterJob.getPrinterJob();
         pageFormat = printJob.defaultPage();
     }
-    
+
     /**
      * EditorFrame オブジェクトを生成する。
      */
     public EditorFrame() {
         allEditorFrames.add(EditorFrame.this);
     }
-    
+
     /**
      * IChart コンテキストを設定する。
+     *
      * @param chartCtx IChart コンテキスト
      */
     public void setChart(Chart chartCtx) {
@@ -180,162 +185,179 @@ public class EditorFrame extends AbstractMainTool implements Chart {
         parentLoc = realChart.getFrame().getLocation();
         super.setContext(chartCtx.getContext());
     }
-    
+
     public Chart getChart() {
         return realChart;
     }
-    
+
     /**
      * 表示する KarteViewer オブジェクトを設定する。
+     *
      * @param view 表示する KarteView
      */
     public void setKarteViewer(KarteViewer view) {
         this.view = view;
     }
-    
+
     /**
      * 編集する KarteEditor オブジェクトを設定する。
+     *
      * @param editor 編集する KarteEditor
      */
     public void setKarteEditor(KarteEditor editor) {
         this.editor = editor;
     }
-    
+
     /**
      * 患者モデルを返す。
+     *
      * @return 患者モデル
      */
     @Override
     public PatientModel getPatient() {
         return realChart.getPatient();
     }
-    
+
     /**
      * 対象としている KarteBean オブジェクトを返す。
+     *
      * @return KarteBean オブジェクト
      */
     @Override
     public KarteBean getKarte() {
         return realChart.getKarte();
     }
-    
+
     /**
      * 対象となる KarteBean オブジェクトを設定する。
+     *
      * @param karte KarteBean オブジェクト
      */
     @Override
     public void setKarte(KarteBean karte) {
         realChart.setKarte(karte);
     }
-    
+
     /**
      * 来院情報を返す。
+     *
      * @return 来院情報
      */
     @Override
     public PatientVisitModel getPatientVisit() {
         return realChart.getPatientVisit();
     }
-    
+
     /**
      * 来院情報を設定する。
+     *
      * @param model 来院情報モデル
      */
     @Override
     public void setPatientVisit(PatientVisitModel model) {
         realChart.setPatientVisit(model);
     }
-    
+
     /**
      * Chart state を返す。
+     *
      * @return Chart の state 属性
      */
     @Override
     public int getChartState() {
         return realChart.getChartState();
     }
-    
+
     /**
      * Chart state を設定する。
+     *
      * @param state Chart の state
      */
     @Override
     public void setChartState(int state) {
         realChart.setChartState(state);
     }
-    
+
     /**
      * Ppane にDropされた病名スタンプをリストに保存する。
+     *
      * @param dropped Ppane にDropされた病名スタンプ
      */
     @Override
     public void addDroppedDiagnosis(ModuleInfoBean dropped) {
         realChart.addDroppedDiagnosis(dropped);
     }
-    
+
     /**
      * Ppane にDropされた病名スタンプをリストを返す。
+     *
      * @return 病名スタンプリスト
      */
     @Override
     public List<ModuleInfoBean> getDroppedDiagnosisList() {
         return realChart.getDroppedDiagnosisList();
     }
-    
+
     /**
      * ReadOnly かどうかを返す。
+     *
      * @return readOnly の時 true
      */
     @Override
     public boolean isReadOnly() {
         return realChart.isReadOnly();
     }
-    
+
     /**
      * ReadOnly 属性を設定する。
+     *
      * @param readOnly の時 true
      */
     @Override
     public void setReadOnly(boolean b) {
         realChart.setReadOnly(b);
     }
-    
+
     /**
      * このオブジェクトの JFrame を返す。
+     *
      * @return JFrame オブジェクト
      */
     @Override
     public JFrame getFrame() {
         return windowSupport.getFrame();
     }
-    
+
     /**
      * StatusPanel を返す。
+     *
      * @return StatusPanel
      */
     @Override
     public IStatusPanel getStatusPanel() {
         return this.statusPanel;
     }
-    
+
     /**
      * StatusPanel を設定する。
+     *
      * @param statusPanel StatusPanel オブジェクト
      */
     @Override
     public void setStatusPanel(IStatusPanel statusPanel) {
         this.statusPanel = statusPanel;
     }
-    
+
     /**
      * ChartMediator を返す。
+     *
      * @return ChartMediator
      */
     @Override
     public ChartMediator getChartMediator() {
         return mediator;
     }
-    
+
     /**
      * Menu アクションを制御する。
      */
@@ -348,34 +370,37 @@ public class EditorFrame extends AbstractMainTool implements Chart {
             Toolkit.getDefaultToolkit().beep();
         }
     }
-    
+
     /**
      * DocumentHistory を返す。
+     *
      * @return DocumentHistory
      */
     @Override
     public DocumentHistory getDocumentHistory() {
         return realChart.getDocumentHistory();
     }
-    
+
     /**
      * 引数のタブ番号にあるドキュメントを表示する。
+     *
      * @param index 表示するドキュメントのタブ番号
      */
     @Override
     public void showDocument(int index) {
         realChart.showDocument(index);
     }
-    
+
     /**
      * dirty かどうかを返す。
+     *
      * @return dirty の時 true
      */
     @Override
     public boolean isDirty() {
         return (mode == EditorMode.EDITOR) ? editor.isDirty() : false;
     }
-    
+
     @Override
     public PVTHealthInsuranceModel[] getHealthInsurances() {
         return realChart.getHealthInsurances();
@@ -385,7 +410,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
     public PVTHealthInsuranceModel getHealthInsuranceToApply(String uuid) {
         return realChart.getHealthInsuranceToApply(uuid);
     }
-    
+
     /**
      * プログラムを開始する。
      */
@@ -393,14 +418,14 @@ public class EditorFrame extends AbstractMainTool implements Chart {
     public void start() {
         initialize();
     }
-    
+
     /**
      * 初期化する。
      */
     private void initialize() {
 
         ResourceBundle resource = ClientContext.getBundle(this.getClass());
-        
+
         // Frame を生成する
         // Frame のタイトルを
         // 患者氏名(カナ):性別:患者ID に設定する
@@ -415,26 +440,30 @@ public class EditorFrame extends AbstractMainTool implements Chart {
         sb.append(" : ");
         sb.append(getPatient().getPatientId());
         sb.append(karteStr);
-        
+
         windowSupport = WindowSupport.create(sb.toString());
-        
+
         JMenuBar myMenuBar = windowSupport.getMenuBar();
-        
+
         JFrame frame = windowSupport.getFrame();
         frame.setName("editorFrame");
         content = new JPanel(new BorderLayout());
-        
+
         // Mediator が変更になる
         mediator = new ChartMediator(this);
-        
+
         //  MenuBar を生成する
         AbstractMenuFactory appMenu = AbstractMenuFactory.getFactory();
         appMenu.setMenuSupports(realChart.getContext().getMenuSupport(), mediator);
         appMenu.build(myMenuBar);
         mediator.registerActions(appMenu.getActionMap());
-        myToolPanel = appMenu.getToolPanelProduct();
-        content.add(myToolPanel, BorderLayout.NORTH);
+        JPanel panel = new JPanel();
+        panel.setLayout(new FlowLayout(FlowLayout.LEFT));        
+        panel.add(appMenu.getToolPanelProduct());
+        panel.add(appMenu.getMenuBarProduct());
         
+        content.add(panel, BorderLayout.NORTH);
+
 //minagawa^ lsctest        
         // adminとそれ以外
         Action addUserAction = mediator.getAction(GUIConst.ACTION_ADD_USER);
@@ -448,11 +477,11 @@ public class EditorFrame extends AbstractMainTool implements Chart {
         }
         addUserAction.setEnabled(admin);
 //minagawa$
-        
+
         // このクラス固有のToolBarを生成する
         JToolBar toolBar = appMenu.getToolBar();
         toolBar.addSeparator();
-        
+
         // テキストツールを生成する
         Action action = mediator.getActions().get(GUIConst.ACTION_INSERT_TEXT);
         final JToggleButton textBtn = new JToggleButton();
@@ -462,25 +491,27 @@ public class EditorFrame extends AbstractMainTool implements Chart {
 
             @Override
             public void itemStateChanged(ItemEvent ie) {
-                if (ie.getStateChange()==ItemEvent.SELECTED) {
+                if (ie.getStateChange() == ItemEvent.SELECTED) {
                     if (mediator.getActions().get(GUIConst.ACTION_INSERT_TEXT).isEnabled()) {
                         JPopupMenu menu = new JPopupMenu();
                         mediator.addTextMenu(menu);
-                        
+
                         menu.addPopupMenuListener(new PopupMenuListener() {
                             @Override
                             public void popupMenuWillBecomeVisible(PopupMenuEvent pme) {
                             }
+
                             @Override
                             public void popupMenuWillBecomeInvisible(PopupMenuEvent pme) {
                                 textBtn.setSelected(false);
                             }
+
                             @Override
                             public void popupMenuCanceled(PopupMenuEvent pme) {
                                 textBtn.setSelected(false);
                             }
                         });
-                        Component c = (Component)ie.getSource();
+                        Component c = (Component) ie.getSource();
                         menu.show(c, 0, c.getHeight());
                     }
                 }
@@ -488,9 +519,9 @@ public class EditorFrame extends AbstractMainTool implements Chart {
         });
         textBtn.setFocusable(false);
         textBtn.setBorderPainted(false);
-        textBtn.setMargin(new Insets(3,3,3,3));
+        textBtn.setMargin(new Insets(3, 3, 3, 3));
         toolBar.add(textBtn);
-        
+
         // シェーマツールを生成する
         action = mediator.getActions().get(GUIConst.ACTION_INSERT_SCHEMA);
         final JToggleButton schemaBtn = new JToggleButton();
@@ -500,7 +531,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
 
             @Override
             public void itemStateChanged(ItemEvent ie) {
-                if (ie.getStateChange()==ItemEvent.SELECTED) {
+                if (ie.getStateChange() == ItemEvent.SELECTED) {
                     if (mediator.getActions().get(GUIConst.ACTION_INSERT_SCHEMA).isEnabled()) {
                         getContext().showSchemaBox();
                     }
@@ -510,9 +541,9 @@ public class EditorFrame extends AbstractMainTool implements Chart {
         });
         schemaBtn.setFocusable(false);
         schemaBtn.setBorderPainted(false);
-        schemaBtn.setMargin(new Insets(3,3,3,3));
+        schemaBtn.setMargin(new Insets(3, 3, 3, 3));
         toolBar.add(schemaBtn);
-        
+
         // スタンプツールを生成する
         action = mediator.getActions().get(GUIConst.ACTION_INSERT_STAMP);
         final JToggleButton stampBtn = new JToggleButton();
@@ -522,26 +553,28 @@ public class EditorFrame extends AbstractMainTool implements Chart {
 
             @Override
             public void itemStateChanged(ItemEvent ie) {
-                if (ie.getStateChange()==ItemEvent.SELECTED) {
+                if (ie.getStateChange() == ItemEvent.SELECTED) {
                     if (mediator.getActions().get(GUIConst.ACTION_INSERT_STAMP).isEnabled()) {
                         JPopupMenu menu = new JPopupMenu();
                         mediator.addStampMenu(menu);
-                        
+
                         menu.addPopupMenuListener(new PopupMenuListener() {
                             @Override
                             public void popupMenuWillBecomeVisible(PopupMenuEvent pme) {
                             }
+
                             @Override
                             public void popupMenuWillBecomeInvisible(PopupMenuEvent pme) {
                                 stampBtn.setSelected(false);
                             }
+
                             @Override
                             public void popupMenuCanceled(PopupMenuEvent pme) {
                                 stampBtn.setSelected(false);
                             }
                         });
-                        
-                        Component c = (Component)ie.getSource();
+
+                        Component c = (Component) ie.getSource();
                         menu.show(c, 0, c.getHeight());
                     }
                 }
@@ -549,9 +582,9 @@ public class EditorFrame extends AbstractMainTool implements Chart {
         });
         stampBtn.setFocusable(false);
         stampBtn.setBorderPainted(false);
-        stampBtn.setMargin(new Insets(3,3,3,3));
+        stampBtn.setMargin(new Insets(3, 3, 3, 3));
         toolBar.add(stampBtn);
-        
+
         // 保険選択ツールを生成する
         // 保険選択ツールを生成する
         action = mediator.getActions().get(GUIConst.ACTION_SELECT_INSURANCE);
@@ -562,7 +595,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
 
             @Override
             public void itemStateChanged(ItemEvent ie) {
-                if (ie.getStateChange()==ItemEvent.SELECTED) {
+                if (ie.getStateChange() == ItemEvent.SELECTED) {
                     if (mediator.getActions().get(GUIConst.ACTION_SELECT_INSURANCE).isEnabled()) {
                         JPopupMenu menu = new JPopupMenu();
                         PVTHealthInsuranceModel[] insurances = getHealthInsurances();
@@ -575,22 +608,24 @@ public class EditorFrame extends AbstractMainTool implements Chart {
                             mi.addActionListener(ra);
                             menu.add(mi);
                         }
-                        
+
                         menu.addPopupMenuListener(new PopupMenuListener() {
                             @Override
                             public void popupMenuWillBecomeVisible(PopupMenuEvent pme) {
                             }
+
                             @Override
                             public void popupMenuWillBecomeInvisible(PopupMenuEvent pme) {
                                 insBtn.setSelected(false);
                             }
+
                             @Override
                             public void popupMenuCanceled(PopupMenuEvent pme) {
                                 insBtn.setSelected(false);
                             }
                         });
-                        
-                        Component c = (Component)ie.getSource();
+
+                        Component c = (Component) ie.getSource();
                         menu.show(c, 0, c.getHeight());
                     }
                 }
@@ -598,29 +633,29 @@ public class EditorFrame extends AbstractMainTool implements Chart {
         });
         insBtn.setFocusable(false);
         insBtn.setBorderPainted(false);
-        insBtn.setMargin(new Insets(3,3,3,3));
+        insBtn.setMargin(new Insets(3, 3, 3, 3));
         toolBar.add(insBtn);
         
 //s.oh^ テキストの挿入 2013/08/12
-        if(Project.getString(GUIConst.ACTION_SOAPANE_INSERTTEXT_DIR, "").length() > 0) {
+        if (Project.getString(GUIConst.ACTION_SOAPANE_INSERTTEXT_DIR, "").length() > 0) {
             toolBar.addSeparator();
             JButton insertSOATextBtn = new JButton();
             insertSOATextBtn.setAction(mediator.getActions().get("insertSOAText"));
             insertSOATextBtn.setText(null);
             insertSOATextBtn.setToolTipText("所見欄にテキストを追加します。");
-            insertSOATextBtn.setMargin(new Insets(3,3,3,3));
+            insertSOATextBtn.setMargin(new Insets(3, 3, 3, 3));
             insertSOATextBtn.setFocusable(false);
             insertSOATextBtn.setBorderPainted(true);
             toolBar.add(insertSOATextBtn);
         }
-        
-        if(Project.getString(GUIConst.ACTION_PPANE_INSERTTEXT_DIR, "").length() > 0) {
+
+        if (Project.getString(GUIConst.ACTION_PPANE_INSERTTEXT_DIR, "").length() > 0) {
             toolBar.addSeparator();
             JButton insertPTextBtn = new JButton();
             insertPTextBtn.setAction(mediator.getActions().get("insertPText"));
             insertPTextBtn.setText(null);
             insertPTextBtn.setToolTipText("所見欄にテキストを追加します。");
-            insertPTextBtn.setMargin(new Insets(3,3,3,3));
+            insertPTextBtn.setMargin(new Insets(3, 3, 3, 3));
             insertPTextBtn.setFocusable(false);
             insertPTextBtn.setBorderPainted(true);
             toolBar.add(insertPTextBtn);
@@ -631,7 +666,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
         setStatusPanel(new StatusPanel(false));
         getStatusPanel().setRightInfo(getPatient().getPatientId());
         getStatusPanel().setLeftInfo(getPatient().getFullName());
-        
+
         if (view != null) {
             mode = EditorMode.BROWSER;
             view.setContext(EditorFrame.this); // context
@@ -680,7 +715,6 @@ public class EditorFrame extends AbstractMainTool implements Chart {
 //        chgBtn.setText(null);
 //        chgBtn.setToolTipText(resource.getString("chgBtn.toolTipText"));
 //        chgBtn.setMargin(new Insets(5,5,5,5));
-
         //insBtn.setIcon(ClientContext.getImageIcon(resource.getString("insBtn.icon")));
         insBtn.setIcon(ClientContext.getImageIconArias("icon_health_insurance"));
 //minagawa$         
@@ -696,7 +730,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
                 }
             }
         });
-        
+
         blockGlass = new BlockGlass();
         frame.setGlassPane(blockGlass);
 
@@ -716,16 +750,16 @@ public class EditorFrame extends AbstractMainTool implements Chart {
             public void run() {
                 //scroller.getVerticalScrollBar().setUnitIncrement(16);
                 if (view != null) {
-                    view.getUI().scrollRectToVisible(new Rectangle(0,0,view.getUI().getWidth(), 50));
+                    view.getUI().scrollRectToVisible(new Rectangle(0, 0, view.getUI().getWidth(), 50));
                 } else if (editor != null) {
-                    editor.getUI().scrollRectToVisible(new Rectangle(0,0,editor.getUI().getWidth(), 50));
+                    editor.getUI().scrollRectToVisible(new Rectangle(0, 0, editor.getUI().getWidth(), 50));
                 }
             }
         };
         EventQueue.invokeLater(awt);
 
     }
-    
+
     /**
      * プログラムを終了する。
      */
@@ -737,35 +771,37 @@ public class EditorFrame extends AbstractMainTool implements Chart {
         getFrame().setVisible(false);
         getFrame().dispose();
 //s.oh^ カルテの画像連携
-        editor.setClosedFrame(true);
+        if(editor != null){
+            editor.setClosedFrame(true);
+        }
 //s.oh$
     }
-    
+
     /**
      * ウインドウの close box が押された時の処理を実行する。
      */
     public void processWindowClosing() {
         close();
     }
-    
+
     /**
      * ウインドウオープン時の処理を行う。
      */
     public void processWindowOpened() {
     }
-    
+
     /**
      * Focus ゲインを得た時の処理を行う。
      */
     public void processGainedFocus() {
-        
+
         switch (mode) {
             case BROWSER:
                 if (view != null) {
                     view.enter();
                 }
                 break;
-                
+
             case EDITOR:
                 if (editor != null) {
                     editor.enter();
@@ -773,10 +809,9 @@ public class EditorFrame extends AbstractMainTool implements Chart {
                 break;
         }
     }
-    
+
     /**
-     * コンテンツを KarteView から KarteEditor に切り替える。
-     * Viewerの状態からエディターの状態へ切り替える。
+     * コンテンツを KarteView から KarteEditor に切り替える。 Viewerの状態からエディターの状態へ切り替える。
      */
     private void replaceView() {
         if (editor != null) {
@@ -831,24 +866,24 @@ public class EditorFrame extends AbstractMainTool implements Chart {
 
     /**
      * 新規カルテを作成する。
-     */    
+     */
     public void newKarte() {
-        
+
         // 新規カルテ作成ダイアログを表示しパラメータを得る
         String docType = view.getModel().getDocInfoModel().getDocType();
-        
+
         final ChartImpl chart = (ChartImpl) realChart;
 
         String insuranceUid = chart.getPatientVisit().getInsuranceUid();
         String dept = chart.getPatientVisit().getDeptName();
         String deptCode = chart.getPatientVisit().getDeptCode();
-        
+
         NewKarteParams params;
-        
+
         if (Project.getBoolean(Project.KARTE_SHOW_CONFIRM_AT_NEW, true)) {
-            
-            params = chart.getNewKarteParams(docType,Chart.NewKarteOption.EDITOR_COPY_NEW, getFrame(), dept, deptCode, insuranceUid);
-            
+
+            params = chart.getNewKarteParams(docType, Chart.NewKarteOption.EDITOR_COPY_NEW, getFrame(), dept, deptCode, insuranceUid);
+
         } else {
             //
             // 手動でパラメータを設定する
@@ -857,10 +892,10 @@ public class EditorFrame extends AbstractMainTool implements Chart {
             params.setDocType(docType);
             params.setDepartmentName(dept);
             params.setDepartmentCode(deptCode);
-            
+
             PVTHealthInsuranceModel[] ins = chart.getHealthInsurances();
             params.setPVTHealthInsurance(ins[0]);
-            
+
             int cMode = Project.getInt(Project.KARTE_CREATE_MODE, 0);
             if (cMode == 0) {
                 params.setCreateMode(Chart.NewKarteMode.EMPTY_NEW);
@@ -870,33 +905,33 @@ public class EditorFrame extends AbstractMainTool implements Chart {
                 params.setCreateMode(Chart.NewKarteMode.ALL_COPY);
             }
         }
-        
+
         if (params == null) {
             return;
         }
-        
+
         // 編集用のモデルを得る
         DocumentModel editModel;
-        
+
         if (params.getCreateMode() == Chart.NewKarteMode.EMPTY_NEW) {
             editModel = getKarteModelToEdit(params);
         } else {
             editModel = getKarteModelToEdit(view.getModel(), params);
         }
-        
+
         final DocumentModel theModel = editModel;
-        
+
         Runnable r = new Runnable() {
-            
+
             @Override
             public void run() {
-                
+
                 editor = chart.createEditor();
                 editor.setModel(theModel);
                 editor.setEditable(true);
                 editor.setContext(EditorFrame.this);
                 editor.setMode(KarteEditor.DOUBLE_MODE);
-                
+
                 Runnable awt = new Runnable() {
                     @Override
                     public void run() {
@@ -905,27 +940,27 @@ public class EditorFrame extends AbstractMainTool implements Chart {
                         replaceView();
                     }
                 };
-                
+
                 EventQueue.invokeLater(awt);
             }
         };
-        
+
         Thread t = new Thread(r);
         t.setPriority(Thread.NORM_PRIORITY);
         t.start();
     }
-        
+
     /**
      * カルテを修正する。
      */
     public void modifyKarte() {
-        
+
         Runnable r = new Runnable() {
-            
+
             @Override
             public void run() {
-                
-                ChartImpl chart = (ChartImpl)realChart;
+
+                ChartImpl chart = (ChartImpl) realChart;
                 DocumentModel editModel = getKarteModelToEdit(view.getModel());
                 editor = chart.createEditor();
                 editor.setModel(editModel);
@@ -935,7 +970,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
                 String docType = editModel.getDocInfoModel().getDocType();
                 int mode = docType.equals(IInfoModel.DOCTYPE_KARTE) ? KarteEditor.DOUBLE_MODE : KarteEditor.SINGLE_MODE;
                 editor.setMode(mode);
-                
+
                 Runnable awt = new Runnable() {
                     @Override
                     public void run() {
@@ -944,33 +979,33 @@ public class EditorFrame extends AbstractMainTool implements Chart {
                         replaceView();
                     }
                 };
-                
+
                 EventQueue.invokeLater(awt);
             }
         };
-        
+
         Thread t = new Thread(r);
         t.setPriority(Thread.NORM_PRIORITY);
         t.start();
     }
-    
+
     private PageFormat getPageFormat() {
         return realChart.getContext().getPageFormat();
     }
-    
+
     /**
      * 印刷する。
      */
     public void print() {
-        
+
         switch (mode) {
-            
+
             case BROWSER:
                 if (view != null) {
                     view.printPanel2(getPageFormat());
                 }
                 break;
-                
+
             case EDITOR:
                 if (editor != null) {
                     editor.printPanel2(getPageFormat());
@@ -978,22 +1013,22 @@ public class EditorFrame extends AbstractMainTool implements Chart {
                 break;
         }
     }
-    
+
     /**
      * クローズする。
      */
     @Override
     public void close() {
-        
+
         if (mode == EditorMode.EDITOR) {
-            
+
             if (editor.isDirty()) {
                 ResourceBundle resource = ClientContext.getBundle(this.getClass());
                 String save = resource.getString("unsavedtask.saveText"); //"保存";
                 String discard = resource.getString("unsavedtask.discardText"); //"破棄";
                 String question = resource.getString("unsavedtask.question"); // 未保存のドキュメントがあります。保存しますか ?
                 String title = resource.getString("unsavedtask.title"); // 未保存処理
-                String cancelText =  (String) UIManager.get("OptionPane.cancelButtonText");
+                String cancelText = (String) UIManager.get("OptionPane.cancelButtonText");
                 int option = JOptionPane.showOptionDialog(
                         getFrame(),
                         question,
@@ -1003,34 +1038,34 @@ public class EditorFrame extends AbstractMainTool implements Chart {
                         null,
                         new String[]{save, discard, cancelText},
                         save
-                        );
+                );
                 Log.outputFuncLog(Log.LOG_LEVEL_0, Log.FUNCTIONLOG_KIND_OTHER, ClientContext.getFrameTitle(title), question);
-                
+
                 switch (option) {
-                    
+
                     case 0:
                         Log.outputOperLogDlg(realChart, Log.LOG_LEVEL_0, save);
                         editor.save();
                         break;
-                        
+
                     case 1:
                         Log.outputOperLogDlg(realChart, Log.LOG_LEVEL_0, discard);
                         // 破棄の場合、もし病名をDropしていればクリアする
-                        if (realChart.getDroppedDiagnosisList()!=null) {
+                        if (realChart.getDroppedDiagnosisList() != null) {
                             realChart.getDroppedDiagnosisList().clear();
                         }
                         stop();
                         break;
-                        
+
                     case 2:
                         Log.outputOperLogDlg(realChart, Log.LOG_LEVEL_0, cancelText);
                         break;
                 }
-                
+
             } else {
                 stop();
             }
-            
+
         } else {
             stop();
         }

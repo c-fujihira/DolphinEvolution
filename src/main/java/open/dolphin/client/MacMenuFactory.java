@@ -1031,7 +1031,7 @@ public class MacMenuFactory extends AbstractMenuFactory {
             undoBtn.setAction(action);
             
             // configure the Action with the accelerator (aka: short cut)
-            action.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control U"));
+            action.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control Z"));
             // manually register the accelerator in the button's component input map
             undoBtn.getActionMap().put("myAction", action);
             undoBtn.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
@@ -1060,7 +1060,7 @@ public class MacMenuFactory extends AbstractMenuFactory {
             redoBtn.setAction(action);
             
             // configure the Action with the accelerator (aka: short cut)
-            action.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control R"));
+            action.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control Y"));
             // manually register the accelerator in the button's component input map
             redoBtn.getActionMap().put("myAction", action);
             redoBtn.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
