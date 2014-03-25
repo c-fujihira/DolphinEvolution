@@ -49,6 +49,7 @@ import java.util.ResourceBundle;
 import javax.swing.*;
 import open.dolphin.helper.MenuSupport;
 import open.dolphin.project.Project;
+import open.dolphin.util.Log;
 
 /**
  * Menu Factory for Mac. 
@@ -101,6 +102,7 @@ public class MacMenuFactory extends AbstractMenuFactory {
     }
 
     private void storeActions(ActionMap map, ResourceBundle resource) {
+        final ResourceBundle resrc = resource;
 
         // New Karte
         String text = resource.getString("newKarte.Action.text");
@@ -111,6 +113,7 @@ public class MacMenuFactory extends AbstractMenuFactory {
         AbstractAction newKarte = new AbstractAction(text, icon) {
             @Override
             public void actionPerformed(ActionEvent ae) {
+                outputOperLogOper(Log.LOG_LEVEL_0, resrc.getString("newKarte.Action.text"));
                 chart.sendToChain("newKarte");
             }
         };
@@ -125,6 +128,7 @@ public class MacMenuFactory extends AbstractMenuFactory {
         AbstractAction newDocument = new AbstractAction(text, icon) {
             @Override
             public void actionPerformed(ActionEvent ae) {
+                outputOperLogOper(Log.LOG_LEVEL_0, resrc.getString("newDocument.Action.text"));
                 chart.sendToChain("newDocument");
             }
         };
@@ -135,6 +139,7 @@ public class MacMenuFactory extends AbstractMenuFactory {
         AbstractAction openKarte = new AbstractAction(text) {
             @Override
             public void actionPerformed(ActionEvent ae) {
+                outputOperLogOper(Log.LOG_LEVEL_0, resrc.getString("openKarte.Action.text"));
                 main.sendToChain("openKarte");
             }
         };
@@ -145,6 +150,7 @@ public class MacMenuFactory extends AbstractMenuFactory {
         AbstractAction close = new AbstractAction(text) {
             @Override
             public void actionPerformed(ActionEvent ae) {
+                outputOperLogOper(Log.LOG_LEVEL_0, resrc.getString("close.Action.text"));
                 chart.sendToChain("close");
             }
         };
@@ -159,6 +165,7 @@ public class MacMenuFactory extends AbstractMenuFactory {
         AbstractAction save = new AbstractAction(text, icon) {
             @Override
             public void actionPerformed(ActionEvent ae) {
+                outputOperLogOper(Log.LOG_LEVEL_0, resrc.getString("save.Action.text"));
                 chart.sendToChain("save");
             }
         };
@@ -169,6 +176,7 @@ public class MacMenuFactory extends AbstractMenuFactory {
         AbstractAction delete = new AbstractAction(text) {
             @Override
             public void actionPerformed(ActionEvent ae) {
+                outputOperLogOper(Log.LOG_LEVEL_0, resrc.getString("delete.Action.text"));
                 chart.sendToChain("delete");
             }
         };
@@ -179,6 +187,7 @@ public class MacMenuFactory extends AbstractMenuFactory {
         AbstractAction printerSetup = new AbstractAction(text) {
             @Override
             public void actionPerformed(ActionEvent ae) {
+                outputOperLogOper(Log.LOG_LEVEL_0, resrc.getString("printerSetup.Action.text"));
                 main.sendToChain("printerSetup");
             }
         };
@@ -193,6 +202,7 @@ public class MacMenuFactory extends AbstractMenuFactory {
         AbstractAction print = new AbstractAction(text, icon) {
             @Override
             public void actionPerformed(ActionEvent ae) {
+                outputOperLogOper(Log.LOG_LEVEL_0, resrc.getString("print.Action.text"));
                 chart.sendToChain("print");
             }
         };
@@ -203,6 +213,7 @@ public class MacMenuFactory extends AbstractMenuFactory {
         AbstractAction processExit = new AbstractAction(text) {
             @Override
             public void actionPerformed(ActionEvent ae) {
+                outputOperLogOper(Log.LOG_LEVEL_0, resrc.getString("processExit.Action.text"));
                 main.sendToChain("processExit");
             }
         };
@@ -217,6 +228,7 @@ public class MacMenuFactory extends AbstractMenuFactory {
         AbstractAction modifyKarte = new AbstractAction(text, icon) {
             @Override
             public void actionPerformed(ActionEvent ae) {
+                outputOperLogOper(Log.LOG_LEVEL_0, resrc.getString("modifyKarte.Action.text"));
                 chart.sendToChain("modifyKarte");
             }
         };
@@ -231,6 +243,7 @@ public class MacMenuFactory extends AbstractMenuFactory {
         AbstractAction undo = new AbstractAction(text, icon) {
             @Override
             public void actionPerformed(ActionEvent ae) {
+                outputOperLogOper(Log.LOG_LEVEL_0, resrc.getString("undo.Action.text"));
                 chart.sendToChain("undo");
             }
         };
@@ -245,6 +258,7 @@ public class MacMenuFactory extends AbstractMenuFactory {
         AbstractAction redo = new AbstractAction(text, icon) {
             @Override
             public void actionPerformed(ActionEvent ae) {
+                outputOperLogOper(Log.LOG_LEVEL_0, resrc.getString("redo.Action.text"));
                 chart.sendToChain("redo");
             }
         };
@@ -259,6 +273,7 @@ public class MacMenuFactory extends AbstractMenuFactory {
         AbstractAction cut = new AbstractAction(text, icon) {
             @Override
             public void actionPerformed(ActionEvent ae) {
+                outputOperLogOper(Log.LOG_LEVEL_0, resrc.getString("cut.Action.text"));
                 chart.cut();
             }
         };
@@ -273,6 +288,7 @@ public class MacMenuFactory extends AbstractMenuFactory {
         AbstractAction copy = new AbstractAction(text, icon) {
             @Override
             public void actionPerformed(ActionEvent ae) {
+                outputOperLogOper(Log.LOG_LEVEL_0, resrc.getString("copy.Action.text"));
                 chart.copy();
             }
         };
@@ -287,6 +303,7 @@ public class MacMenuFactory extends AbstractMenuFactory {
         AbstractAction paste = new AbstractAction(text, icon) {
             @Override
             public void actionPerformed(ActionEvent ae) {
+                outputOperLogOper(Log.LOG_LEVEL_0, resrc.getString("paste.Action.text"));
                 chart.paste();
             }
         };
@@ -297,6 +314,7 @@ public class MacMenuFactory extends AbstractMenuFactory {
         AbstractAction ascending = new AbstractAction(text) {
             @Override
             public void actionPerformed(ActionEvent ae) {
+                outputOperLogOper(Log.LOG_LEVEL_0, resrc.getString("ascending.Action.text"));
                 chart.sendToChain("ascending");
             }
         };
@@ -307,6 +325,7 @@ public class MacMenuFactory extends AbstractMenuFactory {
         AbstractAction descending = new AbstractAction(text) {
             @Override
             public void actionPerformed(ActionEvent ae) {
+                outputOperLogOper(Log.LOG_LEVEL_0, resrc.getString("descending.Action.text"));
                 chart.sendToChain("descending");
             }
         };
@@ -317,6 +336,7 @@ public class MacMenuFactory extends AbstractMenuFactory {
         AbstractAction showModified = new AbstractAction(text) {
             @Override
             public void actionPerformed(ActionEvent ae) {
+                outputOperLogOper(Log.LOG_LEVEL_0, resrc.getString("showModified.Action.text"));
                 chart.sendToChain("showModified");
             }
         };
@@ -327,6 +347,7 @@ public class MacMenuFactory extends AbstractMenuFactory {
         AbstractAction setKarteEnviroment = new AbstractAction(text) {
             @Override
             public void actionPerformed(ActionEvent ae) {
+                outputOperLogOper(Log.LOG_LEVEL_0, resrc.getString("setKarteEnviroment.Action.text"));
                 main.sendToChain("setKarteEnviroment");
             }
         };
@@ -385,6 +406,7 @@ public class MacMenuFactory extends AbstractMenuFactory {
         AbstractAction insertDisease = new AbstractAction(text) {
             @Override
             public void actionPerformed(ActionEvent ae) {
+                outputOperLogOper(Log.LOG_LEVEL_0, resrc.getString("insertDisease.Action.text"));
             }
         };
         map.put("insertDisease", insertDisease);
@@ -394,6 +416,7 @@ public class MacMenuFactory extends AbstractMenuFactory {
         AbstractAction insertText = new AbstractAction(text) {
             @Override
             public void actionPerformed(ActionEvent ae) {
+                outputOperLogOper(Log.LOG_LEVEL_0, resrc.getString("insertText.Action.text"));
             }
         };
         map.put("insertText", insertText);
@@ -403,6 +426,7 @@ public class MacMenuFactory extends AbstractMenuFactory {
         AbstractAction insertSchema = new AbstractAction(text) {
             @Override
             public void actionPerformed(ActionEvent ae) {
+                outputOperLogOper(Log.LOG_LEVEL_0, resrc.getString("insertSchema.Action.text"));
             }
         };
         map.put("insertSchema", insertSchema);
@@ -412,6 +436,7 @@ public class MacMenuFactory extends AbstractMenuFactory {
         AbstractAction attachment = new AbstractAction(text) {
             @Override
             public void actionPerformed(ActionEvent ae) {
+                outputOperLogOper(Log.LOG_LEVEL_0, resrc.getString("attachment.Action.text"));
                 chart.sendToChain("attachment");
             }
         };
@@ -422,6 +447,7 @@ public class MacMenuFactory extends AbstractMenuFactory {
         AbstractAction insertStamp = new AbstractAction(text) {
             @Override
             public void actionPerformed(ActionEvent ae) {
+                outputOperLogOper(Log.LOG_LEVEL_0, resrc.getString("insertStamp.Action.text"));
             }
         };
         map.put("insertStamp", insertStamp);
@@ -431,6 +457,7 @@ public class MacMenuFactory extends AbstractMenuFactory {
         AbstractAction size = new AbstractAction(text) {
             @Override
             public void actionPerformed(ActionEvent ae) {
+                outputOperLogOper(Log.LOG_LEVEL_0, resrc.getString("size.text"));
             }
         };
         map.put("size", size);
@@ -440,6 +467,7 @@ public class MacMenuFactory extends AbstractMenuFactory {
         AbstractAction fontLarger = new AbstractAction(text) {
             @Override
             public void actionPerformed(ActionEvent ae) {
+                outputOperLogOper(Log.LOG_LEVEL_0, resrc.getString("fontLarger.Action.text"));
                 chart.sendToChain("fontLarger");
             }
         };
@@ -450,6 +478,7 @@ public class MacMenuFactory extends AbstractMenuFactory {
         AbstractAction fontSmaller = new AbstractAction(text) {
             @Override
             public void actionPerformed(ActionEvent ae) {
+                outputOperLogOper(Log.LOG_LEVEL_0, resrc.getString("fontSmaller.Action.text"));
                 chart.sendToChain("fontSmaller");
             }
         };
@@ -460,6 +489,7 @@ public class MacMenuFactory extends AbstractMenuFactory {
         AbstractAction fontStandard = new AbstractAction(text) {
             @Override
             public void actionPerformed(ActionEvent ae) {
+                outputOperLogOper(Log.LOG_LEVEL_0, resrc.getString("fontStandard.Action.text"));
                 chart.sendToChain("fontStandard");
             }
         };
@@ -470,6 +500,7 @@ public class MacMenuFactory extends AbstractMenuFactory {
         AbstractAction style = new AbstractAction(text) {
             @Override
             public void actionPerformed(ActionEvent ae) {
+                outputOperLogOper(Log.LOG_LEVEL_0, resrc.getString("style.text"));
             }
         };
         map.put("style", style);
@@ -479,6 +510,7 @@ public class MacMenuFactory extends AbstractMenuFactory {
         AbstractAction fontBold = new AbstractAction(text) {
             @Override
             public void actionPerformed(ActionEvent ae) {
+                outputOperLogOper(Log.LOG_LEVEL_0, resrc.getString("fontBold.Action.text"));
                 chart.sendToChain("fontBold");
             }
         };
@@ -489,6 +521,7 @@ public class MacMenuFactory extends AbstractMenuFactory {
         AbstractAction fontItalic = new AbstractAction(text) {
             @Override
             public void actionPerformed(ActionEvent ae) {
+                outputOperLogOper(Log.LOG_LEVEL_0, resrc.getString("fontItalic.Action.text"));
                 chart.sendToChain("fontItalic");
             }
         };
@@ -499,6 +532,7 @@ public class MacMenuFactory extends AbstractMenuFactory {
         AbstractAction fontUnderline = new AbstractAction(text) {
             @Override
             public void actionPerformed(ActionEvent ae) {
+                outputOperLogOper(Log.LOG_LEVEL_0, resrc.getString("fontUnderline.Action.text"));
                 chart.sendToChain("fontUnderline");
             }
         };
@@ -509,6 +543,7 @@ public class MacMenuFactory extends AbstractMenuFactory {
         AbstractAction justify = new AbstractAction(text) {
             @Override
             public void actionPerformed(ActionEvent ae) {
+                outputOperLogOper(Log.LOG_LEVEL_0, resrc.getString("justify.text"));
             }
         };
         map.put("justify", justify);
@@ -518,6 +553,7 @@ public class MacMenuFactory extends AbstractMenuFactory {
         AbstractAction leftJustify = new AbstractAction(text) {
             @Override
             public void actionPerformed(ActionEvent ae) {
+                outputOperLogOper(Log.LOG_LEVEL_0, resrc.getString("leftJustify.Action.text"));
                 chart.sendToChain("leftJustify");
             }
         };
@@ -528,6 +564,7 @@ public class MacMenuFactory extends AbstractMenuFactory {
         AbstractAction centerJustify = new AbstractAction(text) {
             @Override
             public void actionPerformed(ActionEvent ae) {
+                outputOperLogOper(Log.LOG_LEVEL_0, resrc.getString("centerJustify.Action.text"));
                 chart.sendToChain("centerJustify");
             }
         };
@@ -538,6 +575,7 @@ public class MacMenuFactory extends AbstractMenuFactory {
         AbstractAction rightJustify = new AbstractAction(text) {
             @Override
             public void actionPerformed(ActionEvent ae) {
+                outputOperLogOper(Log.LOG_LEVEL_0, resrc.getString("rightJustify.Action.text"));
                 chart.sendToChain("rightJustify");
             }
         };
@@ -548,6 +586,7 @@ public class MacMenuFactory extends AbstractMenuFactory {
         AbstractAction color = new AbstractAction(text) {
             @Override
             public void actionPerformed(ActionEvent ae) {
+                outputOperLogOper(Log.LOG_LEVEL_0, resrc.getString("color.text"));
             }
         };
         map.put("color", color);
@@ -557,6 +596,7 @@ public class MacMenuFactory extends AbstractMenuFactory {
         AbstractAction fontRed = new AbstractAction(text) {
             @Override
             public void actionPerformed(ActionEvent ae) {
+                outputOperLogOper(Log.LOG_LEVEL_0, resrc.getString("fontRed.Action.text"));
                 chart.sendToChain("fontRed");
             }
         };
@@ -567,6 +607,7 @@ public class MacMenuFactory extends AbstractMenuFactory {
         AbstractAction fontOrange = new AbstractAction(text) {
             @Override
             public void actionPerformed(ActionEvent ae) {
+                outputOperLogOper(Log.LOG_LEVEL_0, resrc.getString("fontOrange.Action.text"));
                 chart.sendToChain("fontOrange");
             }
         };
@@ -577,6 +618,7 @@ public class MacMenuFactory extends AbstractMenuFactory {
         AbstractAction fontYellow = new AbstractAction(text) {
             @Override
             public void actionPerformed(ActionEvent ae) {
+                outputOperLogOper(Log.LOG_LEVEL_0, resrc.getString("fontYellow.Action.text"));
                 chart.sendToChain("fontYellow");
             }
         };
@@ -587,6 +629,7 @@ public class MacMenuFactory extends AbstractMenuFactory {
         AbstractAction fontGreen = new AbstractAction(text) {
             @Override
             public void actionPerformed(ActionEvent ae) {
+                outputOperLogOper(Log.LOG_LEVEL_0, resrc.getString("fontGreen.Action.text"));
                 chart.sendToChain("fontGreen");
             }
         };
@@ -597,6 +640,7 @@ public class MacMenuFactory extends AbstractMenuFactory {
         AbstractAction fontBlue = new AbstractAction(text) {
             @Override
             public void actionPerformed(ActionEvent ae) {
+                outputOperLogOper(Log.LOG_LEVEL_0, resrc.getString("fontBlue.Action.text"));
                 chart.sendToChain("fontBlue");
             }
         };
@@ -607,6 +651,7 @@ public class MacMenuFactory extends AbstractMenuFactory {
         AbstractAction fontPurple = new AbstractAction(text) {
             @Override
             public void actionPerformed(ActionEvent ae) {
+                outputOperLogOper(Log.LOG_LEVEL_0, resrc.getString("fontPurple.Action.text"));
                 chart.sendToChain("fontPurple");
             }
         };
@@ -617,6 +662,7 @@ public class MacMenuFactory extends AbstractMenuFactory {
         AbstractAction fontGray = new AbstractAction(text) {
             @Override
             public void actionPerformed(ActionEvent ae) {
+                outputOperLogOper(Log.LOG_LEVEL_0, resrc.getString("fontGray.Action.text"));
                 chart.sendToChain("fontGray");
             }
         };
@@ -627,6 +673,7 @@ public class MacMenuFactory extends AbstractMenuFactory {
         AbstractAction fontBlack = new AbstractAction(text) {
             @Override
             public void actionPerformed(ActionEvent ae) {
+                outputOperLogOper(Log.LOG_LEVEL_0, resrc.getString("fontBlack.Action.text"));
                 chart.sendToChain("fontBlack");
             }
         };
@@ -636,6 +683,7 @@ public class MacMenuFactory extends AbstractMenuFactory {
         AbstractAction resetStyle = new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent ae) {
+                outputOperLogOper(Log.LOG_LEVEL_0, "リセット");
                 chart.sendToChain("resetStyle");
             }
         };
@@ -646,6 +694,7 @@ public class MacMenuFactory extends AbstractMenuFactory {
         AbstractAction showStampBox = new AbstractAction(text) {
             @Override
             public void actionPerformed(ActionEvent ae) {
+                outputOperLogOper(Log.LOG_LEVEL_0, resrc.getString("showStampBox.Action.text"));
                 main.sendToChain("showStampBox");
             }
         };
@@ -656,6 +705,7 @@ public class MacMenuFactory extends AbstractMenuFactory {
         AbstractAction showSchemaBox = new AbstractAction(text) {
             @Override
             public void actionPerformed(ActionEvent ae) {
+                outputOperLogOper(Log.LOG_LEVEL_0, resrc.getString("showSchemaBox.Action.text"));
                 main.sendToChain("showSchemaBox");
             }
         };
@@ -666,6 +716,7 @@ public class MacMenuFactory extends AbstractMenuFactory {
         AbstractAction changePassword = new AbstractAction(text) {
             @Override
             public void actionPerformed(ActionEvent ae) {
+                outputOperLogOper(Log.LOG_LEVEL_0, resrc.getString("changePassword.Action.text"));
                 main.sendToChain("changePassword");
             }
         };
@@ -676,6 +727,7 @@ public class MacMenuFactory extends AbstractMenuFactory {
         AbstractAction editFacilityInfo = new AbstractAction(text) {
             @Override
             public void actionPerformed(ActionEvent ae) {
+                outputOperLogOper(Log.LOG_LEVEL_0, resrc.getString("editFacilityInfo.Action.text"));
                 main.sendToChain("editFacilityInfo");
             }
         };
@@ -686,6 +738,7 @@ public class MacMenuFactory extends AbstractMenuFactory {
         AbstractAction addUser = new AbstractAction(text) {
             @Override
             public void actionPerformed(ActionEvent ae) {
+                outputOperLogOper(Log.LOG_LEVEL_0, resrc.getString("addUser.Action.text"));
                 main.sendToChain("addUser");
             }
         };
@@ -696,6 +749,7 @@ public class MacMenuFactory extends AbstractMenuFactory {
         AbstractAction fetchFacilityCode = new AbstractAction(text) {
             @Override
             public void actionPerformed(ActionEvent ae) {
+                outputOperLogOper(Log.LOG_LEVEL_0, resrc.getString("fetchFacilityCode.Action.text"));
                 main.sendToChain("fetchFacilityCode");
             }
         };
@@ -706,6 +760,7 @@ public class MacMenuFactory extends AbstractMenuFactory {
         AbstractAction browseDolphinSupport = new AbstractAction(text) {
             @Override
             public void actionPerformed(ActionEvent ae) {
+                outputOperLogOper(Log.LOG_LEVEL_0, resrc.getString("browseDolphinSupport.Action.text"));
                 main.sendToChain("browseDolphinSupport");
             }
         };
@@ -716,6 +771,7 @@ public class MacMenuFactory extends AbstractMenuFactory {
         AbstractAction browseDolphinProject = new AbstractAction(text) {
             @Override
             public void actionPerformed(ActionEvent ae) {
+                outputOperLogOper(Log.LOG_LEVEL_0, resrc.getString("browseDolphinProject.Action.text"));
                 main.sendToChain("browseDolphinProject");
             }
         };
@@ -726,6 +782,7 @@ public class MacMenuFactory extends AbstractMenuFactory {
         AbstractAction browseMedXml = new AbstractAction(text) {
             @Override
             public void actionPerformed(ActionEvent ae) {
+                outputOperLogOper(Log.LOG_LEVEL_0, resrc.getString("browseMedXml.Action.text"));
                 main.sendToChain("browseMedXml");
             }
         };
@@ -736,6 +793,7 @@ public class MacMenuFactory extends AbstractMenuFactory {
         AbstractAction showAbout = new AbstractAction(text) {
             @Override
             public void actionPerformed(ActionEvent ae) {
+                outputOperLogOper(Log.LOG_LEVEL_0, resrc.getString("showAbout.Action.text"));
                 main.sendToChain("showAbout");
             }
         };
@@ -797,6 +855,7 @@ public class MacMenuFactory extends AbstractMenuFactory {
     public void build(JMenuBar menuBar) {
         
         this.menuBar = menuBar;
+
         ResourceBundle resource = ClientContext.getBundle(this.getClass());
         actionMap = new ActionMap();
         storeActions(actionMap, resource);
@@ -811,15 +870,11 @@ public class MacMenuFactory extends AbstractMenuFactory {
             toolPanel.add(toolBar);
         }
 
-        //----------------
-        // ファイル
-        //----------------
+        // File
         JMenu file = new JMenu();
         file.setName("fileMenu");
 
-        //----------------
         // 新規カルテ
-        //----------------
         JMenuItem newKarte = new JMenuItem();
         newKarte.setName("newKarte");
         newKarte.setAction(actionMap.get("newKarte"));
@@ -846,9 +901,7 @@ public class MacMenuFactory extends AbstractMenuFactory {
             toolBar.add(newKarteBtn);
         }
 
-        //----------------
         // 新規文書
-        //----------------
         JMenuItem newDocument = new JMenuItem();
         newDocument.setName("newDocument");
         newDocument.setAction(actionMap.get("newDocument"));
@@ -874,9 +927,7 @@ public class MacMenuFactory extends AbstractMenuFactory {
             toolBar.add(newDocBtn);
         }
 
-        //----------------
         // 開く
-        //----------------
         JMenuItem openKarte = new JMenuItem();
         openKarte.setName("openKarte");
         openKarte.setAction(actionMap.get("openKarte"));
@@ -885,18 +936,14 @@ public class MacMenuFactory extends AbstractMenuFactory {
         
         file.add(new JSeparator());
 
-        //----------------
         // 閉じる
-        //----------------
         JMenuItem close = new JMenuItem();
         close.setName("close");
         close.setAction(actionMap.get("close"));
         setAccelerator(close, KeyEvent.VK_W);
         file.add(close);
 
-        //----------------
         // 保存
-        //----------------
         JMenuItem save = new JMenuItem();
         save.setName("save");
         save.setAction(actionMap.get("save"));
@@ -925,9 +972,7 @@ public class MacMenuFactory extends AbstractMenuFactory {
         
         file.add(new JSeparator());
 
-        //----------------
         // 削除
-        //----------------
 //s.oh^ 2013/09/05
         if(Project.getBoolean("delete.karte.enable", true)) {
 //s.oh$
@@ -939,17 +984,13 @@ public class MacMenuFactory extends AbstractMenuFactory {
             file.add(new JSeparator());
         }
 
-        //----------------
         // 印刷設定
-        //----------------
         JMenuItem printerSetup = new JMenuItem();
         printerSetup.setName("printerSetup");
         printerSetup.setAction(actionMap.get("printerSetup"));
         file.add(printerSetup);
 
-        //----------------
         // 印刷
-        //----------------
         JMenuItem print = new JMenuItem();
         print.setName("print");
         print.setAction(actionMap.get("print"));
@@ -976,18 +1017,23 @@ public class MacMenuFactory extends AbstractMenuFactory {
             toolBar.add(printBtn);
         }
         
+        file.add(new JSeparator());
+        
+        // 終了
+        JMenuItem exit = new JMenuItem();
+        exit.setName("processExit");
+        exit.setAction(actionMap.get("processExit"));
+        file.add(exit);
+        setAccelerator(exit, KeyEvent.VK_Q);
+        
         /******************************************************/
 
-        //----------------
         // Edit
-        //----------------
         JMenu edit = new JMenu();
         edit.setName("editMenu");
         toolBar.addSeparator();
 
-        //----------------
         // 修正
-        //----------------
         JMenuItem modifyKarte = new JMenuItem();
         modifyKarte.setName("modifyKarte");
         modifyKarte.setAction(actionMap.get("modifyKarte"));
@@ -1016,9 +1062,7 @@ public class MacMenuFactory extends AbstractMenuFactory {
         
         edit.add(new JSeparator());
 
-        //----------------
         // Undo
-        //----------------
         JMenuItem undo = new JMenuItem();
         undo.setName("undo");
         undo.setAction(actionMap.get("undo"));
@@ -1045,9 +1089,7 @@ public class MacMenuFactory extends AbstractMenuFactory {
             toolBar.add(undoBtn);
         }
 
-        //----------------
         // Redo
-        //----------------
         JMenuItem redo = new JMenuItem();
         redo.setName("redo");
         redo.setAction(actionMap.get("redo"));
@@ -1076,9 +1118,7 @@ public class MacMenuFactory extends AbstractMenuFactory {
         
         edit.add(new JSeparator());
 
-        //----------------
         // Cut
-        //----------------
         JMenuItem cut = new JMenuItem();
         cut.setName("cut");
         cut.setAction(actionMap.get("cut"));
@@ -1105,9 +1145,7 @@ public class MacMenuFactory extends AbstractMenuFactory {
             toolBar.add(cutBtn);
         }
 
-        //----------------
         // Copy
-        //----------------
         JMenuItem copy = new JMenuItem();
         copy.setName("copy");
         copy.setAction(actionMap.get("copy"));
@@ -1134,9 +1172,7 @@ public class MacMenuFactory extends AbstractMenuFactory {
             toolBar.add(copyBtn);
         }
 
-        //----------------
         // Paste
-        //----------------
         JMenuItem paste = new JMenuItem();
         paste.setName("paste");
         paste.setAction(actionMap.get("paste"));
@@ -1165,17 +1201,14 @@ public class MacMenuFactory extends AbstractMenuFactory {
         
         /******************************************************/
 
-        //----------------
         // Karte
-        //----------------
         JMenu karte = new JMenu();
+        karte.setIcon(new ImageIcon(ClientContext.getClientContextStub().getImageResource("order-149.png")));
         karte.setName("karteMenu");
-//        if (chart != null) {
-//            karte.addMenuListener(chart);
-//        }
+        karte.setToolTipText(resource.getString("karteMenu.text"));
 
         //-------------------
-        // 処方日数変更 createPrescription
+        // 処方日数変更
         //-------------------
         JMenuItem changeNumOfDatesAll = new JMenuItem();
         changeNumOfDatesAll.setName("changeNumOfDatesAll");
@@ -1195,7 +1228,7 @@ public class MacMenuFactory extends AbstractMenuFactory {
         //-------------------
         // 処方箋印刷 createPrescription
         //-------------------
-//s.oh^ 2013/01/24 不要機能の削除
+//s.oh^ 不要機能の削除
         //JMenuItem createPrescription = new JMenuItem();
         //createPrescription.setName("createPrescription");
         //createPrescription.setAction(actionMap.get("createPrescription"));
@@ -1206,7 +1239,7 @@ public class MacMenuFactory extends AbstractMenuFactory {
         //-------------------
         // 併用禁忌チェック checkInteraction
         //-------------------
-//s.oh^ 2013/01/24 不要機能の削除(復活)
+//s.oh^ 不要機能の削除(復活)
         JMenuItem checkInteraction = new JMenuItem();
         checkInteraction.setName("checkInteraction");
         checkInteraction.setAction(actionMap.get("checkInteraction"));
@@ -1216,56 +1249,88 @@ public class MacMenuFactory extends AbstractMenuFactory {
         
         karte.add(new JSeparator());
 
-        //----------------
         // 昇順
-        //----------------
         JRadioButtonMenuItem ascending = new JRadioButtonMenuItem();
         ascending.setName("ascending");
         ascending.setAction(actionMap.get("ascending"));
         actionMap.get("ascending").putValue("menuItem",ascending);
         karte.add(ascending);
 
-        //----------------
         // 降順
-        //----------------
         JRadioButtonMenuItem descending = new JRadioButtonMenuItem();
         descending.setName("descending");
         descending.setAction(actionMap.get("descending"));
         actionMap.get("descending").putValue("menuItem",descending);
         karte.add(descending);
 
-        //----------------
         // RadiButtonGroup
-        //----------------
         ButtonGroup bg = new ButtonGroup();
         bg.add(ascending);
         bg.add(descending);
         
-        //----------------
         // 修正履歴表示
-        //----------------
         JCheckBoxMenuItem showModified = new JCheckBoxMenuItem();
         showModified.setName("showModified");
         showModified.setAction(actionMap.get("showModified"));
         actionMap.get("showModified").putValue("menuItem",showModified);
         karte.add(showModified);
         
-        karte.add(new JSeparator());
+//        karte.add(new JSeparator());
+//        
+//        // 環境設定 
+//        JMenuItem setKarteEnviroment = new JMenuItem();
+//        setKarteEnviroment.setName("setKarteEnviroment");
+//        setKarteEnviroment.setAction(actionMap.get("setKarteEnviroment"));
+//        setAccelerator(setKarteEnviroment, KeyEvent.VK_E);
+//        karte.add(setKarteEnviroment);
 
-        //----------------
-        // 環境設定
-        //----------------
-        JMenuItem setKarteEnviroment = new JMenuItem();
-        setKarteEnviroment.setName("setKarteEnviroment");
-        setKarteEnviroment.setAction(actionMap.get("setKarteEnviroment"));
-        setAccelerator(setKarteEnviroment, KeyEvent.VK_E);
-        karte.add(setKarteEnviroment);
+//        //masuda^
+//        // Look&Feel
+//        JMenu lookAndFeel = new JMenu();
+//        //lookAndFeel.setName("lookAndFeel");
+//        lookAndFeel.setText("ルック & フィール");
+//        karte.add(lookAndFeel);
+//
+//        JRadioButtonMenuItem nimbusLaf = new JRadioButtonMenuItem();
+//        nimbusLaf.setName("nimbusLookAndFeel");
+//        nimbusLaf.setAction(actionMap.get("nimbusLookAndFeel"));
+//        lookAndFeel.add(nimbusLaf);
+//
+//        JRadioButtonMenuItem nativeLaf = new JRadioButtonMenuItem();
+//        nativeLaf.setName("nativeLookAndFeel");
+//        nativeLaf.setAction(actionMap.get("nativeLookAndFeel"));
+//        lookAndFeel.add(nativeLaf);
+//
+////        JRadioButtonMenuItem quaquaLaf = new JRadioButtonMenuItem();
+////        quaquaLaf.setName("quaquaLookAndFeel");
+////        quaquaLaf.setAction(actionMap.get("quaquaLookAndFeel"));
+////        lookAndFeel.add(quaquaLaf);
+//
+//        ButtonGroup lafbg = new ButtonGroup();
+//        lafbg.add(nimbusLaf);
+//        lafbg.add(nativeLaf);
+////        lafbg.add(quaquaLaf);
+//
+//        String systemLaf = UIManager.getSystemLookAndFeelClassName();
+////        String quaquaCls = "ch.randelshofer.quaqua.QuaquaLookAndFeel";
+////        String nimbusCls = "com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel";
+//        String nimbusCls = "javax.swing.plaf.metal.MetalLookAndFeel";
+//       
+//        //String userLaf = Project.getString("lookAndFeel", nimbusCls);
+//        String userLaf = Project.getString("lookAndFeel");
+//
+//        if (userLaf!=null && userLaf.equals(systemLaf)) {
+//            nativeLaf.setSelected(true);
+////        } else if (userLaf.equals(quaquaCls)) {
+////            quaquaLaf.setSelected(true);
+//        } else {
+//            nimbusLaf.setSelected(true);
+//        }
+////masuda$
         
         /******************************************************/
 
-        //----------------
         // Insert
-        //----------------
         JMenu insert = new JMenu();
         insert.setName("insertMenu");
         if (chart != null) {
@@ -1294,11 +1359,11 @@ public class MacMenuFactory extends AbstractMenuFactory {
         
         /******************************************************/
 
-        //----------------
         // Text
-        //----------------
         JMenu text = new JMenu();
+        text.setIcon(new ImageIcon(ClientContext.getClientContextStub().getImageResource("pen.png")));
         text.setName("textMenu");
+        text.setToolTipText(resource.getString("textMenu.text"));
         if (chart != null) {
             text.addMenuListener(chart);
         }
@@ -1312,19 +1377,19 @@ public class MacMenuFactory extends AbstractMenuFactory {
         JMenuItem fontLarger = new JMenuItem();
         fontLarger.setName("fontLarger");
         fontLarger.setAction(actionMap.get("fontLarger"));
-        //setAccelerator(fontLarger, KeyEvent.VK_PLUS, true);
+        setAccelerator(fontLarger, KeyEvent.VK_COMMA);
         size.add(fontLarger);
         
         JMenuItem fontSmaller = new JMenuItem();
         fontSmaller.setName("fontSmaller");
         fontSmaller.setAction(actionMap.get("fontSmaller"));
-        //setAccelerator(fontSmaller, KeyEvent.VK_MINUS);
+        setAccelerator(fontSmaller, KeyEvent.VK_PERIOD);
         size.add(fontSmaller);
         
         JMenuItem fontStandard = new JMenuItem();
         fontStandard.setName("fontStandard");
         fontStandard.setAction(actionMap.get("fontStandard"));
-        //setAccelerator(fontStandard, KeyEvent.VK_NUMBER_SIGN, true);
+        setAccelerator(fontStandard, KeyEvent.VK_SLASH);
         size.add(fontStandard);  
         
         //// style ////
@@ -1451,16 +1516,17 @@ public class MacMenuFactory extends AbstractMenuFactory {
         
         JMenuItem addUser = new JMenuItem();
         addUser.setName("addUser");
-        addUser.setAction(actionMap.get("addUser"));//fetchFacilityCode
+        addUser.setAction(actionMap.get("addUser"));
         tool.add(addUser);
         
         tool.add(new JSeparator());
         
-        // 不要機能の削除(復活)
+//s.oh^ 不要機能の削除(復活)
         JMenuItem fetchFacilityCode = new JMenuItem();
         fetchFacilityCode.setName("fetchFacilityCode");
         fetchFacilityCode.setAction(actionMap.get("fetchFacilityCode"));//
         tool.add(fetchFacilityCode);
+//s.oh$
         
         LinkedHashMap<String, String> toolProviders = ClientContext.getToolProviders();
         
@@ -1487,9 +1553,7 @@ public class MacMenuFactory extends AbstractMenuFactory {
         
         /******************************************************/
 
-        //----------------
         // Help
-        //----------------
         JMenu help = new JMenu();
         help.setName("helpMenu");
         
@@ -1503,28 +1567,42 @@ public class MacMenuFactory extends AbstractMenuFactory {
         browseDolphinProject.setAction(actionMap.get("browseDolphinProject"));
         help.add(browseDolphinProject);
         
+        //help.add(new JSeparator());
+        
         JMenuItem browseMedXml = new JMenuItem();
         browseMedXml.setName("browseMedXml");
         browseMedXml.setAction(actionMap.get("browseMedXml"));
         help.add(browseMedXml);
         
+        help.add(new JSeparator());
+        
+        JMenuItem showAbout = new JMenuItem();
+        showAbout.setName("showAbout");
+        showAbout.setAction(actionMap.get("showAbout"));
+        help.add(showAbout);
+        
         /******************************************************/
         
-        menuBar.add(file,   0);
-        menuBar.add(edit,   1);
-        menuBar.add(karte,  2);
-        menuBar.add(insert, 3);
-        menuBar.add(text,   4);
-        menuBar.add(tool,   5);
-        // 6 = Window
-        menuBar.add(help,   7);
+//        menuBar.add(file,   0);
+//        menuBar.add(edit,   1);
+//        menuBar.add(karte,  2);
+//        menuBar.add(insert, 3);
+//        menuBar.add(text,   4);
+//        menuBar.add(tool,   5);
+//        // 6 = Window
+//        menuBar.add(help,   7);
+        
+        // Window削除
+        menuBar.remove(0);
+        menuBar.add(karte,  0);
+        menuBar.add(text,   1);
         
         /******************************************************/
         file.setText(resource.getString("fileMenu.text"));
         edit.setText(resource.getString("editMenu.text"));
-        karte.setText(resource.getString("karteMenu.text"));
+//        karte.setText(resource.getString("karteMenu.text"));
         insert.setText(resource.getString("insertMenu.text"));
-        text.setText(resource.getString("textMenu.text"));
+//        text.setText(resource.getString("textMenu.text"));
         tool.setText(resource.getString("toolMenu.text"));
         help.setText(resource.getString("helpMenu.text"));
         size.setText(resource.getString("size.text"));
@@ -1541,19 +1619,12 @@ public class MacMenuFactory extends AbstractMenuFactory {
         item.setAccelerator(
                         KeyStroke.getKeyStroke(key, (java.awt.event.InputEvent.SHIFT_MASK | (Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()))));
     }
+    
+    private void outputOperLogOper(int level, String... ms) {
+        Object obj = null;
+        if(chart != null && chart.getChains() != null && chart.getChains().length > 2) {
+            obj = chart.getChains()[2];
+        }
+        Log.outputOperLogOper(obj, level, ms);
+    }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

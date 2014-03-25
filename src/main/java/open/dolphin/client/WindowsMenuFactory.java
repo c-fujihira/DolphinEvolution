@@ -1233,6 +1233,7 @@ public class WindowsMenuFactory extends AbstractMenuFactory {
         JMenu karte = new JMenu();
         karte.setIcon(new ImageIcon(ClientContext.getClientContextStub().getImageResource("order-149.png")));
         karte.setName("karteMenu");
+        karte.setToolTipText(resource.getString("karteMenu.text"));
 
         //-------------------
         // 処方日数変更
@@ -1390,6 +1391,7 @@ public class WindowsMenuFactory extends AbstractMenuFactory {
         JMenu text = new JMenu();
         text.setIcon(new ImageIcon(ClientContext.getClientContextStub().getImageResource("pen.png")));
         text.setName("textMenu");
+        text.setToolTipText(resource.getString("textMenu.text"));
         if (chart != null) {
             text.addMenuListener(chart);
         }
@@ -1626,9 +1628,9 @@ public class WindowsMenuFactory extends AbstractMenuFactory {
         /******************************************************/
         file.setText(resource.getString("fileMenu.text"));
         edit.setText(resource.getString("editMenu.text"));
-        karte.setText(resource.getString("karteMenu.text"));
+//        karte.setText(resource.getString("karteMenu.text"));
         insert.setText(resource.getString("insertMenu.text"));
-        text.setText(resource.getString("textMenu.text"));
+//        text.setText(resource.getString("textMenu.text"));
         tool.setText(resource.getString("toolMenu.text"));
         help.setText(resource.getString("helpMenu.text"));
         size.setText(resource.getString("size.text"));
