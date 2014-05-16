@@ -42,6 +42,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.concurrent.Callable;
 import javax.ws.rs.core.MediaType;
+import open.dolphin.client.ClientContext;
 import open.dolphin.client.Evolution;
 import open.dolphin.project.Project;
 
@@ -57,6 +58,7 @@ public class DRequest implements Callable {
     private static final String CLINET_UUID = "clientUUID";
     private static final String USER_NAME = "userName";
     private static final String PASSWORD = "password";
+    protected static final String CLIENTVERSION = "clientVersion";
 
     private final URL request;
 
@@ -71,6 +73,7 @@ public class DRequest implements Callable {
         conn.setRequestProperty(USER_NAME, Project.getUserModel().getUserId());
         conn.setRequestProperty(PASSWORD, Project.getUserModel().getPassword());
         conn.setRequestProperty(CLINET_UUID, Evolution.getInstance().getClientUUID());
+        conn.setRequestProperty(CLIENTVERSION, ClientContext.getProductName() + "_" + ClientContext.getVersion() + "_" + Project.getClientBuild());
         conn.setDoInput(true);
         conn.setReadTimeout(Integer.MAX_VALUE);
         return new DResponse(conn.getInputStream());

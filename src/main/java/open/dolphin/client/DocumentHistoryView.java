@@ -46,6 +46,7 @@ public class DocumentHistoryView extends javax.swing.JPanel {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        table.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
         table.setName("table"); // NOI18N
         jScrollPane1.setViewportView(table);
 

@@ -4,18 +4,29 @@
 <?import java.util.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
 <AnchorPane id="AnchorPane" focusTraversable="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-1.0" minWidth="-1.0" mouseTransparent="false" pickOnBounds="true" prefHeight="40.0" prefWidth="900.0" snapToPixel="true" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="open.dolphin.client.DisplayCtrlController">
   <children>
-    <ToggleButton id="karteViewSw" fx:id="karteSw" ellipsisString="..." focusTraversable="false" layoutY="9.0" mnemonicParsing="false" onAction="#karteViewSw" prefHeight="23.0" prefWidth="95.0" selected="false" text="カルテ表示" textOverrun="ELLIPSIS" underline="false" AnchorPane.rightAnchor="439.0">
+    <ToggleButton id="" fx:id="splitToggle" focusTraversable="false" layoutY="9.0" mnemonicParsing="false" onAction="#setSplitReserve" prefHeight="23.0" prefWidth="95.0" text="区切り位置保存" AnchorPane.rightAnchor="548.0">
+      <font>
+        <Font size="11.0" />
+      </font>
+    </ToggleButton>
+    <ToggleButton id="" fx:id="karteSw" ellipsisString="..." focusTraversable="false" layoutY="9.0" mnemonicParsing="false" onAction="#karteViewSw" prefHeight="23.0" prefWidth="95.0" selected="false" text="カルテ表示" textOverrun="ELLIPSIS" underline="false" AnchorPane.rightAnchor="445.0">
       <font>
         <Font size="12.0" fx:id="x2" />
       </font>
       <tooltip>
         <Tooltip text="カルテオープン時に拡大表示します" />
+      </tooltip>
+    </ToggleButton>
+    <ToggleButton id="" fx:id="karteToolCk" ellipsisString="..." focusTraversable="false" font="$x2" layoutY="9.0" mnemonicParsing="false" onAction="#setWinCtrlKarteToolSet" prefHeight="23.0" prefWidth="95.0" selected="false" text="ツール表示" textOverrun="ELLIPSIS" underline="false" AnchorPane.rightAnchor="342.0">
+      <tooltip>
+        <Tooltip text="カルテオープン時、ツール表示します" />
       </tooltip>
     </ToggleButton>
     <Button focusTraversable="false" layoutY="9.0" mnemonicParsing="false" onAction="#setWinCtrlPvtSet" prefHeight="23.0" prefWidth="95.0" text="受付ビュー" AnchorPane.rightAnchor="229.0">
@@ -39,15 +50,15 @@
         <Tooltip text="画面比率をリセットします" />
       </tooltip>
     </Button>
-    <ToggleButton id="karteViewSw" fx:id="karteToolCk" ellipsisString="..." focusTraversable="false" font="$x2" layoutY="9.0" mnemonicParsing="false" onAction="#setWinCtrlKarteToolSet" prefHeight="23.0" prefWidth="95.0" selected="false" text="ツール表示" textOverrun="ELLIPSIS" underline="false" AnchorPane.rightAnchor="336.0">
-      <tooltip>
-        <Tooltip text="カルテオープン時、ツール表示します" />
-      </tooltip>
-    </ToggleButton>
     <Text id="ClinicName" fx:id="clinicName" layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Clinic Name" AnchorPane.leftAnchor="14.0">
       <font>
         <Font size="16.0" />
       </font>
     </Text>
+    <Separator layoutY="0.0" orientation="VERTICAL" prefHeight="40.0" prefWidth="5.0" AnchorPane.rightAnchor="331.0">
+      <effect>
+        <DropShadow />
+      </effect>
+    </Separator>
   </children>
 </AnchorPane>

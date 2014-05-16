@@ -45,7 +45,8 @@ import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -185,14 +186,13 @@ public final class RpEditor extends AbstractStampEditor {
 
                             // 頓用でない場合は剤型区分で内用か外用を決める
                             String test = mItem.getYkzKbn();
-
-                            if (test.equals(ClaimConst.YKZ_KBN_NAIYO)) {
-
-                                naiGaiTon = 210; // 内用
-
-                            } else if (test.equals(ClaimConst.YKZ_KBN_GAIYO)) {
-
-                                naiGaiTon = 230; // 外用
+                            switch (test) {
+                                case ClaimConst.YKZ_KBN_NAIYO:
+                                    naiGaiTon = 210; // 内用
+                                    break;
+                                case ClaimConst.YKZ_KBN_GAIYO:
+                                    naiGaiTon = 230; // 外用
+                                    break;
                             }
                         }
                     }
@@ -366,136 +366,94 @@ public final class RpEditor extends AbstractStampEditor {
 
     @Override
     protected void search(final String text, boolean hitRettun) {
+        try {
+            boolean pass = true;
+            pass = pass && ipOk();
 
-        boolean pass = true;
-        pass = pass && ipOk();
+            final int searchType = getSearchType(text, hitRettun);
 
-        final int searchType = getSearchType(text, hitRettun);
+            pass = pass && (searchType != TT_INVALID);
+            pass = pass && (searchType != TT_LIST_TECH);
 
-        pass = pass && (searchType != TT_INVALID);
-        pass = pass && (searchType != TT_LIST_TECH);
+            if (!pass) {
+                return;
+            }
 
-        if (!pass) {
-            return;
+            // 件数をゼロにしておく
+            view.getCountField().setText("0");
+
+            //SqlMasterDao dao = (SqlMasterDao) SqlDaoFactory.create("dao.master");
+            //OrcaRestDelegater dao = new OrcaRestDelegater();
+            OrcaDelegater dao = OrcaDelegaterFactory.create();
+            String d = new SimpleDateFormat("yyyyMMdd").format(new Date());
+            List<TensuMaster> result = null;
+
+            switch (searchType) {
+
+                case TT_LIST_TECH:
+                    break;
+
+                case TT_TENSU_SEARCH:
+                    String ten = text.substring(3);
+                    result = dao.getTensuMasterByTen(ZenkakuUtils.toHalfNumber(ten), d);
+                    break;
+
+                case TT_85_SEARCH:
+                    result = dao.getTensuMasterByCode("0085", d);
+                    break;
+
+                case TT_CODE_SEARCH:
+                    result = dao.getTensuMasterByCode(ZenkakuUtils.toHalfNumber(text), d);
+                    break;
+
+                case TT_LETTER_SEARCH:
+                    result = dao.getTensuMasterByName(StringTool.hiraganaToKatakana(text), d, view.getPartialChk().isSelected());
+//s.oh^ 2013/11/08 傷病名検索不具合
+                    if (result == null || result.size() <= 0) {
+                        result = dao.getTensuMasterByName(text, d, view.getPartialChk().isSelected());
+                    }
+//s.oh$
+                    break;
+            }
+
+            searchResultModel.setDataProvider(result);
+            int cnt = searchResultModel.getObjectCount();
+            view.getCountField().setText(String.valueOf(cnt));
+            Rectangle r = view.getSearchResultTable().getCellRect(0, 0, true);
+            view.getSearchResultTable().scrollRectToVisible(r);
+        } catch (Exception ex) {
+            Logger.getLogger(RpEditor.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        // 件数をゼロにしておく
-        view.getCountField().setText("0");
-
-        SwingWorker worker = new SwingWorker<List<TensuMaster>, Void>() {
-
-            @Override
-            protected List<TensuMaster> doInBackground() throws Exception {
-                //SqlMasterDao dao = (SqlMasterDao) SqlDaoFactory.create("dao.master");
-                //OrcaRestDelegater dao = new OrcaRestDelegater();
-                OrcaDelegater dao = OrcaDelegaterFactory.create();
-                String d = new SimpleDateFormat("yyyyMMdd").format(new Date());
-                List<TensuMaster> result = null;
-
-                switch (searchType) {
-
-                    case TT_LIST_TECH:
-                        break;
-
-                    case TT_TENSU_SEARCH:
-                        String ten = text.substring(3);
-                        result = dao.getTensuMasterByTen(ZenkakuUtils.toHalfNumber(ten), d);
-                        break;
-
-                    case TT_85_SEARCH:
-                        result = dao.getTensuMasterByCode("0085", d);
-                        break;
-
-                    case TT_CODE_SEARCH:
-                        result = dao.getTensuMasterByCode(ZenkakuUtils.toHalfNumber(text), d);
-                        break;
-
-                    case TT_LETTER_SEARCH:
-                        result = dao.getTensuMasterByName(StringTool.hiraganaToKatakana(text), d, view.getPartialChk().isSelected());
-//s.oh^ 2013/11/08 傷病名検索不具合
-                        if (result == null || result.size() <= 0) {
-                            result = dao.getTensuMasterByName(text, d, view.getPartialChk().isSelected());
-                        }
-//s.oh$
-                        break;
-                }
-
-//                if (!dao.isNoError()) {
-//                    throw new Exception(dao.getErrorMessage());
-//                }
-                return result;
-            }
-
-            @Override
-            protected void done() {
-                try {
-                    List<TensuMaster> result = get();
-                    searchResultModel.setDataProvider(result);
-                    int cnt = searchResultModel.getObjectCount();
-                    view.getCountField().setText(String.valueOf(cnt));
-                    Rectangle r = view.getSearchResultTable().getCellRect(0, 0, true);
-                    view.getSearchResultTable().scrollRectToVisible(r);
-
-                } catch (InterruptedException ex) {
-
-                } catch (ExecutionException ex) {
-                    alertSearchError(ex.getMessage());
-                }
-            }
-        };
-
-        worker.execute();
     }
 
     private void getUsage(final String regExp) {
+        try {
+            if (!ipOk()) {
+                return;
+            }
 
-        if (!ipOk()) {
-            return;
+            // 件数をゼロにしておく
+            view.getCountField().setText("0");
+
+            //SqlMasterDao dao = (SqlMasterDao) SqlDaoFactory.create("dao.master");
+            //OrcaRestDelegater dao = new OrcaRestDelegater();
+            OrcaDelegater dao = OrcaDelegaterFactory.create();
+            String d = new SimpleDateFormat("yyyyMMdd").format(new Date());
+            List<TensuMaster> result = dao.getTensuMasterByCode(regExp, d);
+
+            searchResultModel.setDataProvider(result);
+            int cnt = searchResultModel.getObjectCount();
+            view.getCountField().setText(String.valueOf(cnt));
+        } catch (Exception ex) {
+            Logger.getLogger(RpEditor.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-        // 件数をゼロにしておく
-        view.getCountField().setText("0");
-
-        SwingWorker worker = new SwingWorker<List<TensuMaster>, Void>() {
-
-            @Override
-            protected List<TensuMaster> doInBackground() throws Exception {
-                //SqlMasterDao dao = (SqlMasterDao) SqlDaoFactory.create("dao.master");
-                //OrcaRestDelegater dao = new OrcaRestDelegater();
-                OrcaDelegater dao = OrcaDelegaterFactory.create();
-                String d = new SimpleDateFormat("yyyyMMdd").format(new Date());
-
-                List<TensuMaster> result = dao.getTensuMasterByCode(regExp, d);
-
-//                if (!dao.isNoError()) {
-//                    throw new Exception(dao.getErrorMessage());
-//                }
-                return result;
-            }
-
-            @Override
-            protected void done() {
-                try {
-                    List<TensuMaster> result = get();
-                    searchResultModel.setDataProvider(result);
-                    int cnt = searchResultModel.getObjectCount();
-                    view.getCountField().setText(String.valueOf(cnt));
-
-                } catch (InterruptedException ex) {
-
-                } catch (ExecutionException ex) {
-                    alertSearchError(ex.getMessage());
-                }
-            }
-        };
-
-        worker.execute();
     }
 
     @Override
     protected void checkValidation() {
 
-        setIsEmpty = tableModel.getObjectCount() == 0 ? true : false;
+        setIsEmpty = tableModel.getObjectCount() == 0;
 
         if (setIsEmpty) {
             view.getStampNameField().setText(DEFAULT_STAMP_NAME);
@@ -571,10 +529,13 @@ public final class RpEditor extends AbstractStampEditor {
             }
         }
 
-        // 医薬品名をスタンプ名の候補にする
-        String name = view.getStampNameField().getText().trim();
-        if (name.equals("") || name.equals(DEFAULT_STAMP_NAME)) {
-            view.getStampNameField().setText(item.getName());
+        //- セット名自動追加機能 DolphinEvolution
+        if (Boolean.valueOf(Project.getString(Project.STAMP_AUTO_SETNAME))) {
+            // 医薬品名をスタンプ名の候補にする
+            String name = view.getStampNameField().getText().trim();
+            if (name.equals("") || name.equals(DEFAULT_STAMP_NAME)) {
+                view.getStampNameField().setText(item.getName());
+            }
         }
 
         // テーブルへ追加する
@@ -619,7 +580,7 @@ public final class RpEditor extends AbstractStampEditor {
                 // 用法
                 if (col == BUNDLE_COLUMN) {
                     String code = (String) this.getValueAt(row, 0);
-                    return (code != null && code.startsWith(ClaimConst.ADMIN_CODE_START)) ? true : false;
+                    return (code != null && code.startsWith(ClaimConst.ADMIN_CODE_START));
                 }
 
                 // 数量
@@ -628,7 +589,7 @@ public final class RpEditor extends AbstractStampEditor {
                     boolean editableComment = AbstractStampEditor.isNameEditableComment(code);
                     boolean codeIsAdmin = (code != null && code.startsWith(ClaimConst.ADMIN_CODE_START));
                     boolean codeIs82Comment = (AbstractStampEditor.is82Comment(code));
-                    return (code == null || editableComment || codeIsAdmin || codeIs82Comment) ? false : true;
+                    return (code != null && !editableComment && !codeIsAdmin && !codeIs82Comment);
                 }
 
                 return false;
@@ -656,9 +617,7 @@ public final class RpEditor extends AbstractStampEditor {
 
                 // null
                 if (value == null || value.equals("")) {
-                    boolean test = (col == ONEDAY_COLUMN && (mItem.getClassCode() == ClaimConst.SYUGI || mItem.getClassCode() == ClaimConst.OTHER))
-                            ? true
-                            : false;
+                    boolean test = (ONEDAY_COLUMN == col && (mItem.getClassCode() == ClaimConst.SYUGI || mItem.getClassCode() == ClaimConst.OTHER));
                     if (test) {
                         mItem.setNumber(null);
                         mItem.setUnit(null);
@@ -751,7 +710,7 @@ public final class RpEditor extends AbstractStampEditor {
         // 検索結果テーブルを生成する
         //
         JTable searchResultTable = view.getSearchResultTable();
-        searchResultModel = new ListTableModel<TensuMaster>(SR_COLUMN_NAMES, SR_NUM_ROWS, SR_METHOD_NAMES, null);
+        searchResultModel = new ListTableModel<>(SR_COLUMN_NAMES, SR_NUM_ROWS, SR_METHOD_NAMES, null);
         searchResultTable.setModel(searchResultModel);
         searchResultTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         searchResultTable.setRowSelectionAllowed(true);

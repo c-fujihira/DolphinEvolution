@@ -45,7 +45,8 @@ import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -269,7 +270,7 @@ public final class InjectionEditor extends AbstractStampEditor {
     @Override
     protected void checkValidation() {
 
-        setIsEmpty = tableModel.getObjectCount() == 0 ? true : false;
+        setIsEmpty = tableModel.getObjectCount() == 0;
 
         if (setIsEmpty) {
             view.getStampNameField().setText(DEFAULT_STAMP_NAME);
@@ -342,11 +343,14 @@ public final class InjectionEditor extends AbstractStampEditor {
         // MasterItem に変換する
         MasterItem item = tensuToMasterItem(tm);
 
-        // 手技の場合にスタンプ名を設定する
-        if (item.getClassCode() == ClaimConst.SYUGI) {
-            String stName = view.getStampNameField().getText().trim();
-            if (stName.equals("") || stName.equals(DEFAULT_STAMP_NAME)) {
-                view.getStampNameField().setText(item.getName());
+        //- セット名自動追加機能 DolphinEvolution
+        if (Boolean.valueOf(Project.getString(Project.STAMP_AUTO_SETNAME))) {
+            // 手技の場合にスタンプ名を設定する
+            if (item.getClassCode() == ClaimConst.SYUGI) {
+                String stName = view.getStampNameField().getText().trim();
+                if (stName.equals("") || stName.equals(DEFAULT_STAMP_NAME)) {
+                    view.getStampNameField().setText(item.getName());
+                }
             }
         }
 
@@ -359,93 +363,72 @@ public final class InjectionEditor extends AbstractStampEditor {
 
     @Override
     protected void search(final String text, boolean hitReturn) {
+        try {
+            boolean pass = true;
+            pass = pass && ipOk();
 
-        boolean pass = true;
-        pass = pass && ipOk();
+            final int searchType = getSearchType(text, hitReturn);
 
-        final int searchType = getSearchType(text, hitReturn);
+            pass = pass && (searchType != TT_INVALID);
 
-        pass = pass && (searchType != TT_INVALID);
+            if (!pass) {
+                return;
+            }
 
-        if (!pass) {
-            return;
-        }
+            // 件数をゼロにしておく
+            countField.setText("0");
 
-        // 件数をゼロにしておく
-        countField.setText("0");
+            //SqlMasterDao dao = (SqlMasterDao) SqlDaoFactory.create("dao.master");
+            //OrcaRestDelegater dao = new OrcaRestDelegater();
+            OrcaDelegater dao = OrcaDelegaterFactory.create();
+            String d = new SimpleDateFormat("yyyyMMdd").format(new Date());
+            List<TensuMaster> result = null;
 
-        SwingWorker worker = new SwingWorker<List<TensuMaster>, Void>() {
+            switch (searchType) {
 
-            @Override
-            protected List<TensuMaster> doInBackground() throws Exception {
-                //SqlMasterDao dao = (SqlMasterDao) SqlDaoFactory.create("dao.master");
-                //OrcaRestDelegater dao = new OrcaRestDelegater();
-                OrcaDelegater dao = OrcaDelegaterFactory.create();
-                String d = new SimpleDateFormat("yyyyMMdd").format(new Date());
-                List<TensuMaster> result = null;
+                case TT_LIST_TECH:
+                    result = dao.getTensuMasterByShinku(getShinkuRegExp(), d);
+                    break;
 
-                switch (searchType) {
+                case TT_TENSU_SEARCH:
+                    String ten = text.substring(3);
+                    result = dao.getTensuMasterByTen(ZenkakuUtils.toHalfNumber(ten), d);
+                    break;
 
-                    case TT_LIST_TECH:
-                        result = dao.getTensuMasterByShinku(getShinkuRegExp(), d);
-                        break;
+                case TT_85_SEARCH:
+                    result = dao.getTensuMasterByCode("0085", d);
+                    break;
 
-                    case TT_TENSU_SEARCH:
-                        String ten = text.substring(3);
-                        result = dao.getTensuMasterByTen(ZenkakuUtils.toHalfNumber(ten), d);
-                        break;
+                case TT_CODE_SEARCH:
+                    result = dao.getTensuMasterByCode(ZenkakuUtils.toHalfNumber(text), d);
+                    break;
 
-                    case TT_85_SEARCH:
-                        result = dao.getTensuMasterByCode("0085", d);
-                        break;
-
-                    case TT_CODE_SEARCH:
-                        result = dao.getTensuMasterByCode(ZenkakuUtils.toHalfNumber(text), d);
-                        break;
-
-                    case TT_LETTER_SEARCH:
-                        result = dao.getTensuMasterByName(StringTool.hiraganaToKatakana(text), d, view.getPartialChk().isSelected());
+                case TT_LETTER_SEARCH:
+                    result = dao.getTensuMasterByName(StringTool.hiraganaToKatakana(text), d, view.getPartialChk().isSelected());
 //s.oh^ 2013/11/08 傷病名検索不具合
-                        if (result == null || result.size() <= 0) {
-                            result = dao.getTensuMasterByName(text, d, view.getPartialChk().isSelected());
-                        }
+                    if (result == null || result.size() <= 0) {
+                        result = dao.getTensuMasterByName(text, d, view.getPartialChk().isSelected());
+                    }
 //s.oh$
-                        break;
+                    break;
 
-                    case TT_SHINKU_SERACH:
-                        String shin = ZenkakuUtils.toHalfNumber(text);
-                        StringBuilder sb = new StringBuilder();
-                        sb.append("^");
-                        sb.append(shin.substring(1));
-                        result = dao.getTensuMasterByShinku(sb.toString(), d);
-                        break;
-                }
-
-//                if (!dao.isNoError()) {
-//                    throw new Exception(dao.getErrorMessage());
-//                }
-                return result;
+                case TT_SHINKU_SERACH:
+                    String shin = ZenkakuUtils.toHalfNumber(text);
+                    StringBuilder sb = new StringBuilder();
+                    sb.append("^");
+                    sb.append(shin.substring(1));
+                    result = dao.getTensuMasterByShinku(sb.toString(), d);
+                    break;
             }
 
-            @Override
-            protected void done() {
-                try {
-                    List<TensuMaster> result = get();
-                    searchResultModel.setDataProvider(result);
-                    int cnt = searchResultModel.getObjectCount();
-                    view.getCountField().setText(String.valueOf(cnt));
-                    Rectangle r = view.getSearchResultTable().getCellRect(0, 0, true);
-                    view.getSearchResultTable().scrollRectToVisible(r);
-
-                } catch (InterruptedException ex) {
-
-                } catch (ExecutionException ex) {
-                    alertSearchError(ex.getMessage());
-                }
-            }
-        };
-
-        worker.execute();
+            searchResultModel.setDataProvider(result);
+            int cnt = searchResultModel.getObjectCount();
+            view.getCountField().setText(String.valueOf(cnt));
+            Rectangle r = view.getSearchResultTable().getCellRect(0, 0, true);
+            view.getSearchResultTable().scrollRectToVisible(r);
+        } catch (Exception ex) {
+            Logger.getLogger(InjectionEditor.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
     }
 
@@ -488,14 +471,9 @@ public final class InjectionEditor extends AbstractStampEditor {
                         return false;
                     } else if (AbstractStampEditor.isNameEditableComment(code)) {
                         return false;
-
-                    } else if (AbstractStampEditor.is82Comment(code)) {
-                        return false;
-                    } else {
-                        return true;
-                    }
+                    } else return !AbstractStampEditor.is82Comment(code);
                 }
-                return col == NUMBER_COLUMN ? true : false;
+                return col == NUMBER_COLUMN;
             }
 
             // NUMBER_COLUMN に値を設定する
@@ -526,7 +504,7 @@ public final class InjectionEditor extends AbstractStampEditor {
 
                     boolean test = (code == ClaimConst.SYUGI
                             || code == ClaimConst.OTHER
-                            || code == ClaimConst.BUI) ? true : false;
+                            || code == ClaimConst.BUI);
                     if (test) {
                         mItem.setNumber(null);
                         mItem.setUnit(null);

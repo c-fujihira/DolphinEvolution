@@ -294,68 +294,80 @@
                       <content>
                         <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                           <children>
-                            <Text font="$x1" layoutX="14.0" layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="新規カルテ作成時" />
-                            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="102.0" layoutX="14.0" layoutY="35.0" stroke="BLACK" strokeType="INSIDE" width="583.0">
+                            <Text font="$x1" layoutX="14.0" layoutY="17.0" strokeType="OUTSIDE" strokeWidth="0.0" text="新規カルテ作成時" />
+                            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="102.0" layoutX="14.0" layoutY="24.0" stroke="BLACK" strokeType="INSIDE" width="583.0">
                               <effect>
                                 <DropShadow height="10.0" radius="4.5" width="10.0" />
                               </effect>
                             </Rectangle>
-                            <CheckBox fx:id="etcDialog" font="$x1" layoutX="51.0" layoutY="48.0" mnemonicParsing="false" onMouseClicked="#setEtcAltogetherDisable" text="確認ダイアログを表示しない" />
-                            <Text font="$x1" layoutX="14.0" layoutY="162.0" strokeType="OUTSIDE" strokeWidth="0.0" text="カルテ保存時" />
-                            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="133.0" layoutX="14.0" layoutY="173.0" stroke="BLACK" strokeType="INSIDE" width="583.0">
+                            <CheckBox fx:id="etcDialog" font="$x1" layoutX="51.0" layoutY="39.0" mnemonicParsing="false" onMouseClicked="#setEtcAltogetherDisable" text="確認ダイアログを表示しない" />
+                            <Text font="$x1" layoutX="14.0" layoutY="143.0" strokeType="OUTSIDE" strokeWidth="0.0" text="カルテ保存時" />
+                            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="125.0" layoutX="14.0" layoutY="147.0" stroke="BLACK" strokeType="INSIDE" width="583.0">
                               <effect>
                                 <DropShadow height="10.0" radius="4.5" width="10.0" />
                               </effect>
                             </Rectangle>
-                            <Text font="$x1" layoutX="14.0" layoutY="329.0" strokeType="OUTSIDE" strokeWidth="0.0" text="年齢" />
-                            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="44.0" layoutX="14.0" layoutY="342.0" stroke="BLACK" strokeType="INSIDE" width="583.0">
+                            <Text font="$x1" layoutX="13.0" layoutY="378.0" strokeType="OUTSIDE" strokeWidth="0.0" text="年齢" />
+                            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="43.999900000002526" layoutX="15.0" layoutY="388.0" stroke="BLACK" strokeType="INSIDE" width="583.0">
                               <effect>
                                 <DropShadow height="10.0" radius="4.5" width="10.0" />
                               </effect>
                             </Rectangle>
-                            <Text font="$x1" layoutX="15.0" layoutY="411.0" strokeType="OUTSIDE" strokeWidth="0.0" text="２号カルテ" />
-                            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="44.0" layoutX="14.0" layoutY="423.0" stroke="BLACK" strokeType="INSIDE" width="583.0">
+                            <Text font="$x1" layoutX="15.0" layoutY="450.0" strokeType="OUTSIDE" strokeWidth="0.0" text="２号カルテ" />
+                            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="43.999900000002526" layoutX="14.0" layoutY="458.0" stroke="BLACK" strokeType="INSIDE" width="583.0">
                               <effect>
                                 <DropShadow height="10.0" radius="4.5" width="10.0" />
                               </effect>
                             </Rectangle>
-                            <Text font="$x1" layoutX="51.0" layoutY="91.0" strokeType="OUTSIDE" strokeWidth="0.0" text="作成方法：" />
-                            <Text font="$x1" layoutX="51.0" layoutY="117.0" strokeType="OUTSIDE" strokeWidth="0.0" text="配置方法：" />
-                            <RadioButton fx:id="etcAltogether" font="$x1" layoutX="123.0" layoutY="77.0" mnemonicParsing="false" text="全てコピー">
+                            <Text font="$x1" layoutX="51.0" layoutY="82.0" strokeType="OUTSIDE" strokeWidth="0.0" text="作成方法：" />
+                            <Text font="$x1" layoutX="51.0" layoutY="108.0" strokeType="OUTSIDE" strokeWidth="0.0" text="配置方法：" />
+                            <RadioButton fx:id="etcAltogether" font="$x1" layoutX="123.0" layoutY="68.0" mnemonicParsing="false" text="全てコピー">
                               <toggleGroup>
                                 <ToggleGroup fx:id="K" />
                               </toggleGroup>
                             </RadioButton>
-                            <RadioButton fx:id="etcLastPrescription" font="$x1" layoutX="300.0" layoutY="77.0" mnemonicParsing="false" text="前回処方を適用" toggleGroup="$K" />
-                            <RadioButton fx:id="etcBlankNewKarte" font="$x1" layoutX="441.0" layoutY="78.0" mnemonicParsing="false" selected="true" text="空白の新規カルテ" toggleGroup="$K" />
-                            <RadioButton fx:id="etcAnotherWindow" font="$x1" layoutX="123.0" layoutY="105.0" mnemonicParsing="false" selected="true" text="別ウィンドウで編集">
+                            <RadioButton fx:id="etcLastPrescription" font="$x1" layoutX="300.0" layoutY="68.0" mnemonicParsing="false" text="前回処方を適用" toggleGroup="$K" />
+                            <RadioButton fx:id="etcBlankNewKarte" font="$x1" layoutX="441.0" layoutY="69.0" mnemonicParsing="false" selected="true" text="空白の新規カルテ" toggleGroup="$K" />
+                            <RadioButton fx:id="etcAnotherWindow" font="$x1" layoutX="123.0" layoutY="96.0" mnemonicParsing="false" selected="true" text="別ウィンドウで編集">
                               <toggleGroup>
                                 <ToggleGroup fx:id="L" />
                               </toggleGroup>
                             </RadioButton>
-                            <RadioButton fx:id="etcTabPanel" font="$x1" layoutX="300.0" layoutY="105.0" mnemonicParsing="false" text="タブパネルへ追加" toggleGroup="$L" />
-                            <CheckBox fx:id="etcClosesAutomatically" font="$x1" layoutX="51.0" layoutY="186.0" mnemonicParsing="false" text="編集ウィンドウを自動的に閉じる" />
-                            <CheckBox fx:id="etcKarteSaveDialog" font="$x1" layoutX="51.0" layoutY="212.0" mnemonicParsing="false" onMouseClicked="#setEtcKarteSaveDialogDisable" text="確認ダイアログを表示しない" />
-                            <Text font="$x1" layoutX="51.0" layoutY="257.0" strokeType="OUTSIDE" strokeWidth="0.0" text="印刷枚数：" />
-                            <TextField fx:id="etcPrintingSheets" layoutX="121.0" layoutY="242.0" prefHeight="20.0" prefWidth="21.0" text="0" />
-                            <Text font="$x1" layoutX="79.0" layoutY="286.0" strokeType="OUTSIDE" strokeWidth="0.0" text="動作：" />
-                            <RadioButton fx:id="etcOperationAllcopy" font="$x1" layoutX="123.0" layoutY="272.0" mnemonicParsing="false" selected="true" text="全てコピー">
+                            <RadioButton fx:id="etcTabPanel" font="$x1" layoutX="300.0" layoutY="96.0" mnemonicParsing="false" text="タブパネルへ追加" toggleGroup="$L" />
+                            <CheckBox fx:id="etcClosesAutomatically" font="$x1" layoutX="51.0" layoutY="156.0" mnemonicParsing="false" text="編集ウィンドウを自動的に閉じる" />
+                            <CheckBox fx:id="etcKarteSaveDialog" font="$x1" layoutX="51.0" layoutY="182.0" mnemonicParsing="false" onMouseClicked="#setEtcKarteSaveDialogDisable" text="確認ダイアログを表示しない" />
+                            <Text font="$x1" layoutX="51.0" layoutY="227.0" strokeType="OUTSIDE" strokeWidth="0.0" text="印刷枚数：" />
+                            <TextField fx:id="etcPrintingSheets" layoutX="121.0" layoutY="212.0" prefHeight="20.0" prefWidth="21.0" text="0" />
+                            <Text font="$x1" layoutX="79.0" layoutY="256.0" strokeType="OUTSIDE" strokeWidth="0.0" text="動作：" />
+                            <RadioButton fx:id="etcOperationAllcopy" font="$x1" layoutX="123.0" layoutY="242.0" mnemonicParsing="false" selected="true" text="全てコピー">
                               <toggleGroup>
                                 <ToggleGroup fx:id="M" />
                               </toggleGroup>
                             </RadioButton>
-                            <RadioButton fx:id="etcOperationPrescription" font="$x1" layoutX="226.0" layoutY="272.0" mnemonicParsing="false" selected="false" text="前回処方を適用" toggleGroup="$M" />
-                            <Text font="$x1" layoutX="84.0" layoutY="369.0" strokeType="OUTSIDE" strokeWidth="0.0" text="月例を表示する年齢：" />
-                            <TextField fx:id="etcAgeOfTheMoon" alignment="CENTER_RIGHT" layoutX="229.0" layoutY="355.0" prefHeight="20.0" prefWidth="35.0" text="0" />
-                            <Text font="$x1" layoutX="281.0" layoutY="370.0" strokeType="OUTSIDE" strokeWidth="0.0" text="歳未満" />
-                            <Text font="$x1" layoutX="100.0" layoutY="450.0" strokeType="OUTSIDE" strokeWidth="0.0" text="文字サイズ：" />
-                            <RadioButton fx:id="etcFontSmall" font="$x1" layoutX="184.0" layoutY="436.0" mnemonicParsing="false" selected="true" text="小">
+                            <RadioButton fx:id="etcOperationPrescription" font="$x1" layoutX="226.0" layoutY="242.0" mnemonicParsing="false" selected="false" text="前回処方を適用" toggleGroup="$M" />
+                            <Text font="$x1" layoutX="82.0" layoutY="413.0" strokeType="OUTSIDE" strokeWidth="0.0" text="月例を表示する年齢：" />
+                            <TextField fx:id="etcAgeOfTheMoon" alignment="CENTER_RIGHT" layoutX="227.0" layoutY="399.0" prefHeight="20.0" prefWidth="35.0" text="0" />
+                            <Text font="$x1" layoutX="279.0" layoutY="414.0" strokeType="OUTSIDE" strokeWidth="0.0" text="歳未満" />
+                            <Text font="$x1" layoutX="100.0" layoutY="485.0" strokeType="OUTSIDE" strokeWidth="0.0" text="文字サイズ：" />
+                            <RadioButton fx:id="etcFontSmall" font="$x1" layoutX="184.0" layoutY="471.0" mnemonicParsing="false" selected="true" text="小">
                               <toggleGroup>
                                 <ToggleGroup fx:id="N" />
                               </toggleGroup>
                             </RadioButton>
-                            <RadioButton fx:id="etcFontMiddle" font="$x1" layoutX="232.0" layoutY="437.0" mnemonicParsing="false" text="中" toggleGroup="$N" />
-                            <RadioButton fx:id="etcFontLarge" font="$x1" layoutX="281.0" layoutY="437.0" mnemonicParsing="false" text="大" toggleGroup="$N" />
+                            <RadioButton fx:id="etcFontMiddle" font="$x1" layoutX="232.0" layoutY="472.0" mnemonicParsing="false" text="中" toggleGroup="$N" />
+                            <RadioButton fx:id="etcFontLarge" font="$x1" layoutX="281.0" layoutY="472.0" mnemonicParsing="false" text="大" toggleGroup="$N" />
+                            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="59.0" layoutX="14.0" layoutY="299.0" stroke="BLACK" strokeType="INSIDE" width="583.0">
+                              <effect>
+                                <DropShadow height="10.0" radius="4.5" width="10.0" />
+                              </effect>
+                            </Rectangle>
+                            <Text font="$x1" layoutX="15.0" layoutY="290.0" strokeType="OUTSIDE" strokeWidth="0.0" text="カルテ記入時" />
+                            <RadioButton id="etcAnotherWindow" fx:id="etcKarteSplitUp" font="$x1" layoutX="51.0" layoutY="307.0" mnemonicParsing="false" selected="false" text="２分割時、上を過去カルテ、下をエディタ表示" visible="true">
+                              <toggleGroup>
+                                <ToggleGroup fx:id="X" />
+                              </toggleGroup>
+                            </RadioButton>
+                            <RadioButton id="etcAnotherWindow" fx:id="etcKarteSplitDown" font="$x1" layoutX="51.0" layoutY="332.0" mnemonicParsing="false" selected="true" text="２分割時、上をエディタ、下を過去カルテ表示" toggleGroup="$X" />
                           </children>
                         </AnchorPane>
                       </content>
@@ -488,6 +500,7 @@
                   </effect>
                 </Rectangle>
                 <CheckBox id="stampMaster" fx:id="mergeWithLabotest" font="$x1" layoutX="210.0" layoutY="532.0" mnemonicParsing="false" selected="false" text="同じ検体検査をまとめる" />
+                <CheckBox id="stampDnd" fx:id="stampAutoSetName" font="$x1" layoutX="340.0" layoutY="82.0" mnemonicParsing="false" selected="true" text="セット名を自動入力する" />
               </children>
             </AnchorPane>
           </content>

@@ -4,7 +4,7 @@
 
     <groupId>opendolphin</groupId>
     <artifactId>DolphinEvolution</artifactId>
-    <version>1.0-Build50</version>
+    <version>1.1-Build52</version>
     <packaging>jar</packaging>
 
     <name>DolphinEvolution</name>
@@ -367,7 +367,7 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>DolphinEvolution2-common</artifactId>
-            <version>1.0-Build05</version>
+            <version>1.1-Build10</version>
             <type>jar</type>
         </dependency>
     </dependencies>

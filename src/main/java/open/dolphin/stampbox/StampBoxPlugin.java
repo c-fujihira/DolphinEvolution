@@ -276,16 +276,16 @@ public class StampBoxPlugin extends AbstractMainTool {
             if (model != null) {
 
                 if (true) {
-                    ClientContext.getBootLogger().debug("id = " + model.getId());
-                    ClientContext.getBootLogger().debug("name = " + model.getName());
-                    ClientContext.getBootLogger().debug("publishType = " + model.getPublishType());
-                    ClientContext.getBootLogger().debug("category = " + model.getCategory());
-                    ClientContext.getBootLogger().debug("partyName = " + model.getPartyName());
-                    ClientContext.getBootLogger().debug("url = " + model.getUrl());
-                    ClientContext.getBootLogger().debug("description = " + model.getDescription());
-                    ClientContext.getBootLogger().debug("publishedDate = " + model.getPublishedDate());
-                    ClientContext.getBootLogger().debug("lastUpdated = " + model.getLastUpdated());
-                    ClientContext.getBootLogger().debug("userId = " + model.getUserModel());
+                    ClientContext.getBootLogger().info("id = " + model.getId());
+                    ClientContext.getBootLogger().info("name = " + model.getName());
+                    ClientContext.getBootLogger().info("publishType = " + model.getPublishType());
+                    ClientContext.getBootLogger().info("category = " + model.getCategory());
+                    ClientContext.getBootLogger().info("partyName = " + model.getPartyName());
+                    ClientContext.getBootLogger().info("url = " + model.getUrl());
+                    ClientContext.getBootLogger().info("description = " + model.getDescription());
+                    ClientContext.getBootLogger().info("publishedDate = " + model.getPublishedDate());
+                    ClientContext.getBootLogger().info("lastUpdated = " + model.getLastUpdated());
+                    ClientContext.getBootLogger().info("userId = " + model.getUserModel().getUserId());
                 }
 
                 // ユーザ個人用StampTreeの場合

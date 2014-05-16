@@ -38,6 +38,7 @@
  */
 package open.dolphin.letter;
 
+import open.dolphin.client.ChartImpl;
 import open.dolphin.client.GUIConst;
 import open.dolphin.client.Letter;
 
@@ -58,7 +59,7 @@ public class LetterStateMgr {
 
     public LetterStateMgr(Letter letterImpl) {
         this.letterImpl = letterImpl;
-        currentState = emptyState;
+        currentState = dirtyState;
     }
 
     public void processEmptyEvent() {
@@ -109,18 +110,23 @@ public class LetterStateMgr {
 
         @Override
         public void enter() {
+            if (((ChartImpl) letterImpl.getContext()).getKarteSplitPane().getBottomComponent() != null) {
+                letterImpl.getContext().enabledAction(GUIConst.ACTION_SAVE, true);
+                letterImpl.getContext().enabledAction(GUIConst.ACTION_PRINT, true);             // Print
+            } else {
 //minagawa^ LSC Test (新規カルテは
 //            boolean canEdit = letterImpl.getContext().isReadOnly() ? false : true;            
 //            letterImpl.getContext().enabledAction(GUIConst.ACTION_NEW_KARTE, canEdit);
 //            letterImpl.getContext().enabledAction(GUIConst.ACTION_NEW_DOCUMENT, canEdit);
-//            letterImpl.getContext().enabledAction(GUIConst.ACTION_SAVE, false);
-            letterImpl.getContext().enabledAction(GUIConst.ACTION_MODIFY_KARTE, false);
+                letterImpl.getContext().enabledAction(GUIConst.ACTION_SAVE, true);
+                letterImpl.getContext().enabledAction(GUIConst.ACTION_MODIFY_KARTE, false);
 //            letterImpl.getContext().enabledAction(GUIConst.ACTION_DELETE, false);
-            letterImpl.getContext().enabledAction(GUIConst.ACTION_PRINT, false);
+                letterImpl.getContext().enabledAction(GUIConst.ACTION_PRINT, true);
 //            letterImpl.getContext().enabledAction(GUIConst.ACTION_ASCENDING, false);
 //            letterImpl.getContext().enabledAction(GUIConst.ACTION_DESCENDING, false);
 //            letterImpl.getContext().enabledAction(GUIConst.ACTION_SHOW_MODIFIED, false);
 //minagawa$            
+            }
         }
     }
 
@@ -132,12 +138,17 @@ public class LetterStateMgr {
         @Override
         public void enter() {
             letterImpl.setEditables(false);
-            letterImpl.getContext().enabledAction(GUIConst.ACTION_SAVE, false);
-//minagawa^ LSC Test             
-            boolean canEdit = letterImpl.getContext().isReadOnly() ? false : true;
-            letterImpl.getContext().enabledAction(GUIConst.ACTION_MODIFY_KARTE, canEdit);   // 修正
-            letterImpl.getContext().enabledAction(GUIConst.ACTION_PRINT, true);             // Print
-//minagawa$
+            if (((ChartImpl) letterImpl.getContext()).getKarteSplitPane().getBottomComponent() != null) {
+                letterImpl.getContext().enabledAction(GUIConst.ACTION_SAVE, true);
+                letterImpl.getContext().enabledAction(GUIConst.ACTION_PRINT, true);             // Print
+            } else {
+                letterImpl.getContext().enabledAction(GUIConst.ACTION_SAVE, false);
+                //minagawa^ LSC Test             
+                boolean canEdit = letterImpl.getContext().isReadOnly() ? false : true;
+                letterImpl.getContext().enabledAction(GUIConst.ACTION_MODIFY_KARTE, canEdit);   // 修正
+                letterImpl.getContext().enabledAction(GUIConst.ACTION_PRINT, true);             // Print
+                //minagawa$
+            }
         }
     }
 
@@ -158,7 +169,7 @@ public class LetterStateMgr {
         public void enter() {
             letterImpl.getContext().enabledAction(GUIConst.ACTION_SAVE, true);
             letterImpl.getContext().enabledAction(GUIConst.ACTION_PRINT, true);
-            //letterImpl.getContext().enabledAction(GUIConst.ACTION_MODIFY_KARTE, false);
+            letterImpl.getContext().enabledAction(GUIConst.ACTION_MODIFY_KARTE, true);
         }
     }
 }

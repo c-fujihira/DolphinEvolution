@@ -682,17 +682,17 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel, NC
         String selecteIns = null;
         String insGUID = getModel().getDocInfoModel().getHealthInsuranceGUID();
         if (insGUID != null) {
-            ClientContext.getBootLogger().debug("insGUID = " + insGUID);
+            ClientContext.getBootLogger().info("insGUID = " + insGUID);
             for (int i = 0; i < ins.length; i++) {
                 String GUID = ins[i].getGUID();
                 if (GUID != null && GUID.equals(insGUID)) {
                     selecteIns = ins[i].toString();
-                    ClientContext.getBootLogger().debug("found ins = " + selecteIns);
+                    ClientContext.getBootLogger().info("found ins = " + selecteIns);
                     break;
                 }
             }
         } else {
-            ClientContext.getBootLogger().debug("insGUID is null");
+            ClientContext.getBootLogger().info("insGUID is null");
         }
 
         StringBuilder sb = new StringBuilder();

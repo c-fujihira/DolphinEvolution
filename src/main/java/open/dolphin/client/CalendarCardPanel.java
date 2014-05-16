@@ -93,6 +93,8 @@ public class CalendarCardPanel extends JPanel  {
     private final int titleAlign = TITLE_ALIGN;
     private final Font titleFont = TITLE_FONT;
     
+    private LiteCalendarPanel lc = null;
+    
     /**
      * CalendarCardPanelを生成する。
      * 
@@ -103,7 +105,7 @@ public class CalendarCardPanel extends JPanel  {
         this.colorTable = colorTable;
         calendarListener = new CalendarListener(this);
         
-        LiteCalendarPanel lc = new LiteCalendarPanel(current, false);
+        lc = new LiteCalendarPanel(current, false);
         lc.addPropertyChangeListener(LiteCalendarPanel.SELECTED_DATE_PROP, calendarListener);
         lc.setEventColorTable(colorTable);
         SimpleDate today = new SimpleDate(new GregorianCalendar());
@@ -272,7 +274,7 @@ public class CalendarCardPanel extends JPanel  {
         updateTitle(lc, titleLable);
         cardLayout.show(cardPanel, key);
     }
-    
+
     private JPanel createCommnadPanel() {
         //JPanel cmd = new JPanel(new FlowLayout(FlowLayout.CENTER,2,0));
         JPanel cmd = new JPanel();
@@ -304,5 +306,9 @@ public class CalendarCardPanel extends JPanel  {
                 owner.notifyPickedDate(sd);
             }
         }
+    }
+    
+    public void setBirthDay(String birthday){
+        lc.setBirthday(birthday);
     }
 }

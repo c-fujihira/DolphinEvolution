@@ -855,6 +855,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
     /**
      * 抽出期間を変更した場合に再検索を行う。
      * ORCA 病名ボタンが disable であれば検索後に enable にする。
+     * @param e
      */
     public void extPeriodChanged(ItemEvent e) {       
         if (e.getStateChange() == ItemEvent.SELECTED) {
@@ -902,7 +903,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
      */
     private void addAddedList(RegisteredDiagnosisModel added) {
         if (addedDiagnosis == null) {
-            addedDiagnosis = new ArrayList<RegisteredDiagnosisModel>(5);
+            addedDiagnosis = new ArrayList<>(5);
         }
         addedDiagnosis.add(added);
 //minagawa^ LSC 1.4 bug fiz 傷病名の削除(GUI) 2013/06/24
@@ -913,7 +914,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
 
     private void addAllAddedList(List<RegisteredDiagnosisModel> list) {
         if (addedDiagnosis == null) {
-            addedDiagnosis = new ArrayList<RegisteredDiagnosisModel>(5);
+            addedDiagnosis = new ArrayList<>(5);
         }
         addedDiagnosis.addAll(list);
  //minagawa^ LSC 1.4 bug fiz 傷病名の削除(GUI) 2013/06/24
@@ -948,7 +949,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
         if (updated.getId() != 0L) {
             // 更新リストに追加する
             if (updatedDiagnosis == null) {
-                updatedDiagnosis = new ArrayList<RegisteredDiagnosisModel>(5);
+                updatedDiagnosis = new ArrayList<>(5);
             }
             // 同じものが再度更新されているケースを除く
             if (!updatedDiagnosis.contains(updated)) {
@@ -1110,6 +1111,8 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
 
     /**
      * 傷病名スタンプを取得する worker を起動する。
+     * @param stampList
+     * @param insertRow
      */
     public void importStampList(final List<ModuleInfoBean> stampList, final int insertRow) {
 
@@ -1179,6 +1182,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
 
     /**
      * 傷病名エディタからデータを受け取りテーブルへ追加する。
+     * @param e
      */
     @Override
     public void propertyChange(PropertyChangeEvent e) {
@@ -1271,7 +1275,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
             return false;
         }
         
-        if (endDate.before(startDate)) {
+        if (endDate != null && endDate.before(startDate)) {
             StringBuilder sb = new StringBuilder();
             sb.append("疾患の終了日が開始日以前になっています。");
             JOptionPane.showMessageDialog(
@@ -1384,11 +1388,12 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
                 // 現バージョンは上書きしている
                 rd.setKarteBean(getContext().getKarte());           // Karte
                 rd.setUserModel(Project.getUserModel());            // Creator
+                //-BugFix S&I 病名開始日を変更すると、ORCAで重複
                 rd.setConfirmed(confirmed);
                 rd.setRecorded(confirmed);
                 // updatedList へ入っているのは detuched object のみ
                 rd.setStatus(IInfoModel.STATUS_FINAL);
-
+                
                 // TODO トラフィック
                 rd.setPatientLiteModel(getContext().getPatient().patientAsLiteModel());
                 rd.setUserLiteModel(Project.getUserModel().getLiteModel());
@@ -1423,7 +1428,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
             // clone
             List<ModuleInfoBean> list2;
             synchronized (list) {
-                list2 = new ArrayList<ModuleInfoBean>(list.size());
+                list2 = new ArrayList<>(list.size());
                 while (list.size()>0) {
                     list2.add(list.remove(0));
                 }
@@ -1559,9 +1564,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
                 ok = ok && (((ModuleInfoBean)node.getUserObject()).getEntity().equals(IInfoModel.ENTITY_DIAGNOSIS));
                 return ok;
                 
-            } catch (UnsupportedFlavorException ex) {
-                ex.printStackTrace(System.err);
-            } catch (IOException ex) {
+            } catch (UnsupportedFlavorException | IOException ex) {
                 ex.printStackTrace(System.err);
             }
         }
@@ -1607,11 +1610,14 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
         model.setOutcome("delete");
         model.setOutcomeDesc("delete");
         model.setOutcomeCodeSys(ClientContext.getString("diagnosis.outcomeCodeSys"));
-        model.setEndDate(confirmedStr);
+        //model.setEndDate(confirmedStr);
+        model.setEndDate(model.getEndDate());
         model.setKarteBean(getContext().getKarte());       // Karte
         model.setUserModel(Project.getUserModel());        // Creator
-        model.setConfirmed(confirmed);                     // 確定日
-        model.setRecorded(confirmed);                      // 記録日
+        //model.setConfirmed(confirmed);                     // 確定日
+        model.setConfirmed(model.getConfirmed());            // 確定日
+        //model.setRecorded(confirmed);                      // 記録日
+        model.setRecorded(model.getRecorded());              // 記録日
         final List<RegisteredDiagnosisModel> list = new ArrayList(1);
 //s.oh^ 2014/01/28 傷病名削除不具合
         model.setPatientLiteModel(getContext().getPatient().patientAsLiteModel());
@@ -2110,14 +2116,14 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
     class PopupListener extends MouseAdapter implements PropertyChangeListener {
 
         private JPopupMenu popup;
-        private JTextField tf;
+        private final JTextField tf;
         // 2013/04/22
 //minagawa^ 定例打ち合わせ        
 //        public PopupListener(JTextField tf) {
 //            this.tf = tf;
 //            tf.addMouseListener(PopupListener.this);
 //        }
-        private int[] range;
+        private final int[] range;
 
         public PopupListener(JTextField tf, int[] range) {
             this.tf = tf;
@@ -2189,16 +2195,16 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
         private final String confirmedStr;
 
         // 新規に追加された病名のリスト
-        private List<RegisteredDiagnosisModel> added;
+        private final List<RegisteredDiagnosisModel> added;
         
         // 転帰等、更新された病名のリスト
-        private List<RegisteredDiagnosisModel> updated;
+        private final List<RegisteredDiagnosisModel> updated;
         
         // CLAIM送信を行う時 true
-        private boolean sendClaim;
+        private final boolean sendClaim;
         
         // Delegater 
-        private DocumentDelegater ddl;
+        private final DocumentDelegater ddl;
 
         public DiagnosisPutTask(
                 String confirmedStr,
@@ -2300,7 +2306,7 @@ public final class DiagnosisDocument extends AbstractChartDocument implements Pr
             // 追加病名を CLAIM 送信する
             // その際、DORCA病名を覗く（これはORCAにあってDolphinにインポートされ、転帰等の変更がないもの）
             if (sendClaim && addedDiagnosis != null && addedDiagnosis.size() > 0) {
-                List<RegisteredDiagnosisModel> actualList = new ArrayList<RegisteredDiagnosisModel>();
+                List<RegisteredDiagnosisModel> actualList = new ArrayList<>();
                 for (RegisteredDiagnosisModel rdm : addedDiagnosis) {
                     if (isDorcaUpdatedDisease(rdm) || isPureDisease(rdm)) {
 //s.oh^ 2013/05/10 傷病名対応

@@ -398,7 +398,7 @@ public class StampImporter {
 
             @Override
             protected void cancelled() {
-                ClientContext.getBootLogger().debug("Task cancelled");
+                ClientContext.getBootLogger().info("Task cancelled");
             }
 
             @Override
@@ -495,7 +495,7 @@ public class StampImporter {
 
             @Override
             protected void cancelled() {
-                ClientContext.getBootLogger().debug("Task cancelled");
+                ClientContext.getBootLogger().info("Task cancelled");
             }
 
             @Override

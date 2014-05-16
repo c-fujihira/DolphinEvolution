@@ -43,6 +43,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import open.dolphin.helper.MenuSupport;
+import open.dolphin.infomodel.PatientVisitModel;
 
 /**
  *
@@ -65,5 +66,5 @@ public abstract class AbstractMenuFactory {
     
     public abstract ActionMap getActionMap();
     
-    public abstract void build(JMenuBar menuBar);
+    public abstract void build(JMenuBar menuBar, ChartMediator mediator, PatientVisitModel pvt, Evolution application);
 }

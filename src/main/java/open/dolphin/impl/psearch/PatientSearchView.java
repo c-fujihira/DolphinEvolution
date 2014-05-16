@@ -6,7 +6,11 @@
 
 package open.dolphin.impl.psearch;
 
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.awt.im.InputSubset;
 import javafx.embed.swing.JFXPanel;
+import javax.swing.JComponent;
 
 /**
  *
@@ -29,6 +33,20 @@ public class PatientSearchView extends JFXPanel {
     }
 
     public javax.swing.JTextField getKeywordFld() {
+//        keywordFld.addFocusListener(new FocusAdapter() {
+//            @Override
+//            public void focusGained(FocusEvent e) {
+//                JComponent component = (JComponent) (e.getSource());
+//                String selectItem = (String)sortItem.getSelectedItem();
+//                // 全角入力
+//                if (selectItem.equals("カ ナ")) {
+//                    component.getInputContext().setCharacterSubsets(new Character.Subset[]{InputSubset.KANJI});
+//                } // 半角入力
+//                else {
+//                    component.getInputContext().setCharacterSubsets(null);
+//                }
+//            }
+//        });
         return keywordFld;
     }
     

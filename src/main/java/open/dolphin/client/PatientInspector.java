@@ -45,6 +45,7 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import open.dolphin.infomodel.KarteBean;
 import open.dolphin.infomodel.PatientModel;
+import open.dolphin.project.Project;
 
 /**
  *
@@ -80,7 +81,10 @@ public final class PatientInspector {
     // Context このインスペクタの親コンテキスト
     private ChartImpl context;
 
-    private JPanel ptSubPanel;
+    private boolean bMemo;
+    private boolean bAllergy;
+    private boolean bPhysical;
+    private boolean bCalendar;
 
     /**
      * 患者インスペクタクラスを生成する。
@@ -92,9 +96,6 @@ public final class PatientInspector {
         // このインスペクタが格納される Chart Object
         this.context = context;
 
-        ptSubPanel = new JPanel();
-        ptSubPanel.setLayout(new BoxLayout(ptSubPanel , BoxLayout.Y_AXIS));
-
         // GUI を初期化する
         initComponents();
     }
@@ -105,14 +106,6 @@ public final class PatientInspector {
         allergyInspector.clear();
         physicalInspector.clear();
         memoInspector.save();
-    }
-
-    public JPanel getPtSubPanel() {
-        return ptSubPanel;
-    }
-
-    public void setPtSubPanel(JPanel panel) {
-        ptSubPanel = panel;
     }
 
     /**
@@ -196,22 +189,28 @@ public final class PatientInspector {
         return container;
     }
 
-    public void initComponents() {
 
+    private void initComponents() {
+        
         // 来院歴
-//        String pvtTitle = ClientContext.getString("patientInspector.pvt.title");
+        String pvtTitle = ClientContext.getString("patientInspector.pvt.title");
+
         // 文書履歴
         String docHistoryTitle = ClientContext.getString("patientInspector.docHistory.title");
+
         // アレルギ
-//        String allergyTitle = ClientContext.getString("patientInspector.allergy.title");
+        String allergyTitle = ClientContext.getString("patientInspector.allergy.title");
+
         // 身長体重
         String physicalTitle = ClientContext.getString("patientInspector.physical.title");
+
         // メモ
-//        String memoTitle = ClientContext.getString("patientInspector.memo.title");
-//        String topInspector = Project.getString("topInspector", "メモ");
-//        String secondInspector = Project.getString("secondInspector", "カレンダ");
-//        String thirdInspector = Project.getString("thirdInspector", "文書履歴");
-//        String forthInspector = Project.getString("forthInspector", "アレルギ");
+        String memoTitle = ClientContext.getString("patientInspector.memo.title");
+
+        String topInspector = Project.getString("topInspector", "メモ");
+        String secondInspector = Project.getString("secondInspector", "カレンダ");
+        String thirdInspector = Project.getString("thirdInspector", "文書履歴");
+        String forthInspector = Project.getString("forthInspector", "アレルギ");
 
         // 各インスペクタを生成する
         basicInfoInspector = new BasicInfoInspector(context);
@@ -232,21 +231,62 @@ public final class PatientInspector {
             prefW2 += 20;
         }
         basicInfoInspector.getPanel().setPreferredSize(new Dimension(prefW2, 40));
+        basicInfoInspector.getPanel().setMaximumSize(new Dimension(prefW2, 40));
+        basicInfoInspector.getPanel().setMinimumSize(new Dimension(prefW2, 40));
 
         // cut & try
         memoInspector.getPanel().setPreferredSize(new Dimension(prefW, 100));
-        docHistory.getPanel().setPreferredSize(new Dimension(prefW, 250));
-        physicalInspector.getPanel().setPreferredSize(new Dimension(prefW, 80));
-        tabbedPane.setPreferredSize(new Dimension(prefW, 200));
         allergyInspector.getPanel().setPreferredSize(new Dimension(prefW, 80));
+        docHistory.getPanel().setPreferredSize(new Dimension(prefW, 300));
+        physicalInspector.getPanel().setPreferredSize(new Dimension(prefW, 80));
 
-        getPtSubPanel().add(basicInfoInspector.getPanel());
-        getPtSubPanel().add(getPatientVisitInspector().getPanel());
-        getPtSubPanel().add(memoInspector.getPanel());
-        tabbedPane.addTab(physicalTitle, physicalInspector.getPanel());
-        getPtSubPanel().add(tabbedPane);
-        getPtSubPanel().add(allergyInspector.getPanel());
-        getPtSubPanel().setSize(new Dimension(prefW, 370));
+        container = new JPanel();
+        container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
+
+        // 左側のレイアウトを行う
+        layoutRow(container, topInspector);
+        layoutRow(container, secondInspector);
+        layoutRow(container, thirdInspector);
+        layoutRow(container, forthInspector);
+
+        // 左側にレイアウトされなかったものをタブに格納する
+        if (!bMemo) {
+            tabbedPane.addTab(memoTitle, memoInspector.getPanel());
+        }
+
+        if (!bCalendar) {
+            tabbedPane.addTab(pvtTitle, patientVisitInspector.getPanel());
+        }
+
+        if (!bAllergy) {
+            tabbedPane.addTab(allergyTitle, allergyInspector.getPanel());
+        }
+
+        if (!bPhysical) {
+            tabbedPane.addTab(physicalTitle, physicalInspector.getPanel());
+        }
     }
 
+    private void layoutRow(JPanel content, String itype) {
+
+        if (itype.equals("メモ")) {
+            content.add(memoInspector.getPanel());
+            bMemo = true;
+
+        } else if (itype.equals("カレンダ")) {
+            content.add(patientVisitInspector.getPanel());
+            bCalendar = true;
+
+        } else if (itype.equals("文書履歴")) {
+            content.add(tabbedPane);
+
+        } else if (itype.equals("アレルギ")) {
+            content.add(allergyInspector.getPanel());
+            bAllergy = true;
+
+        } else if (itype.equals("身長体重")) {
+            content.add(physicalInspector.getPanel());
+            bPhysical = true;
+        }
+    }
 }

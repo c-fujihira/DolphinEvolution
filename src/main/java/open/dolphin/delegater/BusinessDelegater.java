@@ -54,9 +54,7 @@ import open.dolphin.client.ClientContext;
 import open.dolphin.exception.FirstCommitWinException;
 import open.dolphin.project.Project;
 import open.dolphin.util.HashUtil;
-import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.conn.ssl.X509HostnameVerifier;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -82,6 +80,7 @@ public class BusinessDelegater {
     protected static final String DATE_TIME_FORMAT_REST = "yyyy-MM-dd HH:mm:ss";
     protected static final String USER_NAME = "userName";
     protected static final String PASSWORD = "password";
+    protected static final String CLIENTVERSION = "clientVersion";
     private int errCode;
     protected static Scheme scheme;
 
@@ -147,6 +146,7 @@ public class BusinessDelegater {
         ClientRequest request = new ClientRequest(uri, getClientExecutor());
         request.header(USER_NAME, userId);
         request.header(PASSWORD, HashUtil.MD5(password));
+        request.header(CLIENTVERSION, ClientContext.getProductName() + "_" + ClientContext.getVersion() + "_" + Project.getClientBuild());
         return request;
     }
 
@@ -157,6 +157,7 @@ public class BusinessDelegater {
         ClientRequest request = new ClientRequest(uri, getClientExecutor());
         request.header(USER_NAME, userId);
         request.header(PASSWORD, HashUtil.MD5(password));
+        request.header(CLIENTVERSION, ClientContext.getProductName() + "_" + ClientContext.getVersion() + "_" + Project.getClientBuild());
         return request;
     }
 
@@ -167,6 +168,7 @@ public class BusinessDelegater {
         ClientRequest request = new ClientRequest(uri, getClientExecutor());
         request.header(USER_NAME, Project.getUserModel().getUserId());
         request.header(PASSWORD, Project.getUserModel().getPassword());
+        request.header(CLIENTVERSION, ClientContext.getProductName() + "_" + ClientContext.getVersion() + "_" + Project.getClientBuild());
         return request;
     }
 

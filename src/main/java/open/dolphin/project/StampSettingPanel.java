@@ -58,10 +58,7 @@ public class StampSettingPanel extends AbstractSettingPanel {
 
     private static final String ID = "stampSetting";
     private static final String TITLE = "スタンプ";
-//minagawa^ Icon Server    
-    //private static final String ICON = "lgicn_16.gif";
     private static final String ICON = "icon_stamp_settings_small";
-//minagawa$    
 
     // Stamp
     private JRadioButton replaceStamp;
@@ -77,9 +74,9 @@ public class StampSettingPanel extends AbstractSettingPanel {
     private JRadioButton stampEditorButtonIcon;
     private JRadioButton stampEditorButtonText;
     private JCheckBox mergeWithSameAdmin;
-//minagawa^ LSC Test
     private JCheckBox showStampNameOnKarte;
-//minagawa$    
+    private JCheckBox stampAutoSetName;
+
 //s.oh^ 2014/01/27 同じ検体検査をまとめる
     private JCheckBox mergeWithLabTest;
 //s.oh$
@@ -144,9 +141,9 @@ public class StampSettingPanel extends AbstractSettingPanel {
         stampEditorButtonIcon = new JRadioButton("アイコン");
         stampEditorButtonText = new JRadioButton("テキスト");
         mergeWithSameAdmin = new JCheckBox("同じ用法をまとめる");
-//minagawa^ LSC Test
         showStampNameOnKarte = new JCheckBox("カルテ展開時にスタンプ名を表示する");
-//minagawa$        
+        stampAutoSetName = new JCheckBox("セット名を自動入力する");
+        
 //s.oh^ 2014/01/27 同じ検体検査をまとめる
         mergeWithLabTest = new JCheckBox("同じ検体検査をまとめる");
 //s.oh$
@@ -174,13 +171,14 @@ public class StampSettingPanel extends AbstractSettingPanel {
         gbb.add(label, 0, row, 1, 1, GridBagConstraints.EAST);
         gbb.add(stmpP, 1, row, 1, 1, GridBagConstraints.WEST);
         row++;
-        gbb.add(stampSpace, 0, row, 2, 1, GridBagConstraints.WEST);
+        gbb.add(stampSpace, 0, row, 1, 1, GridBagConstraints.EAST);
+        gbb.add(stampAutoSetName, 1, row, 1, 1, GridBagConstraints.WEST);
         row++;
         gbb.add(laboFold, 0, row, 2, 1, GridBagConstraints.WEST);
         row++;
         gbb.add(showStampNameOnKarte, 0, row, 2, 1, GridBagConstraints.WEST);
         stampPanel.add(gbb.getProduct());
-
+        
         // デフォルト数量
         gbb = new GridBagBuilder("スタンプエディタのデフォルト数量");
         row = 0;
@@ -271,6 +269,7 @@ public class StampSettingPanel extends AbstractSettingPanel {
         showAlert.setSelected(!model.isReplaceStamp());
         stampSpace.setSelected(model.isStampSpace());
         laboFold.setSelected(model.isLaboFold());
+        stampAutoSetName.setSelected(model.isStampAutoName());
         defaultZyozaiNum.setText(model.getDefaultZyozaiNum());
         defaultMizuyakuNum.setText(model.getDefaultMizuyakuNum());
         defaultSanyakuNum.setText(model.getDefaultSanyakuNum());
@@ -282,10 +281,13 @@ public class StampSettingPanel extends AbstractSettingPanel {
         defaultCapsuleNum.addFocusListener(AutoRomanListener.getInstance());
         defaultRpNum.addFocusListener(AutoRomanListener.getInstance());
         masterItemColoring.setSelected(model.isMasterItemColoring());
-        if (model.getEditorButtonType().equals("icon")) {
-            stampEditorButtonIcon.doClick();
-        } else if (model.getEditorButtonType().equals("text")) {
-            stampEditorButtonText.doClick();
+        switch (model.getEditorButtonType()) {
+            case "icon":
+                stampEditorButtonIcon.doClick();
+                break;
+            case "text":
+                stampEditorButtonText.doClick();
+                break;
         }
         // 同一処方
         mergeWithSameAdmin.setSelected(model.isMergeWithSameAdmin());
@@ -308,6 +310,7 @@ public class StampSettingPanel extends AbstractSettingPanel {
         model.setReplaceStamp(replaceStamp.isSelected());
         model.setStampSpace(stampSpace.isSelected());
         model.setLaboFold(laboFold.isSelected());
+        model.setStampAutoSetName(stampAutoSetName.isSelected());
         model.setDefaultZyozaiNum(defaultZyozaiNum.getText().trim());
         model.setDefaultMizuyakuNum(defaultMizuyakuNum.getText().trim());
         model.setDefaultSanyakuNum(defaultSanyakuNum.getText().trim());
@@ -346,9 +349,9 @@ public class StampSettingPanel extends AbstractSettingPanel {
         private boolean itemColoring;
         private String editorButtonType;
         private boolean mergeWithSameAdmin;
-//minagawa^ LSC Test
         private boolean showStampName;
-//minagawa$        
+        private boolean stampAutoSetName;
+
 //s.oh^ 2014/01/27 同じ検体検査をまとめる
         private boolean mergeWithLabTest;
 //s.oh$
@@ -367,6 +370,9 @@ public class StampSettingPanel extends AbstractSettingPanel {
             // 検体検査スタンプを折りたたみ表示するかどうか
             setLaboFold(Project.getBoolean(Project.LABTEST_FOLD));  // stub.isLaboFold()
 
+            //- セット名を自動入力する
+            setStampAutoSetName(Project.getBoolean(Project.STAMP_AUTO_SETNAME));
+            
             //-------------------
             // 錠剤のデフォルト数量
             setDefaultZyozaiNum(Project.getString(Project.DEFAULT_ZYOZAI_NUM));  // stub.getDefaultZyozaiNum()
@@ -413,6 +419,8 @@ public class StampSettingPanel extends AbstractSettingPanel {
 
             Project.setBoolean(Project.LABTEST_FOLD, isLaboFold()); //stub.setLaboFold(isLaboFold());
 
+            Project.setBoolean(Project.STAMP_AUTO_SETNAME, isStampAutoName());
+            
             //-------------------------------
             String test = testNumber(getDefaultZyozaiNum());
             if (test != null) {
@@ -476,6 +484,14 @@ public class StampSettingPanel extends AbstractSettingPanel {
             return laboFold;
         }
 
+        public boolean isStampAutoName() {
+            return stampAutoSetName;
+        }
+        
+        public void setStampAutoSetName(boolean stampAutoSetName) {
+            this.stampAutoSetName = stampAutoSetName;
+        }
+        
         public void setLaboFold(boolean laboFold) {
             this.laboFold = laboFold;
         }

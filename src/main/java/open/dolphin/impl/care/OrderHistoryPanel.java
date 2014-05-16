@@ -292,6 +292,7 @@ public final class OrderHistoryPanel extends JPanel implements PropertyChangeLis
 
     /**
      * カレンダーの日が選択されたときに通知を受け、テーブルで日付が一致するオーダの行を選択する。
+     *
      * @param e
      */
     @Override
@@ -363,14 +364,18 @@ public final class OrderHistoryPanel extends JPanel implements PropertyChangeLis
             // Merge する
             StringWriter sw = new StringWriter();
             BufferedReader reader;
-            try (BufferedWriter bw = new BufferedWriter(sw)) {
+            BufferedWriter bw = new BufferedWriter(sw);
+            try {
                 InputStream instream = ClientContext
                         .getTemplateAsStream(templateFile);
                 reader = new BufferedReader(new InputStreamReader(
                         instream, "UTF-8"));
                 Velocity.evaluate(context, bw, "stmpHolder", reader);
                 bw.flush();
+            } finally {
+                bw.close();
             }
+
             reader.close();
             contents.setText(sw.toString());
 

@@ -74,9 +74,8 @@ public final class PatientDelegater extends BusinessDelegater {
     private static final String ID_RESOURCE = "/patient/id/";
     private static final String DIGIT_RESOURCE = "/patient/digit/";
     private static final String PVT_DATE_RESOURCE = "/patient/pvt/";
-//minagawa^ 仮保存カルテ取得対応
+//- DolEvo版 仮保存カルテ取得対応
     private static final String TMP_KARTE_RESOURCE = "/patient/documents/status";
-//minagawa$
 
     /**
      * 患者を追加する。
@@ -255,25 +254,28 @@ public final class PatientDelegater extends BusinessDelegater {
 
         // GET
         ClientRequest request = getRequest(path);
-        request.accept(MediaType.APPLICATION_OCTET_STREAM);
-        ClientResponse<InputStream> response = request.get(InputStream.class);
+        request.accept(MediaType.APPLICATION_JSON);
+        ClientResponse<String> response = request.get(String.class);
 
-        BufferedReader br;
-        br = new BufferedReader(new InputStreamReader(response.getEntity(), UTF8));
+        // Wrapper
+        BufferedReader br = getReader(response);
         ObjectMapper mapper = new ObjectMapper();
+        // 2013/06/24
         mapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        PatientModel[] patients = mapper.readValue(br, PatientModel[].class);
+        PatientList list = mapper.readValue(br, PatientList.class);
         br.close();
-        
-        List<PatientModel> list = new ArrayList();
-        if (patients!=null && patients.length>0) {
-            for (PatientModel pm : patients) {
+
+        // Decode
+        if (list != null && list.getList() != null) {
+            List<PatientModel> inList = list.getList();
+            for (PatientModel pm : inList) {
                 decodeHealthInsurance(pm);
-                list.add(pm);
             }
+            return inList;
+
+        } else {
+            return null;
         }
-        return list;
-        
     }
 //minagawa$
 

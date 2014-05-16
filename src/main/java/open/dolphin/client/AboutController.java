@@ -46,7 +46,7 @@ public class AboutController extends AnchorPane implements Initializable {
     Text productName;
     @FXML
     Text companyName;
-
+    
     //- 親インスタンス
     private Stage mainStage;
     private Evolution application;
@@ -93,6 +93,7 @@ public class AboutController extends AnchorPane implements Initializable {
                     addString = addString.replace("%PRODUCT_VERSION%", ClientContext.getProductName() + " " + ClientContext.getVersion());
                     outText += addString + "\n";
                 }
+                is.close();
             }
         } catch (FileNotFoundException e) {
             Logger.getLogger(AboutController.class.getName()).

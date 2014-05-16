@@ -46,7 +46,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -304,138 +305,97 @@ public final class RadEditor extends AbstractStampEditor {
 
     @Override
     protected void search(final String text, boolean hitReturn) {
+        try {
+            boolean pass = true;
+            pass = pass && ipOk();
 
-        boolean pass = true;
-        pass = pass && ipOk();
+            final int searchType = getSearchType(text, hitReturn);
 
-        final int searchType = getSearchType(text, hitReturn);
+            pass = pass && (searchType != TT_INVALID);
 
-        pass = pass && (searchType != TT_INVALID);
+            if (!pass) {
+                return;
+            }
 
-        if (!pass) {
-            return;
+            // 件数をゼロにしておく
+            view.getCountField().setText("0");
+
+            //SqlMasterDao dao = (SqlMasterDao) SqlDaoFactory.create("dao.master");
+            //OrcaRestDelegater dao = new OrcaRestDelegater();
+            OrcaDelegater dao = OrcaDelegaterFactory.create();
+            String d = new SimpleDateFormat("yyyyMMdd").format(new Date());
+            List<TensuMaster> result = null;
+
+            switch (searchType) {
+
+                case TT_LIST_TECH:
+                    result = dao.getTensuMasterByShinku(getShinkuRegExp(), d);
+                    break;
+
+                case TT_TENSU_SEARCH:
+                    String ten = text.substring(3);
+                    result = dao.getTensuMasterByTen(ZenkakuUtils.toHalfNumber(ten), d);
+                    break;
+
+                case TT_85_SEARCH:
+                    result = dao.getTensuMasterByCode("0085", d);
+                    break;
+
+                case TT_CODE_SEARCH:
+                    result = dao.getTensuMasterByCode(ZenkakuUtils.toHalfNumber(text), d);
+                    break;
+
+                case TT_LETTER_SEARCH:
+                    result = dao.getTensuMasterByName(StringTool.hiraganaToKatakana(text), d, view.getPartialChk().isSelected());
+//s.oh^ 2013/11/08 傷病名検索不具合
+                    if (result == null || result.size() <= 0) {
+                        result = dao.getTensuMasterByName(text, d, view.getPartialChk().isSelected());
+                    }
+//s.oh$
+                    break;
+
+                case TT_SHINKU_SERACH:
+                    String shin = ZenkakuUtils.toHalfNumber(text);
+                    StringBuilder sb = new StringBuilder();
+                    sb.append("^");
+                    sb.append(shin.substring(1));
+                    result = dao.getTensuMasterByShinku(sb.toString(), d);
+                    break;
+            }
+
+            searchResultModel.setDataProvider(result);
+            int cnt = searchResultModel.getObjectCount();
+            view.getCountField().setText(String.valueOf(cnt));
+            Rectangle r = view.getSearchResultTable().getCellRect(0, 0, true);
+            view.getSearchResultTable().scrollRectToVisible(r);
+        } catch (Exception ex) {
+            Logger.getLogger(RadEditor.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        // 件数をゼロにしておく
-        view.getCountField().setText("0");
-
-        SwingWorker worker = new SwingWorker<List<TensuMaster>, Void>() {
-
-            @Override
-            protected List<TensuMaster> doInBackground() throws Exception {
-                //SqlMasterDao dao = (SqlMasterDao) SqlDaoFactory.create("dao.master");
-                //OrcaRestDelegater dao = new OrcaRestDelegater();
-                OrcaDelegater dao = OrcaDelegaterFactory.create();
-                String d = new SimpleDateFormat("yyyyMMdd").format(new Date());
-                List<TensuMaster> result = null;
-
-                switch (searchType) {
-
-                    case TT_LIST_TECH:
-                        result = dao.getTensuMasterByShinku(getShinkuRegExp(), d);
-                        break;
-
-                    case TT_TENSU_SEARCH:
-                        String ten = text.substring(3);
-                        result = dao.getTensuMasterByTen(ZenkakuUtils.toHalfNumber(ten), d);
-                        break;
-
-                    case TT_85_SEARCH:
-                        result = dao.getTensuMasterByCode("0085", d);
-                        break;
-
-                    case TT_CODE_SEARCH:
-                        result = dao.getTensuMasterByCode(ZenkakuUtils.toHalfNumber(text), d);
-                        break;
-
-                    case TT_LETTER_SEARCH:
-                        result = dao.getTensuMasterByName(StringTool.hiraganaToKatakana(text), d, view.getPartialChk().isSelected());
-//s.oh^ 2013/11/08 傷病名検索不具合
-                        if (result == null || result.size() <= 0) {
-                            result = dao.getTensuMasterByName(text, d, view.getPartialChk().isSelected());
-                        }
-//s.oh$
-                        break;
-
-                    case TT_SHINKU_SERACH:
-                        String shin = ZenkakuUtils.toHalfNumber(text);
-                        StringBuilder sb = new StringBuilder();
-                        sb.append("^");
-                        sb.append(shin.substring(1));
-                        result = dao.getTensuMasterByShinku(sb.toString(), d);
-                        break;
-                }
-
-//                if (!dao.isNoError()) {
-//                    throw new Exception(dao.getErrorMessage());
-//                }
-                return result;
-            }
-
-            @Override
-            protected void done() {
-                try {
-                    List<TensuMaster> result = get();
-                    searchResultModel.setDataProvider(result);
-                    int cnt = searchResultModel.getObjectCount();
-                    view.getCountField().setText(String.valueOf(cnt));
-                    Rectangle r = view.getSearchResultTable().getCellRect(0, 0, true);
-                    view.getSearchResultTable().scrollRectToVisible(r);
-
-                } catch (InterruptedException ex) {
-
-                } catch (ExecutionException ex) {
-                    alertSearchError(ex.getMessage());
-                }
-            }
-        };
-
-        worker.execute();
     }
 
     private void getPart() {
+        try {
+            if (!ipOk()) {
+                return;
+            }
 
-        if (!ipOk()) {
-            return;
+            // 件数をゼロにしておく
+            view.getCountField().setText("0");
+
+            //SqlMasterDao dao = (SqlMasterDao) SqlDaoFactory.create("dao.master");
+            //OrcaRestDelegater dao = new OrcaRestDelegater();
+            OrcaDelegater dao = OrcaDelegaterFactory.create();
+            String d = new SimpleDateFormat("yyyyMMdd").format(new Date());
+            //List<TensuMaster> result = dao.getTensuMasterByCode("^002", d);
+            List<TensuMaster> result = dao.getTensuMasterByCode("002", d);
+
+            searchResultModel.setDataProvider(result);
+            int cnt = searchResultModel.getObjectCount();
+            view.getCountField().setText(String.valueOf(cnt));
+        } catch (Exception ex) {
+            Logger.getLogger(RadEditor.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-        // 件数をゼロにしておく
-        view.getCountField().setText("0");
-
-        SwingWorker worker = new SwingWorker<List<TensuMaster>, Void>() {
-
-            @Override
-            protected List<TensuMaster> doInBackground() throws Exception {
-                //SqlMasterDao dao = (SqlMasterDao) SqlDaoFactory.create("dao.master");
-                //OrcaRestDelegater dao = new OrcaRestDelegater();
-                OrcaDelegater dao = OrcaDelegaterFactory.create();
-                String d = new SimpleDateFormat("yyyyMMdd").format(new Date());
-                //List<TensuMaster> result = dao.getTensuMasterByCode("^002", d);
-                List<TensuMaster> result = dao.getTensuMasterByCode("002", d);
-
-//                if (!dao.isNoError()) {
-//                    throw new Exception(dao.getErrorMessage());
-//                }
-                return result;
-            }
-
-            @Override
-            protected void done() {
-                try {
-                    List<TensuMaster> result = get();
-                    searchResultModel.setDataProvider(result);
-                    int cnt = searchResultModel.getObjectCount();
-                    view.getCountField().setText(String.valueOf(cnt));
-
-                } catch (InterruptedException ex) {
-
-                } catch (ExecutionException ex) {
-                    alertSearchError(ex.getMessage());
-                }
-            }
-        };
-
-        worker.execute();
     }
 
     @Override
@@ -461,11 +421,14 @@ public final class RadEditor extends AbstractStampEditor {
         // MasterItem に変換する
         MasterItem item = tensuToMasterItem(tm);
 
-        // 診療行為をスタンプ名に設定する
-        if (item.getClassCode() == ClaimConst.SYUGI) {
-            String name = view.getStampNameField().getText().trim();
-            if (name.equals("") || name.equals(DEFAULT_STAMP_NAME)) {
-                view.getStampNameField().setText(item.getName());
+        //- セット名自動追加機能 DolphinEvolution
+        if (Boolean.valueOf(Project.getString(Project.STAMP_AUTO_SETNAME))) {
+            // 診療行為をスタンプ名に設定する
+            if (item.getClassCode() == ClaimConst.SYUGI) {
+                String name = view.getStampNameField().getText().trim();
+                if (name.equals("") || name.equals(DEFAULT_STAMP_NAME)) {
+                    view.getStampNameField().setText(item.getName());
+                }
             }
         }
 
@@ -508,7 +471,9 @@ public final class RadEditor extends AbstractStampEditor {
                         return false;
                     } else if (AbstractStampEditor.isNameEditableComment(code)) {
                         return false;
-                    } else return !AbstractStampEditor.is82Comment(code);
+                    } else {
+                        return !AbstractStampEditor.is82Comment(code);
+                    }
                 }
                 return col == NUMBER_COLUMN;
             }

@@ -79,7 +79,13 @@ public class ImageBox extends AbstractMainTool {
     private String[] suffix = DEFAULT_IMAGE_SUFFIX;
 
     private JPanel content;
+    private int defaultWidth = 406;
+    private int defaultHeight = 587;
+    private int defaultLocX = 537;
+    private int defaultLocY = 22;
+    
     private JDialog frame;
+    private String title = "シェーマボックス";
 
     private int systemSchemaIndex;
 
@@ -186,6 +192,39 @@ public class ImageBox extends AbstractMainTool {
         content.add(btnPanel, BorderLayout.NORTH);
         content.add(tabbedPane, BorderLayout.CENTER);
         content.setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 1));
+    }
+    
+    public void show(){
+        initComponent();
+        
+        // 全体を配置する
+        JPanel p = new JPanel(new BorderLayout());
+        JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        // 更新ボタンを生成する
+        btnPanel.add(refreshBtn);
+        p.add(btnPanel, BorderLayout.NORTH);
+        p.add(tabbedPane, BorderLayout.CENTER);
+        p.setBorder(BorderFactory.createEmptyBorder(12,12,11,11));
+        frame = new JDialog((JFrame) null, title, false);
+        ComponentMemory cm = new ComponentMemory(frame,
+                new Point(defaultLocX,defaultLocY),
+                new Dimension(defaultWidth, defaultHeight),
+                this);
+        cm.setToPreferenceBounds();
+        frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                processWindowClosing();
+            }
+        });
+        frame.getContentPane().add(p);
+        
+        if (! frame.isVisible()) {
+            frame.setVisible(true);
+        }
+        connect();
+        setImageLocation(ClientContext.getSchemaDirectory());
     }
 
     private void connect() {

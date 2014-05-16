@@ -40,32 +40,33 @@ package open.dolphin.client;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Rectangle;
 import java.awt.event.*;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
 import open.dolphin.delegater.DocumentDelegater;
+import open.dolphin.delegater.LetterDelegater;
 import open.dolphin.delegater.OrcaRestDelegater;
 import open.dolphin.helper.DBTask;
 import open.dolphin.hiro.PrescriptionMaker;
-import open.dolphin.impl.lbtest.LaboTestOutputPDF;
 import open.dolphin.infomodel.DocInfoModel;
 import open.dolphin.infomodel.DocumentModel;
 import open.dolphin.infomodel.IInfoModel;
+import open.dolphin.infomodel.LetterModule;
 import open.dolphin.infomodel.ModuleModel;
 import open.dolphin.infomodel.PVTHealthInsuranceModel;
 import open.dolphin.letter.KartePDFImpl2;
 import open.dolphin.letter.KartePDFMaker;
+import open.dolphin.letter.LetterImpl;
+import open.dolphin.letter.MedicalCertificateImpl;
+import open.dolphin.letter.Reply1Impl;
+import open.dolphin.letter.Reply2Impl;
 import open.dolphin.project.Project;
 import open.dolphin.util.Log;
 
@@ -1111,15 +1112,15 @@ public class KarteDocumentViewer extends AbstractChartDocument implements Docume
 
         @Override
         protected List<DocumentModel> doInBackground() throws Exception {
-            ClientContext.getBootLogger().debug("カルテタスク doInBackground");
+            ClientContext.getBootLogger().info("カルテタスク doInBackground");
             List<DocumentModel> result = ddl.getDocuments(docId);
-            ClientContext.getBootLogger().debug("doInBackground noErr, return result");
+            ClientContext.getBootLogger().info("doInBackground noErr, return result");
             return result;
         }
 
         @Override
         protected void succeeded(List<DocumentModel> list) {
-            ClientContext.getBootLogger().debug("KarteTask succeeded");
+            ClientContext.getBootLogger().info("KarteTask succeeded");
             if (list != null) {
                 addKarteViewer(list, docInfos, scroller);
             }
@@ -1142,14 +1143,14 @@ public class KarteDocumentViewer extends AbstractChartDocument implements Docume
 
         @Override
         protected Boolean doInBackground() throws Exception {
-            ClientContext.getBootLogger().debug("DeleteTask started");
+            ClientContext.getBootLogger().info("DeleteTask started");
             ddl.deleteDocument(docPk);
             return true;
         }
 
         @Override
         protected void succeeded(Boolean result) {
-            ClientContext.getBootLogger().debug("DeleteTask succeeded");
+            ClientContext.getBootLogger().info("DeleteTask succeeded");
             Chart chart = (KarteDocumentViewer.this).getContext();
             chart.getDocumentHistory().getDocumentHistory();
         }
@@ -1298,6 +1299,131 @@ public class KarteDocumentViewer extends AbstractChartDocument implements Docume
 
         public void enter() {
             currentState.enter();
+        }
+    }
+    
+    public void save(){
+        ChartImpl impl = (ChartImpl) getContext();
+        List<UnsavedDocument> localDirtyList = impl.evoDirtyList();
+        for (UnsavedDocument doc : localDirtyList) {
+            
+            ChartDocument chart = doc.getDoc();
+            if(chart instanceof KarteEditor){
+                KarteEditor obj = (KarteEditor) doc.getDoc();
+                obj.save();
+                if(!obj.isCancelFlag()){
+                    impl.evoDirtyListClean(chart);
+                }
+                return;
+            }else if (chart instanceof LetterImpl) {
+                LetterImpl obj = (LetterImpl) doc.getDoc();
+                obj.viewToModel(true);
+                LetterModule model = obj.getModel();
+                LetterDelegater ddl = new LetterDelegater();
+                long result = 0;
+                try {
+                    result = ddl.saveOrUpdateLetter(model);
+                } catch (Exception ex) {
+                    Logger.getLogger(LetterImpl.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+                }
+                model.setId(result);
+                if (boundSupport != null) {
+                    Log.outputFuncLog(Log.LOG_LEVEL_0, Log.FUNCTIONLOG_KIND_INFORMATION, "診療情報提供書", "保存成功", "インスペクタの終了");
+                    setChartDocDidSave(true);
+                    return;
+                }
+
+                getContext().getDocumentHistory().getLetterHistory();
+                obj.stateMgr.processSavedEvent();
+
+                ((ChartImpl) getContext()).getKarteSplitPane().setBottomComponent(null);
+                ((ChartImpl) getContext()).getKarteSplitPane().revalidate();
+                Log.outputFuncLog(Log.LOG_LEVEL_0, Log.FUNCTIONLOG_KIND_INFORMATION, "診療情報提供書", "保存成功");
+                impl.evoDirtyListClean(chart);
+                
+                return;
+            } else if (chart instanceof MedicalCertificateImpl) {
+                MedicalCertificateImpl obj = (MedicalCertificateImpl) doc.getDoc();
+                obj.viewToModel(true);
+                LetterModule model = obj.getModel();
+                LetterDelegater ddl = new LetterDelegater();
+                long result = 0;
+                try {
+                    result = ddl.saveOrUpdateLetter(model);
+                } catch (Exception ex) {
+                    Logger.getLogger(MedicalCertificateImpl.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+                }
+                model.setId(result);
+                if (boundSupport != null) {
+                    Log.outputFuncLog(Log.LOG_LEVEL_0, Log.FUNCTIONLOG_KIND_INFORMATION, "診断書", "保存成功", "インスペクタの終了");
+                    setChartDocDidSave(true);
+                    return;
+                }
+
+                getContext().getDocumentHistory().getLetterHistory();
+                obj.stateMgr.processSavedEvent();
+
+                ((ChartImpl) getContext()).getKarteSplitPane().setBottomComponent(null);
+                ((ChartImpl) getContext()).getKarteSplitPane().revalidate();
+                Log.outputFuncLog(Log.LOG_LEVEL_0, Log.FUNCTIONLOG_KIND_INFORMATION, "診断書", "保存成功");
+                impl.evoDirtyListClean(chart);
+
+                return;
+            } else if (chart instanceof Reply1Impl) {
+                Reply1Impl obj = (Reply1Impl) doc.getDoc();
+                obj.viewToModel(true);
+                LetterModule model = obj.getModel();
+                LetterDelegater ddl = new LetterDelegater();
+                long result = 0;
+                try {
+                    result = ddl.saveOrUpdateLetter(model);
+                } catch (Exception ex) {
+                    Logger.getLogger(Reply1Impl.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+                }
+                model.setId(result);
+                if (boundSupport != null) {
+                    Log.outputFuncLog(Log.LOG_LEVEL_0, Log.FUNCTIONLOG_KIND_INFORMATION, "紹介患者経過報告書", "保存成功", "インスペクタの終了");
+                    setChartDocDidSave(true);
+                    return;
+                }
+
+                getContext().getDocumentHistory().getLetterHistory();
+                obj.stateMgr.processSavedEvent();
+
+                ((ChartImpl) getContext()).getKarteSplitPane().setBottomComponent(null);
+                ((ChartImpl) getContext()).getKarteSplitPane().revalidate();
+                Log.outputFuncLog(Log.LOG_LEVEL_0, Log.FUNCTIONLOG_KIND_INFORMATION, "紹介患者経過報告書", "保存成功");
+                impl.evoDirtyListClean(chart);
+
+                return;
+            } else if (chart instanceof Reply2Impl) {
+                Reply2Impl obj = (Reply2Impl) doc.getDoc();
+                obj.viewToModel(true);
+                LetterModule model = obj.getModel();
+                LetterDelegater ddl = new LetterDelegater();
+                long result = 0;
+                try {
+                    result = ddl.saveOrUpdateLetter(model);
+                } catch (Exception ex) {
+                    Logger.getLogger(Reply2Impl.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+                }
+                model.setId(result);
+                if (boundSupport != null) {
+                    Log.outputFuncLog(Log.LOG_LEVEL_0, Log.FUNCTIONLOG_KIND_INFORMATION, "ご　報　告", "保存成功", "インスペクタの終了");
+                    setChartDocDidSave(true);
+                    return;
+                }
+
+                getContext().getDocumentHistory().getLetterHistory();
+                obj.stateMgr.processSavedEvent();
+
+                ((ChartImpl) getContext()).getKarteSplitPane().setBottomComponent(null);
+                ((ChartImpl) getContext()).getKarteSplitPane().revalidate();
+                Log.outputFuncLog(Log.LOG_LEVEL_0, Log.FUNCTIONLOG_KIND_INFORMATION, "ご　報　告", "保存成功");
+                impl.evoDirtyListClean(chart);
+
+                return;
+            }
         }
     }
 }

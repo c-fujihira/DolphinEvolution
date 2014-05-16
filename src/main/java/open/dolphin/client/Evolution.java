@@ -221,6 +221,7 @@ public class Evolution extends Application {
                 mltFaciUserCtrl.userIdForcus();
                 mltFaciUserCtrl.setStage(this.stage);
                 mltFaciUserCtrl.setApp(this);
+                mltFaciUserCtrl.setClientBuild("ClientBuild : " + Project.getClientBuild());
             } else if (loginSet != null && loginSet.equals("multi-facility")) {
                 if(mltFaciCtrl == null){
                     mltFaciCtrl = (MultiFacilityLoginController) replaceSceneContent("/resources/fxml/Login-multi-facility.fxml", 630, 325);
@@ -229,6 +230,7 @@ public class Evolution extends Application {
                 mltFaciCtrl.userIdForcus();
                 mltFaciCtrl.setStage(this.stage);
                 mltFaciCtrl.setApp(this);
+                mltFaciCtrl.setClientBuild("ClientBuild : " + Project.getClientBuild());
             } else if (loginSet != null && loginSet.equals("multi-user")) {
                 if(mltUserCtrl == null){
                     mltUserCtrl = (MultiUserLoginController) replaceSceneContent("/resources/fxml/Login-multi-user.fxml", 630, 325);
@@ -237,6 +239,7 @@ public class Evolution extends Application {
                 mltUserCtrl.userIdForcus();
                 mltUserCtrl.setStage(this.stage);
                 mltUserCtrl.setApp(this);
+                mltUserCtrl.setClientBuild("ClientBuild : " + Project.getClientBuild());
             } else {
                 if(ctrl == null){
                     ctrl = (LoginController) replaceSceneContent("/resources/fxml/Login.fxml", 630, 325);
@@ -245,6 +248,7 @@ public class Evolution extends Application {
                 ctrl.userIdForcus();
                 ctrl.setStage(this.stage);
                 ctrl.setApp(this);
+                ctrl.setClientBuild("ClientBuild : " + Project.getClientBuild());
             }
             //- サイズ変更不可
             stage.setResizable(false);
@@ -346,7 +350,7 @@ public class Evolution extends Application {
 
         //- 認証処理後、いったんhide
         stage.hide();
-        ClientContext.getBootLogger().debug("main window create.");
+        ClientContext.getBootLogger().info("main window create.");
         evoWindow = new EvolutionWindow();
         evoWindow.setApp(Evolution.this);
         evoWindow.tryLoadStampTree();
@@ -356,7 +360,7 @@ public class Evolution extends Application {
 
         //- Window設定
         try {
-            ClientContext.getBootLogger().debug("main window load FX resources.");
+            ClientContext.getBootLogger().info("main window load FX resources.");
             FXMLLoader ctrlPanelLoader = new FXMLLoader(getClass().getResource("/resources/fxml/ControlPanel.fxml"));
             Parent ctrlRoot = (Parent) ctrlPanelLoader.load();
 
@@ -374,9 +378,14 @@ public class Evolution extends Application {
         } catch (IOException ex) {
             Logger.getLogger(Evolution.class.getName()).log(Level.SEVERE, null, ex);
         }
-        ClientContext.getBootLogger().debug("main window repaint.");
+        ClientContext.getBootLogger().info("main window repaint.");
         evoWindow.windowMaximum();
         dispWinCtrl.setWinCtrlReset();
+        // splitPaneのdividerLocationを取得、設定する
+        if(Boolean.valueOf(Project.getString("karte.split.reserve"))){
+            int location = Project.getInt("karte.split.reserve.position");
+            evoWindow.getSplitPane3().setDividerLocation(location);
+        }
         evoWindow.getFrame().setVisible(true);
         evoWindow.reFleshJFrame0();
         evoWindow.reFleshJFrame1();

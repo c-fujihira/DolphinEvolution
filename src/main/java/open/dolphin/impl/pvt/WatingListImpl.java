@@ -504,7 +504,7 @@ public class WatingListImpl extends AbstractMainComponent implements PropertyCha
                                 ClientContext.getFrameTitle(getName()),
                                 JOptionPane.YES_NO_CANCEL_OPTION,
                                 JOptionPane.QUESTION_MESSAGE,
-                                ClientContext.getImageIcon("cancl_32.gif"),
+                                ClientContext.getImageIcon("os_cancel_16.png"),
                                 cstOptions, "はい");
 
                         System.err.println("select=" + select);

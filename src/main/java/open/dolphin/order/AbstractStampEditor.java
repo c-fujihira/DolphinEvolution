@@ -517,15 +517,15 @@ public abstract class AbstractStampEditor {
             return TT_CODE_SEARCH;
         }
 
-        // ２文字以上
-        if ((!textIsCode) && test.length() > 1) {
+        // １文字以上
+        if (!textIsCode) {
             return TT_LETTER_SEARCH;
         }
 
-        // １文字でreturn確定
-        if ((!textIsCode) && hitReturn) {
-            return TT_LETTER_SEARCH;
-        }
+//        // １文字でreturn確定
+//        if ((!textIsCode) && hitReturn) {
+//            return TT_LETTER_SEARCH;
+//        }
 
         return TT_INVALID;
     }

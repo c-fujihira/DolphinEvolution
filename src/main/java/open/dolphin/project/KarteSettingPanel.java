@@ -76,7 +76,7 @@ public class KarteSettingPanel extends AbstractSettingPanel {
 
 //s.oh^ 機能改善
     private static final int UI_WIDTH_MIN = 10;
-    private static final int UI_HEIGHT_MIN = 10;
+    private static final int UI_HEIGHT_MIN = 25;
 //s.oh$
 
     // インスペクタ画面
@@ -149,6 +149,9 @@ public class KarteSettingPanel extends AbstractSettingPanel {
     private JRadioButton saveTmp;           // 仮保存
     private JFormattedTextField printCount; // 印刷枚数
     private JCheckBox autoCloseAfterSaving; // 自動close
+    //- カルテ記入時
+    private JRadioButton etcKarteSplitUp;
+    private JRadioButton etcKarteSplitDown;
     private JTextField ageToNeedMonth;      // 月齢表示
     private JRadioButton fontSizeSmall;     // ２号カルテ文字サイズ小   12
     private JRadioButton fontSizeMedium;    // ２号カルテ文字サイズ中   14
@@ -299,7 +302,10 @@ public class KarteSettingPanel extends AbstractSettingPanel {
         placeWindow = new JRadioButton("別ウィンドウで編集");
         palceTabbedPane = new JRadioButton("タブパネルへ追加");
         autoCloseAfterSaving = new JCheckBox("編集ウインドウを自動的に閉じる");
-
+        //- カルテ記入時
+        etcKarteSplitUp = new JRadioButton("2分割時、上を過去カルテ、下をエディタ表示");
+        etcKarteSplitDown = new JRadioButton("2分割時、上をエディタ表示、下を過去カルテ");
+        
         noConfirmAtSave = new JCheckBox("確認ダイアログを表示しない");
         save = new JRadioButton("保 存");
         saveTmp = new JRadioButton("仮保存");
@@ -634,7 +640,15 @@ public class KarteSettingPanel extends AbstractSettingPanel {
         gbb.add(p4, 1, row, 1, 1, GridBagConstraints.WEST);
         JPanel saveP = gbb.getProduct();
         //----------------------------------------------------------------------
-
+        //- カルテ記入時
+        gbb = new GridBagBuilder("カルテ記入時");
+        row = 0;
+        gbb.add(etcKarteSplitUp, 0, row, 2, 1, GridBagConstraints.WEST);
+        row++;
+        gbb.add(etcKarteSplitDown, 0, row, 2, 1, GridBagConstraints.WEST);
+        JPanel kEdit = gbb.getProduct();
+        //----------------------------------------------------------------------
+        
         // 月齢表示
         gbb = new GridBagBuilder("年齢");
         row = 0;
@@ -659,9 +673,10 @@ public class KarteSettingPanel extends AbstractSettingPanel {
         gbb = new GridBagBuilder();
         gbb.add(newP, 0, 0, GridBagConstraints.HORIZONTAL, 1.0, 0.0);
         gbb.add(saveP, 0, 1, GridBagConstraints.HORIZONTAL, 1.0, 0.0);
-        gbb.add(ageP, 0, 2, GridBagConstraints.HORIZONTAL, 1.0, 0.0);
-        gbb.add(fontP, 0, 3, GridBagConstraints.HORIZONTAL, 1.0, 0.0);
-        gbb.add(new JLabel("　"), 0, 4, GridBagConstraints.BOTH, 1.0, 1.0);
+        gbb.add(kEdit, 0, 2, GridBagConstraints.HORIZONTAL, 1.0, 0.0);
+        gbb.add(ageP, 0, 3, GridBagConstraints.HORIZONTAL, 1.0, 0.0);
+        gbb.add(fontP, 0, 4, GridBagConstraints.HORIZONTAL, 1.0, 0.0);
+        gbb.add(new JLabel("　"), 0, 5, GridBagConstraints.BOTH, 1.0, 1.0);
 
         JPanel confirmPanel = gbb.getProduct();
 
@@ -669,6 +684,10 @@ public class KarteSettingPanel extends AbstractSettingPanel {
         bg.add(copyNew);
         bg.add(applyRp);
         bg.add(emptyNew);
+        
+        bg = new ButtonGroup();
+        bg.add(etcKarteSplitUp);
+        bg.add(etcKarteSplitDown);
 
         bg = new ButtonGroup();
         bg.add(placeWindow);
@@ -774,7 +793,7 @@ public class KarteSettingPanel extends AbstractSettingPanel {
         tabbedPane.setPreferredSize(docPanel.getPreferredSize());
 
 //minagawa^ tabbedPaneの大きさをカットアンドトライで決めうち mac
-        tabbedPane.setPreferredSize(new Dimension(480, 480));
+        tabbedPane.setPreferredSize(new Dimension(480, 530));
 //minagawa$
 //s.oh^ 機能改善
         tabbedPane.setMinimumSize(new Dimension(UI_WIDTH_MIN, UI_HEIGHT_MIN));
@@ -814,7 +833,7 @@ public class KarteSettingPanel extends AbstractSettingPanel {
             }
         }
 
-        boolean newOk = (inspectorOk && titleOk) ? true : false;
+        boolean newOk = (inspectorOk && titleOk);
 
         if (ok != newOk) {
             ok = newOk;
@@ -1068,6 +1087,14 @@ public class KarteSettingPanel extends AbstractSettingPanel {
         printCount.setValue(new Integer(model.getPrintKarteCount()));
         printCount.setEnabled(!curConfirmAtSave);
 
+        //- カルテ記入時
+        if(model.isKarteSplitSelect()) {
+            etcKarteSplitUp.setSelected(true);
+        } else {
+            etcKarteSplitDown.setSelected(true);
+        }
+        
+        
         // 月齢
         ageToNeedMonth.setText(String.valueOf(model.getAgeNeedMonth()));
 
@@ -1229,6 +1256,8 @@ public class KarteSettingPanel extends AbstractSettingPanel {
             Integer i = (Integer) o;
             model.setPrintKarteCount(i.intValue());
         }
+        
+        model.setKarteSplitSelect(etcKarteSplitUp.isSelected());
 
         // 月齢表示年齢
         String valStr = ageToNeedMonth.getText().trim();
@@ -1322,7 +1351,8 @@ public class KarteSettingPanel extends AbstractSettingPanel {
         private boolean confirmAtSave;          // 保存時の確認ダイアログ表示
         private int saveKarteMode;              // 表示しない場合の保存モード
         private int printKarteCount;            // 表示しない場合のプリント枚数
-
+        private boolean etcKarteSplit;          // カルテ記入時
+        
         private int ageNeedMonth;               // 月齢表示をする年齢（未満）
 
 //s.oh^ 2013/02/07 印刷対応
@@ -1458,6 +1488,9 @@ public class KarteSettingPanel extends AbstractSettingPanel {
             // 自動クローズ
             setAutoCloseAtSave(Project.getBoolean(Project.KARTE_AUTO_CLOSE_AFTER_SAVE));   // stub.isAutoCloseAfterSaving()
 
+            //- カルテ記入時
+            setKarteSplitSelect(Project.getBoolean(Project.KARTE_SPLIT_SELECT));
+            
             // 月齢表示年齢
             setAgeNeedMonth(Project.getInt(Project.KARTE_AGE_TO_NEED_MONTH));      // stub.getAgeToNeedMonth()
 
@@ -1575,6 +1608,9 @@ public class KarteSettingPanel extends AbstractSettingPanel {
             // 自動クローズ
             Project.setBoolean(Project.KARTE_AUTO_CLOSE_AFTER_SAVE, isAutoCloseAtSave());   //stub.setAutoCloseAfterSaving(isAutoCloseAtSave());
 
+            //- カルテ記入時
+            Project.setBoolean(Project.KARTE_SPLIT_SELECT, isKarteSplitSelect());
+            
             // 月齢表示年齢
             Project.setInt(Project.KARTE_AGE_TO_NEED_MONTH, getAgeNeedMonth()); //stub.setAgeToNeedMonth(getAgeNeedMonth());
 
@@ -1803,6 +1839,14 @@ public class KarteSettingPanel extends AbstractSettingPanel {
             autoCloseAtSave = b;
         }
 
+        public void setKarteSplitSelect(boolean etcKarteSplit) {
+            this.etcKarteSplit = etcKarteSplit;
+        }
+        
+        public boolean isKarteSplitSelect() {
+            return this.etcKarteSplit;
+        }
+        
         public int getAgeNeedMonth() {
             return ageNeedMonth;
         }

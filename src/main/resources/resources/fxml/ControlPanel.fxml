@@ -47,7 +47,11 @@
                 </Button>
                 <Button focusTraversable="false" font="$x1" layoutY="76.0" mnemonicParsing="false" onAction="#execShowAbout" prefHeight="30.0" prefWidth="120.0" text="情　報" underline="false" wrapText="false" AnchorPane.leftAnchor="136.0" />
                 <Button focusTraversable="false" font="$x1" layoutX="264.0" layoutY="8.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="120.0" text="-" />
-                <Button focusTraversable="false" font="$x1" layoutX="264.0" layoutY="42.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="119.99990000000253" text="-" underline="false" wrapText="false" />
+                <Button focusTraversable="false" layoutX="264.0" layoutY="42.0" mnemonicParsing="false" onAction="#execPatientInfoOutput" prefHeight="30.0" prefWidth="119.99990000000253" text="カルテ履歴一覧出力" underline="false" wrapText="false">
+                  <font>
+                    <Font size="12.0" />
+                  </font>
+                </Button>
                 <Button focusTraversable="false" font="$x1" layoutX="264.0" layoutY="76.0" mnemonicParsing="false" onAction="#execExit" prefHeight="30.0" prefWidth="120.0" text="終  了" underline="false" wrapText="false" />
               </children>
               <rotationAxis>

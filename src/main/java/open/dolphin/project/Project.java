@@ -62,7 +62,7 @@ public class Project {
     public static final String FACILITY_ID = "facilityId";
     public static final String USER_ID = "userId";
     public static final String SERVER_URI = "baseURI";
-
+    
     // CLAIM
     // 2012-07  claim.sender=(client | server) client=client送信, server=server送信
     public static final String CLAIM_SENDER = "claim.sender";
@@ -157,6 +157,7 @@ public class Project {
     public static final String KARTE_CREATE_MODE = "karte.createMode";
     public static final String KARTE_PLACE_MODE = "karte.placeMode";
     public static final String KARTE_SHOW_CONFIRM_AT_SAVE = "karte.showConfirmAtSave";
+    public static final String KARTE_SPLIT_SELECT = "karte.splitSelect";
     public static final String KARTE_PRINT_COUNT = "karte.print.count";
     public static final String KARTE_SAVE_ACTION = "karte.saveAction";
     public static final String KARTE_AUTO_CLOSE_AFTER_SAVE = "karte.auto.close";
@@ -184,6 +185,7 @@ public class Project {
     // Stamp
     public static final String STAMP_REPLACE = "replaceStamp";
     public static final String STAMP_SPACE = "stampSpace";
+    public static final String STAMP_AUTO_SETNAME = "stampAutoSetName";
 
     // StampEditor
     public static final String STAMP_EDITOR_BUTTON_TYPE = "stamp.editor.buttonType";
@@ -533,6 +535,10 @@ public class Project {
         return stub.getDefaultBoolean(key);
     }
 
+    public static String getClientBuild() {
+        return stub.getClientBuild();
+    }
+    
 //新宿ヒロクリニック 処方せん印刷^ Propertiesへ保存するように変更
     /**
      * スタブに設定されている医療機関基本情報を返却する

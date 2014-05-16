@@ -54,11 +54,11 @@ import javax.swing.event.DocumentListener;
  */
 public final class ChangeNumDatesDialog {
 
-    private JButton chagneBtn;
-    private JButton cancelBtn;
+    private final JButton chagneBtn;
+    private final JButton cancelBtn;
     private ChangeNumDatesView view;
-    private JDialog dialog;
-    private PropertyChangeSupport boundSupport;
+    private final JDialog dialog;
+    private final PropertyChangeSupport boundSupport;
 
     public ChangeNumDatesDialog(JFrame parent, PropertyChangeListener pcl) {
 
@@ -83,22 +83,22 @@ public final class ChangeNumDatesDialog {
 
         // Listener
         view.getNumDatesFld().getDocument().addDocumentListener(new DocumentListener() {
-
             @Override
             public void insertUpdate(DocumentEvent de) {
                 checkInput();
             }
-
             @Override
             public void removeUpdate(DocumentEvent de) {
                 checkInput();
             }
-
             @Override
             public void changedUpdate(DocumentEvent de) {
             }
         });
 
+        //- IME Off
+        view.getNumDatesFld().addFocusListener(AutoRomanListener.getInstance());
+        
         Object[] options = new Object[]{chagneBtn, cancelBtn};
 
         JOptionPane jop = new JOptionPane(

@@ -40,6 +40,7 @@ package open.dolphin.client;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ToggleButton;
@@ -66,12 +67,17 @@ public class DisplayCtrlController implements Initializable {
     ToggleButton karteToolCk;
     @FXML
     Text clinicName;
+    @FXML
+    ToggleButton splitToggle;
     
     private Stage mainStage;
     private Evolution application;
 
     private final int SPLIT2_HIGHT = 305;
     private final int SPLIT3_WIDTH = 481;
+    
+    private int work=0;
+    private boolean doubleClickFlag = false;
 
 
     /**
@@ -85,6 +91,11 @@ public class DisplayCtrlController implements Initializable {
         //- クリニック名取得表示
         FacilityModel facility = Project.getUserModel().getFacilityModel();
         clinicName.setText(facility.getFacilityName());
+        // splitpaneの保存位置読み込み
+        if(Boolean.valueOf(Project.getString("karte.split.reserve"))){
+            splitToggle.setSelected(true);
+            splitToggle.setText("区切り位置解除");
+        }
     }
 
     public void ctrlReleaseKey(KeyEvent event) {
@@ -111,23 +122,48 @@ public class DisplayCtrlController implements Initializable {
 
     public void setWinCtrlReset() {
         application.evoWindow.getSplitPane2().setDividerLocation(SPLIT2_HIGHT);
-        application.evoWindow.getSplitPane3().setDividerLocation(application.evoWindow.getFrame().getWidth() - SPLIT3_WIDTH);
-        application.evoWindow.reFleshJFrame1();
+        int position = work > 0 ? work : Project.getInt("karte.split.reserve.position");
+        application.evoWindow.getSplitPane3().setDividerLocation(position);
+        work = 0;
+        doubleClickFlag = false;
+        refresh();
     }
 
     public void setWinCtrlPvtSet() {
+        // れんぞくして本ボタンが押下された場合には何もせずに終了
+        if(doubleClickFlag){
+            application.evoWindow.getSplitPane2().setDividerLocation(application.evoWindow.getFrame().getHeight());
+            application.evoWindow.getSplitPane3().setDividerLocation(0);
+            return;
+        }
+        work = application.evoWindow.getSplitPane3().getDividerLocation();
         application.evoWindow.getSplitPane2().setDividerLocation(application.evoWindow.getFrame().getHeight());
         application.evoWindow.getSplitPane3().setDividerLocation(0);
+        doubleClickFlag = true;
+        refresh();
     }
 
     public void setWinCtrlKarteSet() {
+        // れんぞくして本ボタンが押下された場合には何もせずに終了
+        if(doubleClickFlag){
+            if (Boolean.valueOf(Project.getString("karte.tool"))) {
+                application.evoWindow.getSplitPane2().setDividerLocation(0);
+                application.evoWindow.getSplitPane3().setDividerLocation(work);
+            } else {
+                application.evoWindow.getSplitPane2().setDividerLocation(0);
+                application.evoWindow.getSplitPane3().setDividerLocation(application.evoWindow.getFrame().getWidth());
+            }
+            return;
+        }
+        work = application.evoWindow.getSplitPane3().getDividerLocation();
         if (Boolean.valueOf(Project.getString("karte.tool"))) {
             application.evoWindow.getSplitPane2().setDividerLocation(0);
-            application.evoWindow.getSplitPane3().setDividerLocation(application.evoWindow.getFrame().getWidth() - SPLIT3_WIDTH);
+            application.evoWindow.getSplitPane3().setDividerLocation(work);
         } else {
             application.evoWindow.getSplitPane2().setDividerLocation(0);
             application.evoWindow.getSplitPane3().setDividerLocation(application.evoWindow.getFrame().getWidth());
         }
+        doubleClickFlag = true;
     }
     
     public void karteViewSw() {
@@ -145,4 +181,33 @@ public class DisplayCtrlController implements Initializable {
             Project.setString("karte.tool", "false");
         }
     }
+    
+    public void setSplitReserve() {
+        if (splitToggle.isSelected()) {
+            Project.setString("karte.split.reserve", "true");
+            Project.setInt("karte.split.reserve.position", application.evoWindow.getSplitPane3().getDividerLocation());
+            splitToggle.setText("区切り位置解除");
+        } else {
+            Project.setString("karte.split.reserve", "false");
+            Project.setInt("karte.split.reserve.position", application.evoWindow.getFrame().getWidth() - SPLIT3_WIDTH);
+            application.evoWindow.getSplitPane2().setDividerLocation(SPLIT2_HIGHT);
+            application.evoWindow.getSplitPane3().setDividerLocation(application.evoWindow.getFrame().getWidth() - SPLIT3_WIDTH);
+            refresh();
+            splitToggle.setText("区切り位置保存");
+        }
+    }
+    
+    private void refresh(){
+        //- リフレッシュ不具合対応
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                application.evoWindow.reFleshJFrame0();
+                application.evoWindow.reFleshJFrame1();
+                application.evoWindow.reFleshJFrame2();
+                application.evoWindow.reFleshJFrame3();
+            }
+        });
+    }
+
 }

@@ -167,7 +167,7 @@ public final class ClientContextStub {
             sb.append(getString("client.context.log4j.file.velocity"));
             Velocity.setProperty("runtime.log", sb.toString());
             Velocity.init();
-            getBootLogger().debug("Velocity did initialize");
+            getBootLogger().info("Velocity did initialize");
 
         } catch (DolphinException | IOException e) {
             e.printStackTrace(System.err);
@@ -720,7 +720,7 @@ public final class ClientContextStub {
 //                UIManager.put(entry.getKey(), fontUIResource);
 //            }
 //        }
-        getBootLogger().debug("デフォルトのフォントを変更しました。");
+        getBootLogger().info("デフォルトのフォントを変更しました。");
     }
     
 //minagawa^ Icon Server

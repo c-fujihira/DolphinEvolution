@@ -47,7 +47,6 @@ import java.util.List;
 import javax.swing.ImageIcon;
 import javax.ws.rs.core.MediaType;
 import open.dolphin.client.ClientContext;
-import open.dolphin.client.GUIConst;
 import open.dolphin.converter.*;
 import open.dolphin.dto.DocumentSearchSpec;
 import open.dolphin.dto.ImageSearchSpec;
@@ -209,6 +208,44 @@ public final class DocumentDelegater extends BusinessDelegater {
         String entityStr = getString(response);
         long pk = Long.parseLong(entityStr);
         return pk;
+    }
+
+    /**
+     * Documentを検索して返す。
+     *
+     * @param id DocumentID
+     * @return DocumentValue
+     */
+    public List<KarteBean> getKarteBeans(long patientPK, Date fromDate) throws Exception {
+
+        // PATH
+        StringBuilder sb = new StringBuilder();
+        sb.append("/karte/docinfoList/");
+        sb.append(patientPK);
+        sb.append(CAMMA);
+        sb.append(new SimpleDateFormat(DATE_TIME_FORMAT_REST).format(fromDate));
+        sb.append(CAMMA);
+        sb.append(true);
+        Log.outputFuncLog(Log.LOG_LEVEL_0, "I", sb.toString());
+
+        // GET
+        ClientRequest request = getRequest(sb.toString());
+        request.accept(MediaType.APPLICATION_JSON);
+        ClientResponse<String> response = request.get(String.class);
+        Log.outputFuncLog(Log.LOG_LEVEL_3, "I", "REQ", request.getUri().toString());
+        Log.outputFuncLog(Log.LOG_LEVEL_3, "I", "PRM", MediaType.APPLICATION_JSON);
+        Log.outputFuncLog(Log.LOG_LEVEL_3, "I", "RES", String.valueOf(response.getStatus()), response.getResponseStatus().toString());
+        Log.outputFuncLog(Log.LOG_LEVEL_5, "I", "ENT", getString(response));
+
+        // Wrapper
+        BufferedReader br = getReader(response);
+        ObjectMapper mapper = new ObjectMapper();
+        // 2013/06/24
+        mapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        KarteList result = mapper.readValue(br, KarteList.class);
+        br.close();
+
+        return result.getList();
     }
 
     /**

@@ -89,85 +89,86 @@ import org.apache.log4j.Level;
  * @author Kazushi Minagawa, Digital Globe, Inc.
  */
 public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
-    
+
     private static final long DELAY = 10L;
 
-    /** カルテ状態の束縛プロパティ名 */
+    /**
+     * カルテ状態の束縛プロパティ名
+     */
     public static final String CHART_STATE = "chartStateProp";
 
-    public static final int BIT_OPEN            = 0;
-    public static final int BIT_SAVE_CLAIM      = 1;
-    public static final int BIT_MODIFY_CLAIM    = 2;
-    
+    public static final int BIT_OPEN = 0;
+    public static final int BIT_SAVE_CLAIM = 1;
+    public static final int BIT_MODIFY_CLAIM = 2;
+
     private static final String EXT_ODT_TEMPLATE = ".odt";
 
     //  Chart インスタンスを管理するstatic 変数
     //private static ArrayList<ChartImpl> allCharts = new ArrayList<ChartImpl>(3);
     // masuda 
     private static final List<ChartImpl> allCharts = new CopyOnWriteArrayList<>();
-    
+
     // Chart 状態の通知を行うための static 束縛サポート
     //private static PropertyChangeSupport boundSupport = new PropertyChangeSupport(new Object());
-
     private static final String PROP_FRMAE_BOUNDS = "chartFrame.bounds";
-    
+
     // Document Plugin を格納する TabbedPane
     private JTabbedPane tabbedPane;
-    
+
     //- Dolphin Evolution Version 過去カルテ表示
     private JPanel myPanel;
 
     //- Dolphin Evolution Version EditPanel
     private JPanel myEditPanel;
-    
+
     // Active になっているDocument Plugin
     private HashMap<String, ChartDocument> providers;
-    
+
     // 患者インスペクタ 
     private PatientInspector inspector;
-    
+
     // Window Menu をサポートする委譲クラス
     private WindowSupport windowSupport;
-    
+
     // Toolbar
     private JPanel myToolPanel;
-    
+
     // 検索状況等を表示する共通のパネル
     private IStatusPanel statusPanel;
-    
+
     // 患者来院情報 
     private PatientVisitModel pvt;
-    
+
     // Read Only の時 true
     private boolean readOnly;
-    
+
     // Chart のステート 
     private int chartState;
-    
+
     // Chart内のドキュメントに共通の MEDIATOR 
     private ChartMediator mediator;
-    
+
     // State Mgr
     private StateMgr stateMgr;
-    
+
     // PPane に Dropされた病名タンプ
     private List<ModuleInfoBean> droppedDiagnosis;
-    
+
     // MML送信 listener
     private MmlMessageListener mmlListener;
-    
+
     // CLAIM 送信 listener 
     private ClaimMessageListener claimListener;
-    
+
     // このチャートの KarteBean
     private KarteBean karte;
-    
+
     // GlassPane 
     private BlockGlass blockGlass;
-    
+
     // Logger
-    private boolean DEBUG=true;
-    
+    private boolean DEBUG = true;
+
     // タイマー
     private ScheduledExecutorService scheduler;
     private ScheduledFuture<?> beeperHandle;
@@ -178,11 +179,11 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     private int delayCount;
     private ProgressMonitor monitor;
     private Timer taskTimer;
-    
+
 //minagawa^ lsctest    
     private List<UnsavedDocument> dirtyList;
 //minagawa$    
-    
+
 //s.oh^ カルテの画像連携
     private ScheduledExecutorService imageScheduler;
     private ImageWatcher imageWatcher;
@@ -201,7 +202,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     private Map<String, ChartImpl> chartImplMap;
     //- 状態変化リスナー
     private ChartEventHandler scl;
-    
+
     private JSplitPane karteSplitPane;
     private KarteEditor karteEditor;
     private AbstractChartDocument chartDocument;
@@ -210,11 +211,12 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
      * Creates new ChartService
      */
     public ChartImpl() {
-        DEBUG = (ClientContext.getBootLogger().getLevel()==Level.DEBUG);
+        DEBUG = (ClientContext.getBootLogger().getLevel() == Level.DEBUG);
     }
-    
+
     /**
      * オープンしている全インスタンスを保持するリストを返す。
+     *
      * @return オープンしている ChartPlugin のリスト
      */
     public static List<ChartImpl> getAllChart() {
@@ -223,6 +225,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
     /**
      * このチャートのカルテを返す。
+     *
      * @return カルテ
      */
     @Override
@@ -232,6 +235,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
     /**
      * このチャートのカルテを設定する。
+     *
      * @param karte このチャートのカルテ
      */
     @Override
@@ -241,6 +245,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
     /**
      * Chart の JFrame を返す。
+     *
      * @return チャートウインドウno JFrame
      */
     @Override
@@ -250,6 +255,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
     /**
      * Chart内ドキュメントが共通に使用する Status パネルを返す。
+     *
      * @return IStatusPanel
      */
     @Override
@@ -259,6 +265,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
     /**
      * Chart内ドキュメントが共通に使用する Status パネルを設定する。
+     *
      * @param statusPanel IStatusPanel
      */
     @Override
@@ -268,6 +275,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
     /**
      * 来院情報を設定する。
+     *
      * @param pvt 来院情報
      */
     @Override
@@ -277,6 +285,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
     /**
      * 来院情報を返す。
+     *
      * @return 来院情報
      */
     @Override
@@ -286,6 +295,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
     /**
      * ReadOnly かどうかを返す。
+     *
      * @return ReadOnlyの時 true
      */
     @Override
@@ -295,6 +305,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
     /**
      * ReadOnly 属性を設定する。
+     *
      * @param readOnly ReadOnly user の時 true
      */
     @Override
@@ -304,6 +315,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
     /**
      * このチャートが対象としている患者モデルを返す。
+     *
      * @return チャートが対象としている患者モデル
      */
     @Override
@@ -313,6 +325,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
     /**
      * チャートのステート属性を返す。
+     *
      * @return チャートのステート属性
      */
     @Override
@@ -322,6 +335,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
     /**
      * チャートのステートを設定する。
+     *
      * @param chartState チャートステート
      */
     @Override
@@ -331,6 +345,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
     /**
      * チャート内で共通に使用する Mediator を返す。
+     *
      * @return ChartMediator
      */
     @Override
@@ -340,6 +355,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
     /**
      * チャート内で共通に使用する Mediator を設定する。
+     *
      * @param mediator ChartMediator
      */
     public void setChartMediator(ChartMediator mediator) {
@@ -352,6 +368,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
     /**
      * Menu アクションを制御する。
+     *
      * @param name
      * @param enabled
      */
@@ -367,6 +384,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
     /**
      * 文書ヒストリオブジェクトを返す。
+     *
      * @return 文書ヒストリオブジェクト DocumentHistory
      */
     @Override
@@ -376,6 +394,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
     /**
      * 引数で指定されたタブ番号のドキュメントを表示する。
+     *
      * @param index 表示するドキュメントのタブ番号
      */
     @Override
@@ -385,28 +404,30 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
             tabbedPane.setSelectedIndex(index);
         }
     }
-    
+
     /**
      * Ppane にDropされた病名スタンプをリストに保存する。
+     *
      * @param dropped Ppane にDropされた病名スタンプ
      */
     @Override
     public void addDroppedDiagnosis(ModuleInfoBean dropped) {
-        if (droppedDiagnosis==null) {
+        if (droppedDiagnosis == null) {
             droppedDiagnosis = new ArrayList<>(2);
         }
         droppedDiagnosis.add(dropped);
-        
+
         int index = tabbedPane.getSelectedIndex();
         String key = String.valueOf(index);
         ChartDocument plugin = (ChartDocument) providers.get(key);
         if (plugin.getContext() != null && plugin instanceof DiagnosisDocument) {
-            ((DiagnosisDocument)plugin).addDroppedDiagnosis();
+            ((DiagnosisDocument) plugin).addDroppedDiagnosis();
         }
     }
-    
+
     /**
      * Ppane にDropされた病名スタンプをリストを返す。
+     *
      * @return 病名スタンプリスト
      */
     @Override
@@ -416,6 +437,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
     /**
      * チャート内に未保存ドキュメントがあるかどうかを返す。
+     *
      * @return 未保存ドキュメントがある時 true
      */
     @Override
@@ -483,7 +505,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
                 baseTabPane.setPatientIdList(patientIdList);
                 baseTabPane.setPatientIdMap(patientIdMap);
                 baseTabPane.setChartImplMap(chartImplMap);
-                
+
                 scl.publishKarteOpened(getPatientVisit());
 
                 SwingUtilities.invokeLater(new Runnable() {
@@ -496,7 +518,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
             @Override
             protected void cancelled() {
-                ClientContext.getBootLogger().debug("Task cancelled");
+                ClientContext.getBootLogger().info("Task cancelled");
             }
 
             @Override
@@ -552,12 +574,12 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
                 }
             }
         });
-        
+
 //s.oh^ カルテの画像連携
         Long imageDelay = Long.parseLong(Project.getString("karte.imagelink.watching.delay", "500"));
         sb = new StringBuilder();
         String dir = Project.getString("karte.imagelink.dir");
-        if(dir != null && dir.length() > 0) {
+        if (dir != null && dir.length() > 0) {
             firstImageWatcher = true;
             sb.append(dir).append(File.separator).append(pvt.getPatientId());
             imageWatcher = new ImageWatcher(new File(sb.toString()));
@@ -571,8 +593,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     }
 
     /**
-     * 患者のカルテを検索取得し、GUI を構築する。
-     * このメソッドはバックグランドスレッドで実行される。
+     * 患者のカルテを検索取得し、GUI を構築する。 このメソッドはバックグランドスレッドで実行される。
      */
     public void initComponents() {
 
@@ -624,7 +645,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
         SimpleDateFormat sdf = new SimpleDateFormat(rdFormat);
         String created = sdf.format(date);
         statusPanel.setRightInfo(rdPrifix + created);           // カルテ登録日:yyyy/mm/dd
-        
+
 //masuda^最終受診日をstatus panelに表示する
         // 患者ID Status パネルの左に配置する
         //statusPanel.setLeftInfo(patienIdPrefix + getKarte().getPatientModel().getPatientId()); // 患者ID:xxxxxx
@@ -648,12 +669,12 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
         //-------------------------------------------------------------
         AbstractMenuFactory appMenu = AbstractMenuFactory.getFactory();
         appMenu.setMenuSupports(getContext().getMenuSupport(), mediator);
-        appMenu.build(myMenuBar);
+        appMenu.build(myMenuBar, mediator, pvt, application);
         mediator.registerActions(appMenu.getActionMap());
         myToolPanel = appMenu.getToolPanelProduct();
         myToolPanel.add(myMenuBar);
         myToolPanel.add(inspector.getBasicInfoInspector().getPanel(), 0);
-        
+
         // adminとそれ以外
         Action addUserAction = mediator.getAction(GUIConst.ACTION_ADD_USER);
         boolean admin = false;
@@ -666,216 +687,6 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
         }
         addUserAction.setEnabled(admin);
 
-        //---------------------------------
-        // このクラス固有のToolBarを生成する
-        //---------------------------------
-        JToolBar toolBar = appMenu.getToolBar();
-        //myToolPanel.add(toolBar);
-        toolBar.addSeparator();
-        
-//        // テキストツールを生成する
-//        Action action = mediator.getActions().get(GUIConst.ACTION_INSERT_TEXT);
-//        final JToggleButton textBtn = new JToggleButton();
-//        textBtn.setName("textBtn");
-//        textBtn.setAction(action);
-//        textBtn.addItemListener(new ItemListener() {
-//
-//            @Override
-//            public void itemStateChanged(ItemEvent ie) {
-//                if (ie.getStateChange()==ItemEvent.SELECTED) {
-//                    if (mediator.getActions().get(GUIConst.ACTION_INSERT_TEXT).isEnabled()) {
-//                        JPopupMenu menu = new JPopupMenu();
-//                        mediator.addTextMenu(menu);
-//                        
-//                        menu.addPopupMenuListener(new PopupMenuListener() {
-//                            @Override
-//                            public void popupMenuWillBecomeVisible(PopupMenuEvent pme) {
-//                            }
-//                            @Override
-//                            public void popupMenuWillBecomeInvisible(PopupMenuEvent pme) {
-//                                textBtn.setSelected(false);
-//                            }
-//                            @Override
-//                            public void popupMenuCanceled(PopupMenuEvent pme) {
-//                                textBtn.setSelected(false);
-//                            }
-//                        });
-//                        Component c = (Component)ie.getSource();
-//                        menu.show(c, 0, c.getHeight());
-//                    }
-//                }
-//            }
-//        });
-//        textBtn.setFocusable(false);
-//        textBtn.setBorderPainted(false);
-//        textBtn.setMargin(new Insets(3,3,3,3));
-//        toolBar.add(textBtn);
-//
-//        // シェーマツールを生成する
-//        action = mediator.getActions().get(GUIConst.ACTION_INSERT_SCHEMA);
-//        final JToggleButton schemaBtn = new JToggleButton();
-//        schemaBtn.setName("schemaBtn");
-//        schemaBtn.setAction(action);
-//        schemaBtn.addItemListener(new ItemListener() {
-//
-//            @Override
-//            public void itemStateChanged(ItemEvent ie) {
-//                if (ie.getStateChange()==ItemEvent.SELECTED) {
-//                    if (mediator.getActions().get(GUIConst.ACTION_INSERT_SCHEMA).isEnabled()) {
-//                        getContext().showSchemaBox();
-//                    }
-//                    schemaBtn.setSelected(false);
-//                }
-//            }
-//        });
-//        schemaBtn.setFocusable(false);
-//        schemaBtn.setBorderPainted(false);
-//        schemaBtn.setMargin(new Insets(3,3,3,3));
-//        toolBar.add(schemaBtn);
-//
-//        // スタンプツールを生成する
-//        action = mediator.getActions().get(GUIConst.ACTION_INSERT_STAMP);
-//        final JToggleButton stampBtn = new JToggleButton();
-//        stampBtn.setName("stampBtn");
-//        stampBtn.setAction(action);
-//        stampBtn.addItemListener(new ItemListener() {
-//
-//            @Override
-//            public void itemStateChanged(ItemEvent ie) {
-//                if (ie.getStateChange()==ItemEvent.SELECTED) {
-//                    if (mediator.getActions().get(GUIConst.ACTION_INSERT_STAMP).isEnabled()) {
-//                        JPopupMenu menu = new JPopupMenu();
-//                        mediator.addStampMenu(menu);
-//                        
-//                        menu.addPopupMenuListener(new PopupMenuListener() {
-//                            @Override
-//                            public void popupMenuWillBecomeVisible(PopupMenuEvent pme) {
-//                            }
-//                            @Override
-//                            public void popupMenuWillBecomeInvisible(PopupMenuEvent pme) {
-//                                stampBtn.setSelected(false);
-//                            }
-//                            @Override
-//                            public void popupMenuCanceled(PopupMenuEvent pme) {
-//                                stampBtn.setSelected(false);
-//                            }
-//                        });
-//                        
-//                        Component c = (Component)ie.getSource();
-//                        menu.show(c, 0, c.getHeight());
-//                    }
-//                }
-//            }
-//        });
-//        stampBtn.setFocusable(false);
-//        stampBtn.setBorderPainted(true);
-//        stampBtn.setMargin(new Insets(3,3,3,3));
-//        toolBar.add(stampBtn);
-
-//        //-----------------------------------------------------------------
-//        // 処方日数を一括変更する
-//        //-----------------------------------------------------------------
-//        action = mediator.getActions().get(GUIConst.ACTION_CHANGE_NUM_OF_DATES_ALL);
-//        JButton chgBtn = new JButton();
-//        chgBtn.setName("chgBtn");
-//        chgBtn.setAction(action);
-//        toolBar.add(chgBtn);
-
-        //-------------------------------------------------------------
-        // 保険選択ツールを生成する
-        // 保険の切り替え（変更）で karteEditorの applyInsurance が起動される
-        //-------------------------------------------------------------
-        Action action = mediator.getActions().get(GUIConst.ACTION_SELECT_INSURANCE);
-        final JToggleButton insBtn = new JToggleButton();
-        insBtn.setName("insBtn");
-        insBtn.setAction(action);
-        insBtn.addItemListener(new ItemListener() {
-
-            @Override
-            public void itemStateChanged(ItemEvent ie) {
-                if (ie.getStateChange()==ItemEvent.SELECTED) {
-                    if (mediator.getActions().get(GUIConst.ACTION_SELECT_INSURANCE).isEnabled()) {
-                        JPopupMenu menu = new JPopupMenu();
-                        PVTHealthInsuranceModel[] insurances = getHealthInsurances();
-                        for (PVTHealthInsuranceModel hm : insurances) {
-                            ReflectActionListener ra = new ReflectActionListener(mediator,
-                                    "applyInsurance",
-                                    new Class[]{hm.getClass()},
-                                    new Object[]{hm});
-                            JMenuItem mi = new JMenuItem(hm.toString());
-                            mi.addActionListener(ra);
-                            menu.add(mi);
-                        }
-                        
-                        menu.addPopupMenuListener(new PopupMenuListener() {
-                            @Override
-                            public void popupMenuWillBecomeVisible(PopupMenuEvent pme) {
-                            }
-                            @Override
-                            public void popupMenuWillBecomeInvisible(PopupMenuEvent pme) {
-                                insBtn.setSelected(false);
-                            }
-                            @Override
-                            public void popupMenuCanceled(PopupMenuEvent pme) {
-                                insBtn.setSelected(false);
-                            }
-                        });
-                        
-                        Component c = (Component)ie.getSource();
-                        menu.show(c, 0, c.getHeight());
-                    }
-                }
-            }
-        });
-        insBtn.setFocusable(false);
-        insBtn.setBorderPainted(true);
-        insBtn.setMargin(new Insets(3,3,3,3));
-        toolBar.add(insBtn);
-        
-////s.oh^ テキストの挿入 2013/08/12
-//        if(Project.getString(GUIConst.ACTION_SOAPANE_INSERTTEXT_DIR, "").length() > 0) {
-//            toolBar.addSeparator();
-//            JButton insertSOATextBtn = new JButton();
-//            insertSOATextBtn.setAction(mediator.getActions().get("insertSOAText"));
-//            insertSOATextBtn.setText(null);
-//            insertSOATextBtn.setToolTipText("所見欄にテキストを追加します。");
-//            insertSOATextBtn.setMargin(new Insets(3,3,3,3));
-//            insertSOATextBtn.setFocusable(false);
-//            insertSOATextBtn.setBorderPainted(true);
-//            toolBar.add(insertSOATextBtn);
-//        }
-//        
-//        if(Project.getString(GUIConst.ACTION_PPANE_INSERTTEXT_DIR, "").length() > 0) {
-//            toolBar.addSeparator();
-//            JButton insertPTextBtn = new JButton();
-//            insertPTextBtn.setAction(mediator.getActions().get("insertPText"));
-//            insertPTextBtn.setText(null);
-//            insertPTextBtn.setToolTipText("算定欄にテキストを追加します。");
-//            insertPTextBtn.setMargin(new Insets(3,3,3,3));
-//            insertPTextBtn.setFocusable(false);
-//            insertPTextBtn.setBorderPainted(true);
-//            toolBar.add(insertPTextBtn);
-//        }
-////s.oh$
-//        
-////s.oh^ 他プロセス連携(アイコン) 2013/10/21
-//        if(Project.getBoolean(GUIConst.ACTION_OTHERPROCESS_ICON, false)) {
-//            toolBar.addSeparator();
-//            int num = Project.getInt("otherprocessicon.link.num", 0);
-//            for(int i = 1; i < num+1; i++) {
-//                String KEY_DEF = "otherprocessicon" + String.valueOf(i) + ".link";
-//                JButton linkBtn = new JButton();
-//                linkBtn.setAction(mediator.getActions().get("otherProcessIcon" + String.valueOf(i) + "Link"));
-//                linkBtn.setText(null);
-//                linkBtn.setToolTipText(Project.getString(KEY_DEF + ".tooltip", ""));
-//                linkBtn.setMargin(new Insets(3,3,3,3));
-//                linkBtn.setFocusable(false);
-//                linkBtn.setBorderPainted(true);
-//                toolBar.add(linkBtn);
-//            }
-//        }
-////s.oh$
-
         //- カルテ表示変更(DolphinEvolution Version)
         myPanel = new JPanel();
         myEditPanel = new JPanel();
@@ -885,26 +696,22 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
         karteSplitPane = new JSplitPane();
         karteSplitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
         karteSplitPane.setPreferredSize(new Dimension(myPanel.getSize().width, myPanel.getSize().height));
-        karteSplitPane.setDividerLocation(myPanel.getSize().height/2);
+        karteSplitPane.setDividerLocation(myPanel.getSize().height / 2);
         // Document プラグインのタブを生成する
         tabbedPane = loadDocuments();
         karteSplitPane.setTopComponent(tabbedPane);
         karteSplitPane.setBottomComponent(null);
-        
+
+        karteSplitPane.addPropertyChangeListener(createPropatyChangeListener());
+       
         myPanel.add(myToolPanel, BorderLayout.PAGE_START);
         myPanel.add(karteSplitPane, BorderLayout.CENTER);
         myPanel.add(myEditPanel, BorderLayout.EAST);
-        myPanel.add(inspector.getPtSubPanel(), BorderLayout.WEST);
+        myPanel.add(inspector.getPanel(), BorderLayout.WEST);
         myPanel.add((JPanel) statusPanel, BorderLayout.PAGE_END);
-
+        
         tabbedPane.setPreferredSize(new Dimension(myPanel.getSize().width, myPanel.getSize().height));
         frame.setContentPane(myPanel);
-
-        // Injection
-        insBtn.setIcon(ClientContext.getImageIconArias("icon_health_insurance"));
-//minagawa$         
-        insBtn.setText(null);
-        insBtn.setToolTipText(resource.getString("insBtn.toolTipText"));
 
         // StateMgr を生成する
         stateMgr = new StateMgr();
@@ -928,7 +735,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
             public void windowOpened(WindowEvent e) {
                 // リストへ追加する
                 allCharts.add(ChartImpl.this);
-                
+
             }
 
             @Override
@@ -970,7 +777,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
         // MML 送信 Queue
         if (Project.getBoolean(Project.SEND_MML)) {
-            mmlListener = (MmlMessageListener)getContext().getPlugin("sendMml");
+            mmlListener = (MmlMessageListener) getContext().getPlugin("sendMml");
         }
 
         // CLAIM 送信 Queue
@@ -994,6 +801,20 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
         beeperHandle = scheduler.scheduleAtFixedRate(beeper, delay, delay, TimeUnit.SECONDS);
     }
 
+    public PropertyChangeListener createPropatyChangeListener() {
+        PropertyChangeListener listener = (new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent changeEvent) {
+                if (Boolean.valueOf(Project.getString("karte.split.reserve"))
+                        && ( karteSplitPane.getTopComponent() != null && karteSplitPane.getBottomComponent() != null )) {
+                    Project.setInt("karte.split.reserve.edit.position", karteSplitPane.getDividerLocation());
+                }
+            }
+        });
+        return listener;
+    }
+    
+    
     //- PatientInspector インスタンスを返す
     public PatientInspector getPatientInspector() {
         return inspector;
@@ -1110,14 +931,11 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
 
         return tab;
     }
-    
-    private void tabActionProc(final JTabbedPane tab, final JComponent c){
+
+    private void tabActionProc(final JTabbedPane tab, final JComponent c) {
         // Optionally bring the new tab to the front
         tab.setSelectedComponent(c);
 
-        
-        
-        
         //-------------------------------------------------------------
         // Bonus: Adding a <Ctrl-F> keystroke binding to back the tab
         //-------------------------------------------------------------
@@ -1125,9 +943,9 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int currentIndex = tabbedPane.indexOfComponent(c);
-                if(currentIndex == 0){
+                if (currentIndex == 0) {
                     tabbedPane.setSelectedIndex(tabbedPane.getTabCount() - 1);
-                }else{
+                } else {
                     tabbedPane.setSelectedIndex(currentIndex - 1);
                 }
             }
@@ -1140,14 +958,14 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int currentIndex = tabbedPane.indexOfComponent(c);
-                if(currentIndex == tabbedPane.getTabCount() - 1){
+                if (currentIndex == tabbedPane.getTabCount() - 1) {
                     tabbedPane.setSelectedIndex(0);
-                }else{
+                } else {
                     tabbedPane.setSelectedIndex(currentIndex + 1);
                 }
             }
         };
-        
+
         // Create a keystroke
         KeyStroke controlF = KeyStroke.getKeyStroke("control F");
         KeyStroke controlJ = KeyStroke.getKeyStroke("control J");
@@ -1163,7 +981,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
         // Now add a single binding for the action name to the anonymous action
         c.getActionMap().put("foreTab", foreTabAction);
         c.getActionMap().put("jumpTab", jumpTabAction);
-        
+
         // Add the key binding for the keystroke to the action name
         inputMap.put(controlF, "foreTab");
         inputMap.put(controlJ, "jumpTab");
@@ -1171,7 +989,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
         // Now add a single binding for the action name to the anonymous action
         c.getActionMap().put("foreTab", foreTabAction);
         c.getActionMap().put("jumpTab", jumpTabAction);
-        
+
     }
 
     /**
@@ -1205,9 +1023,9 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
             //
             // 既に生成済みプラグインの場合でかつ新規・更新用カルテが存在する場合は KarteEditor::enter() をコールする
             //
-            if(providers.size() == 7){
-                if(providers.get("6") instanceof KarteEditor){
-                plugin = (KarteEditor) providers.get("6");
+            if (providers.size() == 7) {
+                if (providers.get("6") instanceof KarteEditor) {
+                    plugin = (KarteEditor) providers.get("6");
                 } else {
                     plugin = (ChartDocument) providers.get("6");
                 }
@@ -1243,7 +1061,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
             }
             DocumentBridgeImpl bridge = (DocumentBridgeImpl) bridgeOrViewer;
             base = bridge.getBaseKarte();
-            editor.setKarteDocumentViewer((KarteDocumentViewer)bridge.getCurViwer());
+            editor.setKarteDocumentViewer((KarteDocumentViewer) bridge.getCurViwer());
 
         } else if (bridgeOrViewer instanceof KarteDocumentViewer) {
             if (DEBUG) {
@@ -1380,7 +1198,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
             editor.start();
             this.addChartDocument(editor, params);
         }
-        
+
 //s.oh^ カルテの画像連携
         karteEditorList.add(editor);
 //s.oh$
@@ -1851,13 +1669,38 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
      * @param doc 追加するドキュメント
      * @param params 追加するドキュメントの情報を保持する NewKarteParams
      */
-    public void addChartDocument(ChartDocument doc, NewKarteParams params) {   
-        karteSplitPane.setTopComponent(tabbedPane);
-        karteSplitPane.setBottomComponent(doc.getUI());
-        application.evoWindow.getPanel2().revalidate();
+    public void addChartDocument(ChartDocument doc, NewKarteParams params) {
+        if(getDocumentHistory().getDocumentCount() > 0){
+            if(Boolean.valueOf(Project.getString(Project.KARTE_SPLIT_SELECT))) {        
+                karteSplitPane.setTopComponent(new JPanel().add(tabbedPane));
+            } else {
+                karteSplitPane.setBottomComponent(new JPanel().add(tabbedPane));
+            }
+        }else{
+            if(Boolean.valueOf(Project.getString(Project.KARTE_SPLIT_SELECT))) {        
+                karteSplitPane.setTopComponent(null);
+            } else {
+                karteSplitPane.setBottomComponent(null);
+            }
+        }
         int index = tabbedPane.getTabCount();
         providers.put(String.valueOf(index), doc);
-        getKarteSplitPane().setDividerLocation(myPanel.getSize().height/2);
+        
+        if(Boolean.valueOf(Project.getString("karte.split.reserve"))){
+            int location = Project.getInt("karte.split.reserve.edit.position");
+            getKarteSplitPane().setDividerLocation(location);
+        } else {
+            getKarteSplitPane().setDividerLocation(myPanel.getSize().height / 2);
+        }
+        
+        //- カルテ記入時、エディタ上下反転設定追加
+        if(Boolean.valueOf(Project.getString(Project.KARTE_SPLIT_SELECT))) {
+            karteSplitPane.setBottomComponent(doc.getUI());
+        } else {
+            karteSplitPane.setTopComponent(doc.getUI());
+        }
+        
+        application.evoWindow.reFleshJFrame2();
     }
 
     /**
@@ -1867,12 +1710,37 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
      * @param title タブタイトル
      */
     public void addChartDocument(ChartDocument doc, String title) {
-        karteSplitPane.setTopComponent(tabbedPane);
-        karteSplitPane.setBottomComponent(doc.getUI());
-        application.evoWindow.getPanel2().revalidate();
+        if(getDocumentHistory().getDocumentCount() > 0){
+            if(Boolean.valueOf(Project.getString(Project.KARTE_SPLIT_SELECT))) {
+                karteSplitPane.setTopComponent(new JPanel().add(tabbedPane));
+            } else {
+                karteSplitPane.setBottomComponent(new JPanel().add(tabbedPane));
+            }
+        }else{
+            if(Boolean.valueOf(Project.getString(Project.KARTE_SPLIT_SELECT))) {
+                karteSplitPane.setTopComponent(null);
+            } else {
+                karteSplitPane.setBottomComponent(null);
+            }
+        }
         int index = tabbedPane.getTabCount();
         providers.put(String.valueOf(index), doc);
-        getKarteSplitPane().setDividerLocation(myPanel.getSize().height/2);
+        
+        if(Boolean.valueOf(Project.getString("karte.split.reserve"))){
+            int location = Project.getInt("karte.split.reserve.edit.position");
+            getKarteSplitPane().setDividerLocation(location);
+        } else {
+            getKarteSplitPane().setDividerLocation(myPanel.getSize().height / 2);
+        }        
+        
+        //- カルテ記入時、エディタ上下反転設定追加
+        if(Boolean.valueOf(Project.getString(Project.KARTE_SPLIT_SELECT))) {
+            karteSplitPane.setBottomComponent(doc.getUI());
+        } else {
+            karteSplitPane.setTopComponent(doc.getUI());
+        }
+        
+        application.evoWindow.reFleshJFrame2();
     }
 
 //minagawa^ LSC Test
@@ -2224,6 +2092,11 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
             public void actionPerformed(ActionEvent e) {
                 dialog.setVisible(false);
                 dialog.dispose();
+                if(karteSplitPane.getBottomComponent() != null){
+                    JOptionPane.showMessageDialog(getFrame(), "編集中のカルテや文書を保存してから実行してください");
+                    return;
+                }
+                
                 NameValuePair pair = (NameValuePair) docList.getSelectedValue();
                 String test = pair.getValue();
                 if (test.endsWith(EXT_ODT_TEMPLATE)) {
@@ -2257,7 +2130,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
                 }
             }
         });
-
+        
         dialog.setVisible(true);
     }
 
@@ -2310,21 +2183,21 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
         }
         myEditPanel.removeAll();
     }
-    
+
 //s.oh^ 他プロセス連携(アイコン) 2013/10/21
     public void otherProcessIcon1Link() {
         DefaultBrowserEx.otherProcess("otherprocess1icon.link", this, Project.getString("otherprocess1icon.link.path"), Project.getString("otherprocess1icon.link.param"), null);
     }
-    
+
     public void otherProcessIcon2Link() {
         DefaultBrowserEx.otherProcess("otherprocess2icon.link", this, Project.getString("otherprocess2icon.link.path"), Project.getString("otherprocess2icon.link.param"), null);
     }
-    
+
     public void otherProcessIcon3Link() {
         DefaultBrowserEx.otherProcess("otherprocess3icon.link", this, Project.getString("otherprocess3icon.link.path"), Project.getString("otherprocess3icon.link.param"), null);
     }
 //s.oh$
-    
+
     // 未保存の文書が全て保存されるのを待って stopを実行するリスナ
     class DirtySaveController implements PropertyChangeListener {
 
@@ -2393,6 +2266,22 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
             }
         }
         return ret;
+    }
+
+    /**
+     * ドキュメントのなかにあるdirtyのものをnot dirtyにする。
+     *
+     * @param docParam
+     */
+    public void evoDirtyListClean(ChartDocument docParam) {
+        int count = this.providers.size();
+        for (int i = 0; i < count; i++) {
+            ChartDocument doc = (ChartDocument) this.providers.get(String.valueOf(i));
+            if (doc != null && doc.isDirty() && doc.getTitle().equals(docParam.getTitle())) {
+                doc.setDirty(false);
+                this.providers.remove(String.valueOf(i));
+            }
+        }
     }
 
     /**
@@ -2610,7 +2499,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
                     return "2";
 //                    return false;
             }
-        
+
         } else {
             stop();
             return "3";
@@ -2681,19 +2570,19 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
         getFrame().setVisible(false);
         getFrame().setJMenuBar(null);
         getFrame().dispose();
-        
+
 //s.oh^ カルテの画像連携
-        if(imageScheduler != null) {
+        if (imageScheduler != null) {
             imageScheduler.shutdown();
         }
 //s.oh$
     }
-    
+
 //s.oh^ 不具合修正(一括終了時のステータスクリア)
     public void publishKarteClosed() {
-        ChartEventHandler scl = ChartEventHandler.getInstance();
-        if(scl != null) {
-            scl.publishKarteClosed(ChartImpl.this.getPatientVisit());
+        ChartEventHandler lscl = ChartEventHandler.getInstance();
+        if (lscl != null) {
+            lscl.publishKarteClosed(ChartImpl.this.getPatientVisit());
         }
     }
 //s.oh$
@@ -2789,7 +2678,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
             currentState.controlMenu();
         }
     }
-    
+
 //s.oh^ カルテの画像連携
     class ImageWatcher implements Runnable {
 
@@ -2878,7 +2767,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
         this.baseTabPane = tabpane;
     }
 
-    @Override   
+    @Override
     public void setFirstFlag(boolean firstFlag) {
         this.firstFlag = firstFlag;
     }

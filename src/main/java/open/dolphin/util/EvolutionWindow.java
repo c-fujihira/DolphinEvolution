@@ -19,9 +19,11 @@ package open.dolphin.util;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
+import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.GraphicsEnvironment;
 import java.awt.GridLayout;
 import java.awt.HeadlessException;
@@ -55,8 +57,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javax.print.attribute.HashPrintRequestAttributeSet;
@@ -64,6 +70,7 @@ import javax.print.attribute.PrintRequestAttributeSet;
 import javax.swing.Action;
 import javax.swing.ActionMap;
 import javax.swing.BoxLayout;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenuBar;
@@ -76,11 +83,13 @@ import javax.swing.JTabbedPane;
 import javax.swing.ProgressMonitor;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
+import javax.swing.WindowConstants;
+import javax.swing.event.AncestorEvent;
+import javax.swing.event.AncestorListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.MenuEvent;
 import open.dolphin.client.AboutDolphin;
-import open.dolphin.client.AbstractChartDocument;
 import open.dolphin.client.AddUser;
 import open.dolphin.client.BlockGlass;
 import open.dolphin.client.ChangeProfile;
@@ -94,6 +103,7 @@ import open.dolphin.client.Evolution;
 import open.dolphin.client.GUIConst;
 import open.dolphin.client.GUIFactory;
 import open.dolphin.client.ImageBox;
+import open.dolphin.client.AuditController;
 import open.dolphin.client.KarteEditor;
 import open.dolphin.client.MainComponent;
 import open.dolphin.client.MainService;
@@ -249,7 +259,7 @@ public final class EvolutionWindow implements MainWindow {
 
     public void loadResource(final List<IStampTreeModel> result) {
 
-        ClientContext.getBootLogger().debug("main window load resources.");
+        ClientContext.getBootLogger().info("main window load resources.");
 
         //- StaeMagrを使用してメインウインドウの状態を制御する
         stateMgr = new StateManager();
@@ -263,6 +273,7 @@ public final class EvolutionWindow implements MainWindow {
         stampBox.setEvoWindow(EvolutionWindow.this);
         stampBox.setStampTreeModels(result);
         stampBox.start();
+        providers.put("stampBox", stampBox);
 
         //- シェーマボックスを読み込む
         ImageBox imgBox = new ImageBox();
@@ -305,7 +316,25 @@ public final class EvolutionWindow implements MainWindow {
 
         //- 仕切り線サイズ, 仕切り位置, リサイズ時倍率 (ListView/ControlPanel)
         splitPane2 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, getPanel1(), getPanel3());
+        AncestorListener ancListener = new AncestorListener() {
+            @Override
+            public void ancestorAdded(AncestorEvent ancestorEvent) {
+            }
 
+            @Override
+            public void ancestorMoved(AncestorEvent ancestorEvent) {
+                //- debug
+                if (Boolean.valueOf(Project.getString("karte.split.reserve"))) {
+                    Project.setInt("karte.split.reserve.position", application.evoWindow.getSplitPane3().getDividerLocation());
+                }
+            }
+
+            @Override
+            public void ancestorRemoved(AncestorEvent ancestorEvent) {
+            }
+        };
+        panel2.addAncestorListener(ancListener);
+        splitPane2.addAncestorListener(ancListener);
         //- 仕切り線サイズ, 仕切り位置, リサイズ時倍率 (KarteView/ListView/ControlPanel)
         splitPane3 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true, getPanel2(), getSplitPane2());
 
@@ -367,7 +396,7 @@ public final class EvolutionWindow implements MainWindow {
             }
             list.add(plugin);
         }
-        ClientContext.getBootLogger().debug("main window plugin did load");
+        ClientContext.getBootLogger().info("main window plugin did load");
 
         // プラグインプロバイダに格納する
         // index=0 のプラグイン（受付リスト）は起動する
@@ -588,18 +617,26 @@ public final class EvolutionWindow implements MainWindow {
     }
 
     public void reFleshJFrame0() {
+        //- リフレッシュ不具合対応
+        panel0.repaint();
         panel0.revalidate();
     }
 
     public void reFleshJFrame1() {
+        //- リフレッシュ不具合対応
+        panel1.repaint();
         panel1.revalidate();
     }
 
     public void reFleshJFrame2() {
+        //- リフレッシュ不具合対応
+        panel2.repaint();
         panel2.revalidate();
     }
 
     public void reFleshJFrame3() {
+        //- リフレッシュ不具合対応
+        panel3.repaint();
         panel3.revalidate();
     }
 
@@ -791,9 +828,14 @@ public final class EvolutionWindow implements MainWindow {
         //- Do Nothing
     }
 
+    /**
+     * シェーマボックスを表示する。
+     */
     @Override
     public void showSchemaBox() {
-        //- Do Nothing
+        ImageBox imageBox = new ImageBox();
+        imageBox.setContext(this);
+        imageBox.show();
     }
 
     @Override
@@ -845,7 +887,7 @@ public final class EvolutionWindow implements MainWindow {
             sendMml.setCSGWPath(Project.getString(Project.SEND_MML_DIRECTORY));
             sendMml.start();
             providers.put("sendMml", sendMml);
-            ClientContext.getBootLogger().debug("sendMml did  start");
+            ClientContext.getBootLogger().info("sendMml did  start");
         }
     }
 
@@ -884,7 +926,7 @@ public final class EvolutionWindow implements MainWindow {
             pvtServer.setBindAddress(Project.getString(Project.CLAIM_BIND_ADDRESS));
             pvtServer.start();
             providers.put("pvtServer", pvtServer);
-            ClientContext.getBootLogger().debug("pvtServer did  start");
+            ClientContext.getBootLogger().info("pvtServer did  start");
         }
     }
 
@@ -902,7 +944,7 @@ public final class EvolutionWindow implements MainWindow {
             sendClaim.setContext(this);
             sendClaim.start();
             providers.put("sendClaim", sendClaim);
-            ClientContext.getBootLogger().debug("sendClaim did  start");
+            ClientContext.getBootLogger().info("sendClaim did  start");
         }
     }
 
@@ -1205,6 +1247,107 @@ public final class EvolutionWindow implements MainWindow {
                 JOptionPane.WARNING_MESSAGE);
     }
 
+    private void initAndShowGUI() throws IOException {
+        final JFXPanel jfxPanel = new JFXPanel();
+
+        Platform.runLater(new Runnable() {
+            Parent root;
+            AuditController auditCtr = null;
+            
+            @Override
+            public void run() {
+                try {
+                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/resources/fxml/Audit.fxml"));
+                    root = (Parent)fxmlLoader.load();
+                    auditCtr = (AuditController) fxmlLoader.getController();
+                } catch (IOException ex) {
+                    Logger.getLogger(EvolutionWindow.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+
+                Scene scene = new Scene(root);
+                jfxPanel.setScene(scene);
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        final JDialog dialog = new JDialog(getFrame(), "カルテ更新履歴一覧出力", true);
+                        auditCtr.setDialog(dialog);
+                        dialog.getContentPane().add(jfxPanel, BorderLayout.CENTER);
+                        dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+                        dialog.addWindowListener(new WindowAdapter() {
+                            @Override
+                            public void windowClosing(WindowEvent e) {
+                                dialog.setVisible(false);
+                                dialog.dispose();
+                            }
+                        });
+
+                        dialog.pack();
+                        dialog.setResizable(false);
+                        Dimension size = Toolkit.getDefaultToolkit().getScreenSize();
+                        int x = (size.width) / 3;
+                        int y = (size.height) / 5;
+                        dialog.setLocation(x, y);
+                        dialog.setVisible(true);
+                    }
+                });
+            }
+        });
+    }
+
+    /**
+     * カルテ履歴一覧出力画面を表示する
+     */
+    public void patientInfoOutput() {
+
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    initAndShowGUI();
+                } catch (IOException ex) {
+                    ex.getStackTrace();
+                }
+            }
+        });
+
+//        //- ダイアログ表示
+//        String fxml = "/resources/fxml/Audit.fxml";
+//        FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));
+//        loader.setBuilderFactory(new JavaFXBuilderFactory());
+//        loader.setLocation(EvolutionWindow.class.getResource(fxml));
+//        try {
+//            loader.load();
+//
+//        } catch (IOException ex) {
+//            Logger.getLogger(AuditController.class.getName()).log(Level.SEVERE, "Template Error.", ex);
+//        }
+//
+//        Parent root = loader.getRoot();
+//        AuditController ctrl = (AuditController)loader.getController();
+//
+//        //- サイズ変更不可
+//        Stage stage = new Stage();
+//        stage.setResizable(false);
+//        stage.initModality(Modality.APPLICATION_MODAL);
+//        stage.initOwner(getStage());
+//        stage.setScene(new Scene(root));
+//        stage.setTitle("カルテ更新履歴一覧出力");
+//
+//        ctrl.setApp(this.application);
+//        ctrl.setStage(stage);
+//
+//        //- ダイアログ・クローズまで待つ
+//        stage.showAndWait();
+//        //- リソース解放
+//        if (stage.isShowing()) {
+//            stage.close();
+//        }
+//        
+//        stage = null;
+    }
+
     /**
      * About を表示する。
      */
@@ -1239,7 +1382,7 @@ public final class EvolutionWindow implements MainWindow {
 
             //- 新規ユーザでデータベースに個人用のStampTreeが存在しなかった場合
             if (!hasTree) {
-                ClientContext.getBootLogger().debug("新規ユーザー、スタンプツリーをリソースから構築");
+                ClientContext.getBootLogger().info("新規ユーザー、スタンプツリーをリソースから構築");
 
                 BufferedReader reader;
                 IStampTreeModel tm;
@@ -1302,7 +1445,7 @@ public final class EvolutionWindow implements MainWindow {
 
             @Override
             protected Void doInBackground() throws Exception {
-                ClientContext.getBootLogger().debug("stampTask doInBackground");
+                ClientContext.getBootLogger().info("stampTask doInBackground");
                 // Stamp 保存
                 StampDelegater dl = new StampDelegater();
                 dl.putTree(treeTosave);
@@ -1312,10 +1455,10 @@ public final class EvolutionWindow implements MainWindow {
             @Override
             protected void succeeded(Void result) {
 
-                ClientContext.getBootLogger().debug("stampTask succeeded");
+                ClientContext.getBootLogger().info("stampTask succeeded");
                 shutdown();
                 frame.setVisible(false);
-                ClientContext.getBootLogger().debug("メインウィンドウを終了します");
+                ClientContext.getBootLogger().info("メインウィンドウを終了します");
 
                 if (flag == 0) {
                     Platform.runLater(new Runnable() {
@@ -1324,7 +1467,7 @@ public final class EvolutionWindow implements MainWindow {
                             application.setScene(getScene());
                             application.setStage(getStage());
                             application.loginDisplay();
-                            ClientContext.getBootLogger().debug("WindowClose.");
+                            ClientContext.getBootLogger().info("WindowClose.");
                         }
                     });
                 }
@@ -1338,7 +1481,7 @@ public final class EvolutionWindow implements MainWindow {
                                     application.setScene(getScene());
                                     application.setStage(getStage());
                                     application.loginDisplay();
-                                    ClientContext.getBootLogger().debug("WindowClose.");
+                                    ClientContext.getBootLogger().info("WindowClose.");
                                 }
                             });
                         }
@@ -1460,15 +1603,38 @@ public final class EvolutionWindow implements MainWindow {
             // ウィンドウが閉じられた時に開いていたカルテを閉じてステータスを解除する
             for (Entry<String, ChartImpl> entry : chartImplMap.entrySet()) {
                 String patientId = entry.getKey();
+                //masuda^ この患者のEditorFrameが開いたままなら、インスペクタを閉じられないようにする
+                List<Chart> editorFrames = EditorFrame.getAllEditorFrames();
+                if (editorFrames != null && !editorFrames.isEmpty()) {
+                    long ptId = Long.parseLong(patientId);
+                    for (Chart chart : editorFrames) {
+                        long id = Long.parseLong(chart.getPatient().getPatientId());
+                        if (ptId == id) {
+                            // よくわからないEditorFrameが残っていて、Frameがぬるぽのときがあるので
+                            try {
+                                // 最小化してたらFrameを再表示させる
+                                chart.getFrame().setExtendedState(Frame.NORMAL);
+                                //JOptionPane.showMessageDialog(this.getFrame(),
+                                String title = ClientContext.getFrameTitle("インスペクタ");
+                                JOptionPane.showMessageDialog(chart.getFrame(),
+                                        "インスペクタを閉じる前にカルテエディタを閉じてください。",
+                                        title, JOptionPane.WARNING_MESSAGE);
+                                return false;
+                            } catch (HeadlessException e) {
+                            }
+                        }
+                    }
+                }
+
                 if (!patientIdMap.containsKey(patientId)) {
                     continue;
                 }
                 ChartImpl chart = entry.getValue();
-                
-                int i=0;
-                for(; i<baseTabPane.getTabbedPane().getTabCount(); i++){
+
+                int i = 0;
+                for (; i < baseTabPane.getTabbedPane().getTabCount(); i++) {
                     String title = baseTabPane.getTabbedPane().getTitleAt(i);
-                    if(title.equals(patientId)){
+                    if (title.equals(patientId)) {
                         break;
                     }
                 }
@@ -1478,6 +1644,8 @@ public final class EvolutionWindow implements MainWindow {
                     PatientVisitModel model = patientIdMap.get(patientId);
                     ChartEventHandler lscl = ChartEventHandler.getInstance();
                     lscl.publishKarteClosed(model);
+                    // メモ内容保存
+                    chart.getPatientInspector().dispose();
                     // カルテタブ削除
                     baseTabPane.getTabbedPane().removeTabAt(i);
                     // カルテタブ表示用患者IDリストからID削除
@@ -1576,17 +1744,17 @@ public final class EvolutionWindow implements MainWindow {
                 SwingUtilities.invokeLater(new Runnable() {
                     @Override
                     public void run() {
-                        ClientContext.getBootLogger().debug("ShutDown app.");
+                        ClientContext.getBootLogger().info("ShutDown app.");
                         shutdown();
                         frame.setVisible(false);
                         Platform.runLater(new Runnable() {
                             @Override
                             public void run() {
-                                ClientContext.getBootLogger().debug("Restart Fx Menu.");
+                                ClientContext.getBootLogger().info("Restart Fx Menu.");
                                 application.setScene(getScene());
                                 application.setStage(getStage());
                                 application.loginDisplay();
-                                ClientContext.getBootLogger().debug("WindowClose.");
+                                ClientContext.getBootLogger().info("WindowClose.");
                             }
                         });
                     }
@@ -1614,7 +1782,7 @@ public final class EvolutionWindow implements MainWindow {
 
             @Override
             protected Void doInBackground() throws Exception {
-                ClientContext.getBootLogger().debug("stampTask doInBackground");
+                ClientContext.getBootLogger().info("stampTask doInBackground");
                 // Stamp 保存
                 StampDelegater dl = new StampDelegater();
                 dl.forceSyncTree(treeTosave);
@@ -1626,7 +1794,7 @@ public final class EvolutionWindow implements MainWindow {
                 SwingUtilities.invokeLater(new Runnable() {
                     @Override
                     public void run() {
-                        ClientContext.getBootLogger().debug("stampTask succeeded");
+                        ClientContext.getBootLogger().info("stampTask succeeded");
                         shutdown();
                         frame.setVisible(false);
                         Platform.runLater(new Runnable() {
@@ -1635,7 +1803,7 @@ public final class EvolutionWindow implements MainWindow {
                                 application.setScene(getScene());
                                 application.setStage(getStage());
                                 application.loginDisplay();
-                                ClientContext.getBootLogger().debug("WindowClose.");
+                                ClientContext.getBootLogger().info("WindowClose.");
                             }
                         });
                     }

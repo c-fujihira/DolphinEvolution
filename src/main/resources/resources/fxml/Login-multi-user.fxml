@@ -58,6 +58,8 @@
     </Text>
     <Text font="$x1" layoutX="99.0" layoutY="314.0" strokeType="OUTSIDE" strokeWidth="0.0" text="文中の社名、商品名等は各社の商標または登録商標である場合があります。" />
     <ChoiceBox fx:id="multiUser" layoutX="418.0" layoutY="46.0" maxWidth="-1.0" prefHeight="26.0" prefWidth="154.0" />
+    <Text id="clVer" fx:id="clientBuild" layoutX="12.0" layoutY="255.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Client Build" />
+    <Text fx:id="svVer" layoutX="12.0" layoutY="275.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Server Build" />
   </children>
   <stylesheets>
     <URL value="@../styles/Login.css" />

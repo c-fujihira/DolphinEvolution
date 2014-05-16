@@ -126,9 +126,6 @@ public class EditorFrame extends AbstractMainTool implements Chart {
     // このフレームに表示する KarteEditor オブジェクト
     private KarteEditor editor;
 
-    // ToolBar パネル
-    private JPanel myToolPanel;
-
     // スクローラコンポーネント
     private JScrollPane scroller;
 
@@ -455,11 +452,10 @@ public class EditorFrame extends AbstractMainTool implements Chart {
         //  MenuBar を生成する
         AbstractMenuFactory appMenu = AbstractMenuFactory.getFactory();
         appMenu.setMenuSupports(realChart.getContext().getMenuSupport(), mediator);
-        appMenu.build(myMenuBar);
+        appMenu.build(myMenuBar, mediator, realChart.getPatientVisit(), null);
         mediator.registerActions(appMenu.getActionMap());
         JPanel panel = new JPanel();
         panel.setLayout(new FlowLayout(FlowLayout.LEFT));        
-        panel.add(appMenu.getToolPanelProduct());
         panel.add(appMenu.getMenuBarProduct());
         
         content.add(panel, BorderLayout.NORTH);
@@ -477,10 +473,6 @@ public class EditorFrame extends AbstractMainTool implements Chart {
         }
         addUserAction.setEnabled(admin);
 //minagawa$
-
-        // このクラス固有のToolBarを生成する
-        JToolBar toolBar = appMenu.getToolBar();
-        toolBar.addSeparator();
 
         // テキストツールを生成する
         Action action = mediator.getActions().get(GUIConst.ACTION_INSERT_TEXT);
@@ -520,7 +512,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
         textBtn.setFocusable(false);
         textBtn.setBorderPainted(false);
         textBtn.setMargin(new Insets(3, 3, 3, 3));
-        toolBar.add(textBtn);
+        myMenuBar.add(textBtn);
 
         // シェーマツールを生成する
         action = mediator.getActions().get(GUIConst.ACTION_INSERT_SCHEMA);
@@ -542,7 +534,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
         schemaBtn.setFocusable(false);
         schemaBtn.setBorderPainted(false);
         schemaBtn.setMargin(new Insets(3, 3, 3, 3));
-        toolBar.add(schemaBtn);
+        myMenuBar.add(schemaBtn);
 
         // スタンプツールを生成する
         action = mediator.getActions().get(GUIConst.ACTION_INSERT_STAMP);
@@ -583,7 +575,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
         stampBtn.setFocusable(false);
         stampBtn.setBorderPainted(false);
         stampBtn.setMargin(new Insets(3, 3, 3, 3));
-        toolBar.add(stampBtn);
+        myMenuBar.add(stampBtn);
 
         // 保険選択ツールを生成する
         // 保険選択ツールを生成する
@@ -634,11 +626,10 @@ public class EditorFrame extends AbstractMainTool implements Chart {
         insBtn.setFocusable(false);
         insBtn.setBorderPainted(false);
         insBtn.setMargin(new Insets(3, 3, 3, 3));
-        toolBar.add(insBtn);
+//        myMenuBar.add(insBtn);
         
 //s.oh^ テキストの挿入 2013/08/12
         if (Project.getString(GUIConst.ACTION_SOAPANE_INSERTTEXT_DIR, "").length() > 0) {
-            toolBar.addSeparator();
             JButton insertSOATextBtn = new JButton();
             insertSOATextBtn.setAction(mediator.getActions().get("insertSOAText"));
             insertSOATextBtn.setText(null);
@@ -646,11 +637,10 @@ public class EditorFrame extends AbstractMainTool implements Chart {
             insertSOATextBtn.setMargin(new Insets(3, 3, 3, 3));
             insertSOATextBtn.setFocusable(false);
             insertSOATextBtn.setBorderPainted(true);
-            toolBar.add(insertSOATextBtn);
+            myMenuBar.add(insertSOATextBtn);
         }
 
         if (Project.getString(GUIConst.ACTION_PPANE_INSERTTEXT_DIR, "").length() > 0) {
-            toolBar.addSeparator();
             JButton insertPTextBtn = new JButton();
             insertPTextBtn.setAction(mediator.getActions().get("insertPText"));
             insertPTextBtn.setText(null);
@@ -658,7 +648,7 @@ public class EditorFrame extends AbstractMainTool implements Chart {
             insertPTextBtn.setMargin(new Insets(3, 3, 3, 3));
             insertPTextBtn.setFocusable(false);
             insertPTextBtn.setBorderPainted(true);
-            toolBar.add(insertPTextBtn);
+            myMenuBar.add(insertPTextBtn);
         }
 //s.oh$
 

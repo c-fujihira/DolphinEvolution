@@ -47,6 +47,7 @@ import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.GregorianCalendar;
@@ -85,6 +86,7 @@ public final class LiteCalendarPanel extends JPanel implements PropertyChangeLis
     private Object selectedDate;
     private JLabel titleLabel;
     private SimpleDate today;
+    private String birthday;
 //minagawa^ 予定カルテ    (予定カルテ対応)
     // [0] start
     // [1] end
@@ -542,6 +544,10 @@ public final class LiteCalendarPanel extends JPanel implements PropertyChangeLis
         this.today = today;
     }
     
+    public void setBirthday(String birthday) {
+        this.birthday = birthday;
+    }
+    
 //minagawa^ 予定カルテ(予定カルテ対応)
     public void setAcceptRange(SimpleDate[] range) {
         this.acceptRange = range;
@@ -581,6 +587,7 @@ public final class LiteCalendarPanel extends JPanel implements PropertyChangeLis
                 Object value, boolean isSelected, boolean isFocused, int row,
                 int col) {
             
+            boolean birthdayFlg = false;
             Component compo = super.getTableCellRendererComponent(table, value,
                     isSelected, isFocused, row, col);
             if (compo != null && value != null) {
@@ -591,34 +598,40 @@ public final class LiteCalendarPanel extends JPanel implements PropertyChangeLis
                 
                 if (value instanceof SimpleDate) {
                     day = ((SimpleDate) value).toString();
-                    if (today != null
-                            && today.compareTo((SimpleDate) value) == 0) {
+                    if (today != null && today.compareTo((SimpleDate) value) == 0) {
                         // color = todayBack;
                         color = (Color) eventColorTable.get("TODAY");
                     } else {
-                        color = (Color) eventColorTable
-                                .get(((SimpleDate) value).getEventCode());
+                        color = (Color) eventColorTable.get(((SimpleDate) value).getEventCode());
                         // color = Color.black;
                     }
                     
                 } else if (value instanceof String) {
                     day = (String) value;
-                    if (today != null
-                            && today.equalDate(year, month, Integer
-                            .parseInt(day))) {
+                    if (birthday != null && birthday.substring(5).equals(String.format("%1$02d", month + 1) + "-" + String.format("%1$02d", new Integer(day)))) {
+                        color = birthdayBack;
+                    } else if (today != null && today.equalDate(year, month, Integer.parseInt(day))) {
                         // color = todayBack;
                         color = (Color) eventColorTable.get("TODAY");
                     } else {
                         color = getCalendarBack();
                     }
                 }
-                
+
+                // 本日が誕生日の場合にはフラグをオンにする
+                if (today != null && birthday != null && today.equalDate(year, month, Integer.parseInt(day)) && (String.format("%1$02d", today.getMonth() + 1) + "-" + String.format("%1$02d", new Integer(today.getDay()))).equals(birthday.substring(5))) {
+                    birthdayFlg = true;
+                }
+                    
                 ((JLabel) compo).setText(day);
 //minagawa^ 予定カルテ                (予定カルテ対応)
                 if (!isAccept(row, col)) {
                     this.setForeground(Color.LIGHT_GRAY);
                 }
 //minagawa$                
+                else if(birthdayFlg){
+                    this.setForeground((Color) eventColorTable.get("TODAY"));
+                }
                 // 曜日によって ForeColor を変える
                 else if (col == 0) {
                     this.setForeground(getSundayFore());

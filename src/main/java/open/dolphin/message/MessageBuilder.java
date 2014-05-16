@@ -151,12 +151,15 @@ public final class MessageBuilder {
             // Merge する
             StringWriter sw = new StringWriter();
             BufferedReader reader;
-            try (BufferedWriter bw = new BufferedWriter(sw)) {
+            BufferedWriter bw = new BufferedWriter(sw);
+            try {
                 InputStream instream = ClientContext.getTemplateAsStream(tFile);
                 reader = new BufferedReader(new InputStreamReader(instream, encoding));
                 Velocity.evaluate(context, bw, name, reader);
                 logger.debug("Velocity.evaluated");
                 bw.flush();
+            } finally {
+                bw.close();
             }
             reader.close();
 

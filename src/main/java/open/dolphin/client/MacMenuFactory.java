@@ -38,16 +38,28 @@
  */
 package open.dolphin.client;
 
+import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.ResourceBundle;
 import javax.swing.*;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 import open.dolphin.helper.MenuSupport;
+import static open.dolphin.infomodel.IInfoModel.INSURANCE_SELF;
+import static open.dolphin.infomodel.IInfoModel.INSURANCE_SELF_CODE;
+import static open.dolphin.infomodel.IInfoModel.INSURANCE_SYS;
+import open.dolphin.infomodel.PVTHealthInsuranceModel;
+import open.dolphin.infomodel.PatientVisitModel;
 import open.dolphin.project.Project;
 import open.dolphin.util.Log;
 
@@ -852,22 +864,17 @@ public class MacMenuFactory extends AbstractMenuFactory {
     }
     
     @Override
-    public void build(JMenuBar menuBar) {
-        
+    public void build(JMenuBar menuBar, final ChartMediator mediator, final PatientVisitModel pvt, final Evolution application) {
+
         this.menuBar = menuBar;
 
         ResourceBundle resource = ClientContext.getBundle(this.getClass());
         actionMap = new ActionMap();
         storeActions(actionMap, resource);
-        
-        // ToolBar
-        toolBar = new JToolBar();
-        toolBar.setBorderPainted(false);
-        toolBar.addSeparator();
-        
+
         if (chart != null) {
             toolPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-            toolPanel.add(toolBar);
+            toolPanel.add(menuBar);
         }
 
         // File
@@ -885,20 +892,20 @@ public class MacMenuFactory extends AbstractMenuFactory {
             JButton newKarteBtn = new JButton();
             Action action = actionMap.get("newKarte");
             newKarteBtn.setAction(action);
-            
+
             // configure the Action with the accelerator (aka: short cut)
             action.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control N"));
             // manually register the accelerator in the button's component input map
             newKarteBtn.getActionMap().put("myAction", action);
             newKarteBtn.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-                    (KeyStroke) action.getValue(Action.ACCELERATOR_KEY), "myAction");        
-            
+                    (KeyStroke) action.getValue(Action.ACCELERATOR_KEY), "myAction");
+
             newKarteBtn.setText(null);
             newKarteBtn.setToolTipText("カルテを新規に作成します。");
-            newKarteBtn.setMargin(new Insets(3,3,3,3));
+            newKarteBtn.setMargin(new Insets(3, 3, 3, 3));
             newKarteBtn.setFocusable(false);
             newKarteBtn.setBorderPainted(false);
-            toolBar.add(newKarteBtn);
+            menuBar.add(newKarteBtn);
         }
 
         // 新規文書
@@ -911,20 +918,20 @@ public class MacMenuFactory extends AbstractMenuFactory {
             JButton newDocBtn = new JButton();
             Action action = actionMap.get("newDocument");
             newDocBtn.setAction(action);
-            
+
             // configure the Action with the accelerator (aka: short cut)
             action.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control T"));
             // manually register the accelerator in the button's component input map
             newDocBtn.getActionMap().put("myAction", action);
             newDocBtn.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-                    (KeyStroke) action.getValue(Action.ACCELERATOR_KEY), "myAction");        
-            
+                    (KeyStroke) action.getValue(Action.ACCELERATOR_KEY), "myAction");
+
             newDocBtn.setText(null);
             newDocBtn.setToolTipText("紹介状等の文書を新規に作成します。");
-            newDocBtn.setMargin(new Insets(3,3,3,3));
+            newDocBtn.setMargin(new Insets(3, 3, 3, 3));
             newDocBtn.setFocusable(false);
             newDocBtn.setBorderPainted(false);
-            toolBar.add(newDocBtn);
+            menuBar.add(newDocBtn);
         }
 
         // 開く
@@ -933,7 +940,7 @@ public class MacMenuFactory extends AbstractMenuFactory {
         openKarte.setAction(actionMap.get("openKarte"));
         setAccelerator(openKarte, KeyEvent.VK_O);
         file.add(openKarte);
-        
+
         file.add(new JSeparator());
 
         // 閉じる
@@ -954,27 +961,27 @@ public class MacMenuFactory extends AbstractMenuFactory {
             JButton saveBtn = new JButton();
             Action action = actionMap.get("save");
             saveBtn.setAction(action);
-            
+
             // configure the Action with the accelerator (aka: short cut)
             action.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control S"));
             // manually register the accelerator in the button's component input map
             saveBtn.getActionMap().put("myAction", action);
             saveBtn.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-                    (KeyStroke) action.getValue(Action.ACCELERATOR_KEY), "myAction");        
-            
+                    (KeyStroke) action.getValue(Action.ACCELERATOR_KEY), "myAction");
+
             saveBtn.setText(null);
             saveBtn.setToolTipText("カルテや文書を保存します。");
-            saveBtn.setMargin(new Insets(3,3,3,3));
+            saveBtn.setMargin(new Insets(3, 3, 3, 3));
             saveBtn.setFocusable(false);
             saveBtn.setBorderPainted(false);
-            toolBar.add(saveBtn);
+            menuBar.add(saveBtn);
         }
-        
+
         file.add(new JSeparator());
 
         // 削除
 //s.oh^ 2013/09/05
-        if(Project.getBoolean("delete.karte.enable", true)) {
+        if (Project.getBoolean("delete.karte.enable", true)) {
 //s.oh$
             JMenuItem delete = new JMenuItem();
             delete.setName("delete");
@@ -1001,37 +1008,37 @@ public class MacMenuFactory extends AbstractMenuFactory {
             JButton printBtn = new JButton();
             Action action = actionMap.get("print");
             printBtn.setAction(action);
-            
+
             // configure the Action with the accelerator (aka: short cut)
             action.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control P"));
             // manually register the accelerator in the button's component input map
             printBtn.getActionMap().put("myAction", action);
             printBtn.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-                    (KeyStroke) action.getValue(Action.ACCELERATOR_KEY), "myAction");        
-            
+                    (KeyStroke) action.getValue(Action.ACCELERATOR_KEY), "myAction");
+
             printBtn.setText(null);
             printBtn.setToolTipText("印刷します。");
-            printBtn.setMargin(new Insets(3,3,3,3));
+            printBtn.setMargin(new Insets(3, 3, 3, 3));
             printBtn.setFocusable(false);
             printBtn.setBorderPainted(false);
-            toolBar.add(printBtn);
+            menuBar.add(printBtn);
         }
-        
+
         file.add(new JSeparator());
-        
+
         // 終了
         JMenuItem exit = new JMenuItem();
         exit.setName("processExit");
         exit.setAction(actionMap.get("processExit"));
         file.add(exit);
         setAccelerator(exit, KeyEvent.VK_Q);
-        
-        /******************************************************/
 
+        /**
+         * ***************************************************
+         */
         // Edit
         JMenu edit = new JMenu();
         edit.setName("editMenu");
-        toolBar.addSeparator();
 
         // 修正
         JMenuItem modifyKarte = new JMenuItem();
@@ -1044,22 +1051,22 @@ public class MacMenuFactory extends AbstractMenuFactory {
             JButton modifyKarteBtn = new JButton();
             Action action = actionMap.get("modifyKarte");
             modifyKarteBtn.setAction(action);
-            
+
             // configure the Action with the accelerator (aka: short cut)
             action.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control M"));
             // manually register the accelerator in the button's component input map
             modifyKarteBtn.getActionMap().put("myAction", action);
             modifyKarteBtn.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-                    (KeyStroke) action.getValue(Action.ACCELERATOR_KEY), "myAction");        
-            
+                    (KeyStroke) action.getValue(Action.ACCELERATOR_KEY), "myAction");
+
             modifyKarteBtn.setText(null);
             modifyKarteBtn.setToolTipText("カルテや文書を修正します。");
-            modifyKarteBtn.setMargin(new Insets(3,3,3,3));
+            modifyKarteBtn.setMargin(new Insets(3, 3, 3, 3));
             modifyKarteBtn.setFocusable(false);
             modifyKarteBtn.setBorderPainted(false);
-            toolBar.add(modifyKarteBtn);
+            menuBar.add(modifyKarteBtn);
         }
-        
+
         edit.add(new JSeparator());
 
         // Undo
@@ -1073,20 +1080,20 @@ public class MacMenuFactory extends AbstractMenuFactory {
             JButton undoBtn = new JButton();
             Action action = actionMap.get("undo");
             undoBtn.setAction(action);
-            
+
             // configure the Action with the accelerator (aka: short cut)
             action.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control Z"));
             // manually register the accelerator in the button's component input map
             undoBtn.getActionMap().put("myAction", action);
             undoBtn.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-                    (KeyStroke) action.getValue(Action.ACCELERATOR_KEY), "myAction");        
-            
+                    (KeyStroke) action.getValue(Action.ACCELERATOR_KEY), "myAction");
+
             undoBtn.setText(null);
             undoBtn.setToolTipText("操作をやり直します。");
-            undoBtn.setMargin(new Insets(3,3,3,3));
+            undoBtn.setMargin(new Insets(3, 3, 3, 3));
             undoBtn.setFocusable(false);
             undoBtn.setBorderPainted(false);
-            toolBar.add(undoBtn);
+            menuBar.add(undoBtn);
         }
 
         // Redo
@@ -1100,22 +1107,22 @@ public class MacMenuFactory extends AbstractMenuFactory {
             JButton redoBtn = new JButton();
             Action action = actionMap.get("redo");
             redoBtn.setAction(action);
-            
+
             // configure the Action with the accelerator (aka: short cut)
             action.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control Y"));
             // manually register the accelerator in the button's component input map
             redoBtn.getActionMap().put("myAction", action);
             redoBtn.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-                    (KeyStroke) action.getValue(Action.ACCELERATOR_KEY), "myAction");        
-            
+                    (KeyStroke) action.getValue(Action.ACCELERATOR_KEY), "myAction");
+
             redoBtn.setText(null);
             redoBtn.setToolTipText("操作を再実行します。");
-            redoBtn.setMargin(new Insets(3,3,3,3));
+            redoBtn.setMargin(new Insets(3, 3, 3, 3));
             redoBtn.setFocusable(false);
             redoBtn.setBorderPainted(false);
-            toolBar.add(redoBtn);
+            menuBar.add(redoBtn);
         }
-        
+
         edit.add(new JSeparator());
 
         // Cut
@@ -1129,20 +1136,20 @@ public class MacMenuFactory extends AbstractMenuFactory {
             JButton cutBtn = new JButton();
             Action action = actionMap.get("cut");
             cutBtn.setAction(action);
-            
+
             // configure the Action with the accelerator (aka: short cut)
             action.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control X"));
             // manually register the accelerator in the button's component input map
             cutBtn.getActionMap().put("myAction", action);
             cutBtn.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-                    (KeyStroke) action.getValue(Action.ACCELERATOR_KEY), "myAction");        
-            
+                    (KeyStroke) action.getValue(Action.ACCELERATOR_KEY), "myAction");
+
             cutBtn.setText(null);
             cutBtn.setToolTipText("テキスト、スタンプ、画像をカットします。");
-            cutBtn.setMargin(new Insets(3,3,3,3));
+            cutBtn.setMargin(new Insets(3, 3, 3, 3));
             cutBtn.setFocusable(false);
             cutBtn.setBorderPainted(false);
-            toolBar.add(cutBtn);
+            menuBar.add(cutBtn);
         }
 
         // Copy
@@ -1156,20 +1163,20 @@ public class MacMenuFactory extends AbstractMenuFactory {
             JButton copyBtn = new JButton();
             Action action = actionMap.get("copy");
             copyBtn.setAction(action);
-            
+
             // configure the Action with the accelerator (aka: short cut)
             action.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control C"));
             // manually register the accelerator in the button's component input map
             copyBtn.getActionMap().put("myAction", action);
             copyBtn.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-                    (KeyStroke) action.getValue(Action.ACCELERATOR_KEY), "myAction");        
-            
+                    (KeyStroke) action.getValue(Action.ACCELERATOR_KEY), "myAction");
+
             copyBtn.setText(null);
             copyBtn.setToolTipText("テキスト、スタンプ、画像をコピーします。");
-            copyBtn.setMargin(new Insets(3,3,3,3));
+            copyBtn.setMargin(new Insets(3, 3, 3, 3));
             copyBtn.setFocusable(false);
             copyBtn.setBorderPainted(false);
-            toolBar.add(copyBtn);
+            menuBar.add(copyBtn);
         }
 
         // Paste
@@ -1183,23 +1190,21 @@ public class MacMenuFactory extends AbstractMenuFactory {
             JButton pasteBtn = new JButton();
             Action action = actionMap.get("paste");
             pasteBtn.setAction(action);
-            
+
             // configure the Action with the accelerator (aka: short cut)
             action.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control V"));
             // manually register the accelerator in the button's component input map
             pasteBtn.getActionMap().put("myAction", action);
             pasteBtn.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-                    (KeyStroke) action.getValue(Action.ACCELERATOR_KEY), "myAction");        
-            
+                    (KeyStroke) action.getValue(Action.ACCELERATOR_KEY), "myAction");
+
             pasteBtn.setText(null);
             pasteBtn.setToolTipText("テキスト、スタンプ、画像をペーストします。");
-            pasteBtn.setMargin(new Insets(3,3,3,3));
+            pasteBtn.setMargin(new Insets(3, 3, 3, 3));
             pasteBtn.setFocusable(false);
             pasteBtn.setBorderPainted(false);
-            toolBar.add(pasteBtn);
+            menuBar.add(pasteBtn);
         }
-        
-        /******************************************************/
 
         // Karte
         JMenu karte = new JMenu();
@@ -1224,7 +1229,7 @@ public class MacMenuFactory extends AbstractMenuFactory {
         sendClaim.setAction(actionMap.get("sendClaim"));
         setAccelerator(sendClaim, KeyEvent.VK_L);
         karte.add(sendClaim);
-        
+
         //-------------------
         // 処方箋印刷 createPrescription
         //-------------------
@@ -1235,7 +1240,6 @@ public class MacMenuFactory extends AbstractMenuFactory {
         ////setAccelerator(createPrescription, KeyEvent.VK_M);
         //karte.add(createPrescription);
 //s.oh$
-        
         //-------------------
         // 併用禁忌チェック checkInteraction
         //-------------------
@@ -1246,89 +1250,34 @@ public class MacMenuFactory extends AbstractMenuFactory {
         setAccelerator(checkInteraction, KeyEvent.VK_I);
         karte.add(checkInteraction);
 //s.oh$
-        
+
         karte.add(new JSeparator());
 
         // 昇順
         JRadioButtonMenuItem ascending = new JRadioButtonMenuItem();
         ascending.setName("ascending");
         ascending.setAction(actionMap.get("ascending"));
-        actionMap.get("ascending").putValue("menuItem",ascending);
+        actionMap.get("ascending").putValue("menuItem", ascending);
         karte.add(ascending);
 
         // 降順
         JRadioButtonMenuItem descending = new JRadioButtonMenuItem();
         descending.setName("descending");
         descending.setAction(actionMap.get("descending"));
-        actionMap.get("descending").putValue("menuItem",descending);
+        actionMap.get("descending").putValue("menuItem", descending);
         karte.add(descending);
 
         // RadiButtonGroup
         ButtonGroup bg = new ButtonGroup();
         bg.add(ascending);
         bg.add(descending);
-        
-        // 修正履歴表示
+
+        // 修正履歴表示 
         JCheckBoxMenuItem showModified = new JCheckBoxMenuItem();
         showModified.setName("showModified");
         showModified.setAction(actionMap.get("showModified"));
-        actionMap.get("showModified").putValue("menuItem",showModified);
+        actionMap.get("showModified").putValue("menuItem", showModified);
         karte.add(showModified);
-        
-//        karte.add(new JSeparator());
-//        
-//        // 環境設定 
-//        JMenuItem setKarteEnviroment = new JMenuItem();
-//        setKarteEnviroment.setName("setKarteEnviroment");
-//        setKarteEnviroment.setAction(actionMap.get("setKarteEnviroment"));
-//        setAccelerator(setKarteEnviroment, KeyEvent.VK_E);
-//        karte.add(setKarteEnviroment);
-
-//        //masuda^
-//        // Look&Feel
-//        JMenu lookAndFeel = new JMenu();
-//        //lookAndFeel.setName("lookAndFeel");
-//        lookAndFeel.setText("ルック & フィール");
-//        karte.add(lookAndFeel);
-//
-//        JRadioButtonMenuItem nimbusLaf = new JRadioButtonMenuItem();
-//        nimbusLaf.setName("nimbusLookAndFeel");
-//        nimbusLaf.setAction(actionMap.get("nimbusLookAndFeel"));
-//        lookAndFeel.add(nimbusLaf);
-//
-//        JRadioButtonMenuItem nativeLaf = new JRadioButtonMenuItem();
-//        nativeLaf.setName("nativeLookAndFeel");
-//        nativeLaf.setAction(actionMap.get("nativeLookAndFeel"));
-//        lookAndFeel.add(nativeLaf);
-//
-////        JRadioButtonMenuItem quaquaLaf = new JRadioButtonMenuItem();
-////        quaquaLaf.setName("quaquaLookAndFeel");
-////        quaquaLaf.setAction(actionMap.get("quaquaLookAndFeel"));
-////        lookAndFeel.add(quaquaLaf);
-//
-//        ButtonGroup lafbg = new ButtonGroup();
-//        lafbg.add(nimbusLaf);
-//        lafbg.add(nativeLaf);
-////        lafbg.add(quaquaLaf);
-//
-//        String systemLaf = UIManager.getSystemLookAndFeelClassName();
-////        String quaquaCls = "ch.randelshofer.quaqua.QuaquaLookAndFeel";
-////        String nimbusCls = "com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel";
-//        String nimbusCls = "javax.swing.plaf.metal.MetalLookAndFeel";
-//       
-//        //String userLaf = Project.getString("lookAndFeel", nimbusCls);
-//        String userLaf = Project.getString("lookAndFeel");
-//
-//        if (userLaf!=null && userLaf.equals(systemLaf)) {
-//            nativeLaf.setSelected(true);
-////        } else if (userLaf.equals(quaquaCls)) {
-////            quaquaLaf.setSelected(true);
-//        } else {
-//            nimbusLaf.setSelected(true);
-//        }
-////masuda$
-        
-        /******************************************************/
 
         // Insert
         JMenu insert = new JMenu();
@@ -1336,28 +1285,26 @@ public class MacMenuFactory extends AbstractMenuFactory {
         if (chart != null) {
             insert.addMenuListener(chart);
         }
-        
+
         JMenu insertDisease = new JMenu();
         insertDisease.setName("insertDisease");
         insertDisease.setAction(actionMap.get("insertDisease"));
         insert.add(insertDisease);
-        
+
         JMenu insertText = new JMenu();
         insertText.setName("insertText");
         insertText.setAction(actionMap.get("insertText"));
         insert.add(insertText);
-        
+
         JMenu insertSchema = new JMenu();
         insertSchema.setName("insertSchema");
         insertSchema.setAction(actionMap.get("insertSchema"));
         insert.add(insertSchema);
-        
+
         JMenu insertStamp = new JMenu();
         insertStamp.setName("insertStamp");
         insertStamp.setAction(actionMap.get("insertStamp"));
         insert.add(insertStamp);
-        
-        /******************************************************/
 
         // Text
         JMenu text = new JMenu();
@@ -1367,49 +1314,49 @@ public class MacMenuFactory extends AbstractMenuFactory {
         if (chart != null) {
             text.addMenuListener(chart);
         }
-        
+
         //// size ////
         JMenu size = new JMenu();
         size.setName("size");
         size.setAction(actionMap.get("size"));
         text.add(size);
-        
+
         JMenuItem fontLarger = new JMenuItem();
         fontLarger.setName("fontLarger");
         fontLarger.setAction(actionMap.get("fontLarger"));
         setAccelerator(fontLarger, KeyEvent.VK_COMMA);
         size.add(fontLarger);
-        
+
         JMenuItem fontSmaller = new JMenuItem();
         fontSmaller.setName("fontSmaller");
         fontSmaller.setAction(actionMap.get("fontSmaller"));
         setAccelerator(fontSmaller, KeyEvent.VK_PERIOD);
         size.add(fontSmaller);
-        
+
         JMenuItem fontStandard = new JMenuItem();
         fontStandard.setName("fontStandard");
         fontStandard.setAction(actionMap.get("fontStandard"));
         setAccelerator(fontStandard, KeyEvent.VK_SLASH);
-        size.add(fontStandard);  
-        
+        size.add(fontStandard);
+
         //// style ////
         JMenu style = new JMenu();
         style.setName("style");
         style.setAction(actionMap.get("style"));
         text.add(style);
-        
+
         JMenuItem fontBold = new JMenuItem();
         fontBold.setName("fontBold");
         fontBold.setAction(actionMap.get("fontBold"));
         setAccelerator(fontBold, KeyEvent.VK_B);
         style.add(fontBold);
-        
+
         JMenuItem fontItalic = new JMenuItem();
         fontItalic.setName("fontItalic");
         fontItalic.setAction(actionMap.get("fontItalic"));
         setAccelerator(fontItalic, KeyEvent.VK_I);
         style.add(fontItalic);
-        
+
         JMenuItem fontUnderline = new JMenuItem();
         fontUnderline.setName("fontUnderline");
         fontUnderline.setAction(actionMap.get("fontUnderline"));
@@ -1421,120 +1368,121 @@ public class MacMenuFactory extends AbstractMenuFactory {
         justify.setName("justify");
         justify.setAction(actionMap.get("justify"));
         text.add(justify);
-        
+
         JMenuItem leftJustify = new JMenuItem();
         leftJustify.setName("leftJustify");
         leftJustify.setAction(actionMap.get("leftJustify"));
         //setAccelerator(leftJustify, KeyEvent.VK_OPEN_BRACKET);
         justify.add(leftJustify);
-        
+
         JMenuItem centerJustify = new JMenuItem();
         centerJustify.setName("centerJustify");
         centerJustify.setAction(actionMap.get("centerJustify"));
         //setAccelerator(centerJustify, KeyEvent.VK_CIRCUMFLEX);
         justify.add(centerJustify);
-        
+
         JMenuItem rightJustify = new JMenuItem();
         rightJustify.setName("rightJustify");
         rightJustify.setAction(actionMap.get("rightJustify"));
         //setAccelerator(rightJustify, KeyEvent.VK_CLOSE_BRACKET);
         justify.add(rightJustify);
-        
+
         //// Color ////
         JMenu color = new JMenu();
         color.setName("color");
         color.setAction(actionMap.get("color"));
         text.add(color);
-        
+
         JMenuItem fontRed = new JMenuItem();
         fontRed.setName("fontRed");
         fontRed.setAction(actionMap.get("fontRed"));
         color.add(fontRed);
-        
+
         JMenuItem fontOrange = new JMenuItem();
         fontOrange.setName("fontOrange");
         fontOrange.setAction(actionMap.get("fontOrange"));
         color.add(fontOrange);
-        
+
         JMenuItem fontYellow = new JMenuItem();
         fontYellow.setName("fontYellow");
         fontYellow.setAction(actionMap.get("fontYellow"));
         color.add(fontYellow);
-        
+
         JMenuItem fontGreen = new JMenuItem();
         fontGreen.setName("fontGreen");
         fontGreen.setAction(actionMap.get("fontGreen"));
         color.add(fontGreen);
-        
+
         JMenuItem fontBlue = new JMenuItem();
         fontBlue.setName("fontBlue");
         fontBlue.setAction(actionMap.get("fontBlue"));
         color.add(fontBlue);
-        
+
         JMenuItem fontPurple = new JMenuItem();
         fontPurple.setName("fontPurple");
         fontPurple.setAction(actionMap.get("fontPurple"));
         color.add(fontPurple);
-        
+
         JMenuItem fontGray = new JMenuItem();
         fontGray.setName("fontGray");
         fontGray.setAction(actionMap.get("fontGray"));
         color.add(fontGray);
-        
+
         JMenuItem fontBlack = new JMenuItem();
         fontBlack.setName("fontBlack");
         fontBlack.setAction(actionMap.get("fontBlack"));
         color.add(fontBlack);
-        
-        /******************************************************/
-        
+
+        /**
+         * ***************************************************
+         */
         // Tool
         JMenu tool = new JMenu();
         tool.setName("toolMenu");
-        
+
         JMenuItem showStampBox = new JMenuItem();
         showStampBox.setName("showStampBox");
         showStampBox.setAction(actionMap.get("showStampBox"));
         tool.add(showStampBox);
-        
+
         JMenuItem showSchemaBox = new JMenuItem();
         showSchemaBox.setName("showSchemaBox");
         showSchemaBox.setAction(actionMap.get("showSchemaBox"));
         tool.add(showSchemaBox);
-        
+
         tool.add(new JSeparator());
-        
+
         JMenuItem changePassword = new JMenuItem();
         changePassword.setName("changePassword");
         changePassword.setAction(actionMap.get("changePassword"));
         tool.add(changePassword);
-        
+
         JMenuItem editFacilityInfo = new JMenuItem();
         editFacilityInfo.setName("editFacilityInfo");
         editFacilityInfo.setAction(actionMap.get("editFacilityInfo"));
         tool.add(editFacilityInfo);
-        
+
         JMenuItem addUser = new JMenuItem();
         addUser.setName("addUser");
         addUser.setAction(actionMap.get("addUser"));
         tool.add(addUser);
-        
+
         tool.add(new JSeparator());
-        
+
 //s.oh^ 不要機能の削除(復活)
         JMenuItem fetchFacilityCode = new JMenuItem();
         fetchFacilityCode.setName("fetchFacilityCode");
         fetchFacilityCode.setAction(actionMap.get("fetchFacilityCode"));//
         tool.add(fetchFacilityCode);
 //s.oh$
-        
+
         LinkedHashMap<String, String> toolProviders = ClientContext.getToolProviders();
-        
+
         if (toolProviders != null && toolProviders.size() > 0) {
-            
+
             tool.add(new JSeparator());
             Iterator<String> iter = toolProviders.keySet().iterator();
-            
+
             while (iter.hasNext()) {
                 String cmd = iter.next();
                 final String className = toolProviders.get(cmd);
@@ -1549,66 +1497,222 @@ public class MacMenuFactory extends AbstractMenuFactory {
                 mItem.setText(cmd);
                 tool.add(mItem);
             }
-        } 
-        
-        /******************************************************/
+        }
 
+        /**
+         * ***************************************************
+         */
         // Help
         JMenu help = new JMenu();
         help.setName("helpMenu");
-        
+
         JMenuItem browseDolphinSupport = new JMenuItem();
         browseDolphinSupport.setName("browseDolphinSupport");
         browseDolphinSupport.setAction(actionMap.get("browseDolphinSupport"));
         help.add(browseDolphinSupport);
-        
+
         JMenuItem browseDolphinProject = new JMenuItem();
         browseDolphinProject.setName("browseDolphinProject");
         browseDolphinProject.setAction(actionMap.get("browseDolphinProject"));
         help.add(browseDolphinProject);
-        
+
         //help.add(new JSeparator());
-        
         JMenuItem browseMedXml = new JMenuItem();
         browseMedXml.setName("browseMedXml");
         browseMedXml.setAction(actionMap.get("browseMedXml"));
         help.add(browseMedXml);
-        
+
         help.add(new JSeparator());
-        
+
         JMenuItem showAbout = new JMenuItem();
         showAbout.setName("showAbout");
         showAbout.setAction(actionMap.get("showAbout"));
         help.add(showAbout);
-        
-        /******************************************************/
-        
-//        menuBar.add(file,   0);
-//        menuBar.add(edit,   1);
-//        menuBar.add(karte,  2);
-//        menuBar.add(insert, 3);
-//        menuBar.add(text,   4);
-//        menuBar.add(tool,   5);
-//        // 6 = Window
-//        menuBar.add(help,   7);
-        
+
+        //-------------------------------------------------------------
+        // 保険選択ツールを生成する
+        // 保険の切り替え（変更）で karteEditorの applyInsurance が起動される
+        //-------------------------------------------------------------
+        Action action = actionMap.get(GUIConst.ACTION_SELECT_INSURANCE);
+        final JToggleButton insBtn = new JToggleButton();
+        insBtn.setName("insBtn");
+        insBtn.setAction(action);
+        insBtn.addItemListener(new ItemListener() {
+
+            @Override
+            public void itemStateChanged(ItemEvent ie) {
+                if (ie.getStateChange() == ItemEvent.SELECTED) {
+                    if (actionMap.get(GUIConst.ACTION_SELECT_INSURANCE).isEnabled()) {
+                        JPopupMenu menu = new JPopupMenu();
+                        PVTHealthInsuranceModel[] insurances = getHealthInsurances(pvt);
+                        for (PVTHealthInsuranceModel hm : insurances) {
+                            ReflectActionListener ra = new ReflectActionListener(mediator,
+                                    "applyInsurance",
+                                    new Class[]{hm.getClass()},
+                                    new Object[]{hm});
+                            JMenuItem mi = new JMenuItem(hm.toString());
+                            mi.addActionListener(ra);
+                            menu.add(mi);
+                        }
+
+                        menu.addPopupMenuListener(new PopupMenuListener() {
+                            @Override
+                            public void popupMenuWillBecomeVisible(PopupMenuEvent pme) {
+                            }
+
+                            @Override
+                            public void popupMenuWillBecomeInvisible(PopupMenuEvent pme) {
+                                insBtn.setSelected(false);
+                            }
+
+                            @Override
+                            public void popupMenuCanceled(PopupMenuEvent pme) {
+                                insBtn.setSelected(false);
+                            }
+                        });
+
+                        Component c = (Component) ie.getSource();
+                        menu.show(c, 0, c.getHeight());
+                    }
+                }
+            }
+        });
+        // Injection
+        insBtn.setIcon(ClientContext.getImageIconArias("icon_health_insurance"));
+        insBtn.setText(null);
+        insBtn.setToolTipText("健康保険を選択します。");
+        insBtn.setFocusable(false);
+        insBtn.setBorderPainted(true);
+        insBtn.setMargin(new Insets(3, 3, 3, 3));
+        menuBar.add(insBtn);
+
         // Window削除
         menuBar.remove(0);
-        menuBar.add(karte,  0);
-        menuBar.add(text,   1);
-        
-        /******************************************************/
-        file.setText(resource.getString("fileMenu.text"));
-        edit.setText(resource.getString("editMenu.text"));
-//        karte.setText(resource.getString("karteMenu.text"));
-        insert.setText(resource.getString("insertMenu.text"));
-//        text.setText(resource.getString("textMenu.text"));
-        tool.setText(resource.getString("toolMenu.text"));
-        help.setText(resource.getString("helpMenu.text"));
-        size.setText(resource.getString("size.text"));
-        style.setText(resource.getString("style.text"));
-        justify.setText(resource.getString("justify.text"));
-        color.setText(resource.getString("color.text"));
+        menuBar.add(karte);
+        menuBar.add(text);
+
+        if (application != null) {
+            // テキストツールを生成する
+            action = actionMap.get(GUIConst.ACTION_INSERT_TEXT);
+            final JToggleButton textBtn = new JToggleButton();
+            textBtn.setName("textBtn");
+            textBtn.setAction(action);
+            textBtn.addItemListener(new ItemListener() {
+
+                @Override
+                public void itemStateChanged(ItemEvent ie) {
+                    if (ie.getStateChange() == ItemEvent.SELECTED) {
+                        if (actionMap.get(GUIConst.ACTION_INSERT_TEXT).isEnabled()) {
+                            JPopupMenu menu = new JPopupMenu();
+                            mediator.addTextMenu(menu);
+
+                            menu.addPopupMenuListener(new PopupMenuListener() {
+                                @Override
+                                public void popupMenuWillBecomeVisible(PopupMenuEvent pme) {
+                                }
+
+                                @Override
+                                public void popupMenuWillBecomeInvisible(PopupMenuEvent pme) {
+                                    textBtn.setSelected(false);
+                                }
+
+                                @Override
+                                public void popupMenuCanceled(PopupMenuEvent pme) {
+                                    textBtn.setSelected(false);
+                                }
+                            });
+                            Component c = (Component) ie.getSource();
+                            menu.show(c, 0, c.getHeight());
+                        }
+                    }
+                }
+            });
+            textBtn.setFocusable(false);
+            textBtn.setBorderPainted(false);
+            textBtn.setMargin(new Insets(3, 3, 3, 3));
+            menuBar.add(textBtn);
+
+            // シェーマツールを生成する
+            action = actionMap.get(GUIConst.ACTION_INSERT_SCHEMA);
+            final JToggleButton schemaBtn = new JToggleButton();
+            schemaBtn.setName("schemaBtn");
+            schemaBtn.setAction(action);
+            schemaBtn.addItemListener(new ItemListener() {
+
+                @Override
+                public void itemStateChanged(ItemEvent ie) {
+                    if (ie.getStateChange() == ItemEvent.SELECTED) {
+                        if (actionMap.get(GUIConst.ACTION_INSERT_SCHEMA).isEnabled()) {
+                            application.evoWindow.getContext().showSchemaBox();
+                        }
+                        schemaBtn.setSelected(false);
+                    }
+                }
+            });
+            schemaBtn.setFocusable(false);
+            schemaBtn.setBorderPainted(false);
+            schemaBtn.setMargin(new Insets(3, 3, 3, 3));
+            menuBar.add(schemaBtn);
+
+            // スタンプツールを生成する
+            action = actionMap.get(GUIConst.ACTION_INSERT_STAMP);
+            final JToggleButton stampBtn = new JToggleButton();
+            stampBtn.setName("stampBtn");
+            stampBtn.setAction(action);
+            stampBtn.addItemListener(new ItemListener() {
+
+                @Override
+                public void itemStateChanged(ItemEvent ie) {
+                    if (ie.getStateChange() == ItemEvent.SELECTED) {
+                        if (actionMap.get(GUIConst.ACTION_INSERT_STAMP).isEnabled()) {
+                            JPopupMenu menu = new JPopupMenu();
+                            mediator.addStampMenu(menu);
+
+                            menu.addPopupMenuListener(new PopupMenuListener() {
+                                @Override
+                                public void popupMenuWillBecomeVisible(PopupMenuEvent pme) {
+                                }
+
+                                @Override
+                                public void popupMenuWillBecomeInvisible(PopupMenuEvent pme) {
+                                    stampBtn.setSelected(false);
+                                }
+
+                                @Override
+                                public void popupMenuCanceled(PopupMenuEvent pme) {
+                                    stampBtn.setSelected(false);
+                                }
+                            });
+
+                            Component c = (Component) ie.getSource();
+                            menu.show(c, 0, c.getHeight());
+                        }
+                    }
+                }
+            });
+            stampBtn.setFocusable(false);
+            stampBtn.setBorderPainted(false);
+            stampBtn.setMargin(new Insets(3, 3, 3, 3));
+            menuBar.add(stampBtn);
+
+            //textBtn.setIcon(ClientContext.getImageIcon(resource.getString("textBtn.icon")));
+            textBtn.setIcon(ClientContext.getImageIconArias("icon_text_stap_menu"));
+            textBtn.setText(null);
+            textBtn.setToolTipText("テキストスタンプを挿入します。");
+            //textBtn.setMargin(new Insets(5,5,5,5));
+
+            //schemaBtn.setIcon(ClientContext.getImageIcon(resource.getString("schemaBtn.icon")));
+            schemaBtn.setIcon(ClientContext.getImageIconArias("icon_open_schema_box"));
+            schemaBtn.setText(null);
+            schemaBtn.setToolTipText("シェーマボックスを起動します。");
+            //schemaBtn.setMargin(new Insets(5,5,5,5));
+
+            //stampBtn.setIcon(ClientContext.getImageIcon(resource.getString("stampBtn.icon")));
+            stampBtn.setIcon(ClientContext.getImageIconArias("icon_stamp_menu"));
+            stampBtn.setText(null);
+            stampBtn.setToolTipText("スタンプを挿入します。");
+            //stampBtn.setMargin(new Insets(5,5,5,5));
+        }
     }
     
     private void setAccelerator(JMenuItem item, int key) {
@@ -1626,5 +1730,28 @@ public class MacMenuFactory extends AbstractMenuFactory {
             obj = chart.getChains()[2];
         }
         Log.outputOperLogOper(obj, level, ms);
+    }
+
+    /**
+     * 患者の健康保険を返す。
+     *
+     * @return 患者の健康保険配列
+     */
+    public PVTHealthInsuranceModel[] getHealthInsurances(PatientVisitModel pvt) {
+
+        // 患者の健康保険
+        Collection<PVTHealthInsuranceModel> insurances = pvt.getPatientModel().getPvtHealthInsurances();
+
+        // 保険がない場合 自費保険を生成して追加する
+        if (insurances == null || insurances.isEmpty()) {
+            insurances = new ArrayList<>(1);
+            PVTHealthInsuranceModel model = new PVTHealthInsuranceModel();
+            model.setInsuranceClass(INSURANCE_SELF);
+            model.setInsuranceClassCode(INSURANCE_SELF_CODE);
+            model.setInsuranceClassCodeSys(INSURANCE_SYS);
+            insurances.add(model);
+        }
+
+        return (PVTHealthInsuranceModel[]) insurances.toArray(new PVTHealthInsuranceModel[insurances.size()]);
     }
 }

@@ -120,6 +120,11 @@ public class ControlPanelController implements Initializable {
         mainWindow.showAbout();
     }
 
+    //- 監査対応用カルテ履歴一覧PDF出力
+    public void execPatientInfoOutput() {
+        mainWindow.patientInfoOutput();
+    }
+
     //- 終了
     public void execExit() {
         mainWindow.processExit(1);

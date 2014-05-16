@@ -78,6 +78,7 @@ public class PatientVisitInspector {
     private void initComponent() {
         pvtEvent = ClientContext.getString("eventCode.pvt"); // PVT
         calendarCardPanel = new CalendarCardPanel(ClientContext.getEventColorTable());
+        calendarCardPanel.setBirthDay(context.getPatient().getBirthday());
         calendarCardPanel.setCalendarRange(new int[]{-12, 0});
     }
 

@@ -125,8 +125,7 @@ public class MemoInspector {
         memoArea = new JTextArea(5, 10);
         memoArea.putClientProperty("karteCompositor", this);
         memoArea.setLineWrap(true);
-        //memoArea.setMargin(new java.awt.Insets(3, 3, 2, 2));
-        memoArea.setMargin(new java.awt.Insets(1, 1, 1, 1));
+        memoArea.setMargin(new java.awt.Insets(3, 3, 2, 2));
         memoArea.addFocusListener(AutoKanjiListener.getInstance());
         memoArea.setToolTipText("メモに使用します。内容は自動的に保存されます。");
 //minagawa^ 排他制御
@@ -142,12 +141,9 @@ public class MemoInspector {
         memoPanel.add(new JScrollPane(memoArea), BorderLayout.CENTER);
 //s.oh$
 
-        //Dimension size = memoPanel.getPreferredSize();
-        Dimension size;
-        //int h = size.height;
-        int h = 10;
-        //int w = 268;
-        int w = 220;
+        Dimension size = memoPanel.getPreferredSize();
+        int h = size.height;
+        int w = 268;
         size = new Dimension(w, h);
         memoPanel.setMinimumSize(size);
         memoPanel.setMaximumSize(size);

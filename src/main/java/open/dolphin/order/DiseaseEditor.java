@@ -47,6 +47,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -232,60 +234,43 @@ public final class DiseaseEditor extends AbstractStampEditor {
 
     @Override
     protected void search(final String text, boolean hitReturn) {
+        try {
+            boolean pass = true;
+            pass = pass && ipOk();
 
-        boolean pass = true;
-        pass = pass && ipOk();
+            final int searchType = getSearchType(text, hitReturn);
+            pass = pass && (searchType == TT_LETTER_SEARCH);
 
-        final int searchType = getSearchType(text, hitReturn);
-        pass = pass && (searchType == TT_LETTER_SEARCH);
+            if (!pass) {
+                return;
+            }
 
-        if (!pass) {
-            return;
-        }
+            // 件数をゼロにしておく
+            view.getCountField().setText("0");
 
-        // 件数をゼロにしておく
-        view.getCountField().setText("0");
-
-        // 検索を実行する
-        SwingWorker worker = new SwingWorker<List<DiseaseEntry>, Void>() {
-
-            @Override
-            protected List<DiseaseEntry> doInBackground() throws Exception {
-                //SqlMasterDao dao = (SqlMasterDao) SqlDaoFactory.create("dao.master");
-                //OrcaRestDelegater dao = new OrcaRestDelegater();
-                OrcaDelegater dao = OrcaDelegaterFactory.create();
-                String d = new SimpleDateFormat("yyyyMMdd").format(new Date());
-                List<DiseaseEntry> result = dao.getDiseaseByName(StringTool.hiraganaToKatakana(text), d, view.getPartialChk().isSelected());
+            // 検索を実行する
+            //SqlMasterDao dao = (SqlMasterDao) SqlDaoFactory.create("dao.master");
+            //OrcaRestDelegater dao = new OrcaRestDelegater();
+            OrcaDelegater dao = OrcaDelegaterFactory.create();
+            String d = new SimpleDateFormat("yyyyMMdd").format(new Date());
+            List<DiseaseEntry> result = dao.getDiseaseByName(StringTool.hiraganaToKatakana(text), d, view.getPartialChk().isSelected());
 //s.oh^ 2013/11/08 傷病名検索不具合
-                if (result == null || result.size() <= 0) {
-                    result = dao.getDiseaseByName(text, d, view.getPartialChk().isSelected());
-                }
+            if (result == null || result.size() <= 0) {
+                result = dao.getDiseaseByName(text, d, view.getPartialChk().isSelected());
+            }
 //s.oh$
 //                if (!dao.isNoError()) {
 //                    throw new Exception(dao.getErrorMessage());
 //                }
-                return result;
-            }
+            searchResultModel.setDataProvider(result);
+            int cnt = searchResultModel.getObjectCount();
+            view.getCountField().setText(String.valueOf(cnt));
+            Rectangle r = view.getSearchResultTable().getCellRect(0, 0, true);
+            view.getSearchResultTable().scrollRectToVisible(r);
+        } catch (Exception ex) {
+            Logger.getLogger(DiseaseEditor.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
-            @Override
-            protected void done() {
-                try {
-                    List<DiseaseEntry> result = get();
-                    searchResultModel.setDataProvider(result);
-                    int cnt = searchResultModel.getObjectCount();
-                    view.getCountField().setText(String.valueOf(cnt));
-                    Rectangle r = view.getSearchResultTable().getCellRect(0, 0, true);
-                    view.getSearchResultTable().scrollRectToVisible(r);
-
-                } catch (InterruptedException ex) {
-
-                } catch (ExecutionException ex) {
-                    alertSearchError(ex.getMessage());
-                }
-            }
-        };
-
-        worker.execute();
     }
 
     @Override

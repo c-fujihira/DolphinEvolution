@@ -43,8 +43,11 @@ import java.awt.Rectangle;
 import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
 import java.io.*;
+import java.net.URL;
 import java.util.Enumeration;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import open.dolphin.client.ClientContext;
 import open.dolphin.client.GUIConst;
 import open.dolphin.exception.DolphinException;
@@ -376,6 +379,35 @@ public final class ProjectStub implements java.io.Serializable {
      */
     public String getEvoUrl() {
         return getString(Project.EVO_URL);
+    }
+
+    public String getClientBuild() {
+        
+        String outText = "";
+        
+        try {
+            Class c = this.getClass();
+            URL url = c.getResource("/resources/docs/version.txt");
+            try (InputStream is = url.openStream();
+                    BufferedReader br = new BufferedReader(new InputStreamReader(is, "UTF-8"))) {
+                
+                while (br.ready()) {
+                    String addString = br.readLine();
+                    addString = addString.replace("\r\n", "");
+                    addString = addString.replace("\n", "");
+                    outText += addString;
+                }
+                is.close();
+            }
+        } catch (FileNotFoundException e) {
+            Logger.getLogger(ProjectStub.class.getName()).
+                    log(Level.SEVERE, "Load Error.", e);
+        } catch (IOException e) {
+            Logger.getLogger(ProjectStub.class.getName()).
+                    log(Level.SEVERE, "Load Error.", e);
+        }
+
+        return outText;
     }
 
     //カルテ/インスペクタ

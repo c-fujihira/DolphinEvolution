@@ -59,6 +59,7 @@ import open.dolphin.helper.DBTask;
 import open.dolphin.infomodel.DocInfoModel;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.project.Project;
+import open.dolphin.table.ColumnSpecHelper;
 import open.dolphin.table.ListTableModel;
 import open.dolphin.table.StripeTableCellRenderer;
 import open.dolphin.util.Log;
@@ -75,15 +76,15 @@ public class DocumentHistory {
     public static final String SELECTED_HISTORIES = "selectedHistories";
     public static final String SELECTED_KARTES = "selectedKartes";
     public static final String HITORY_UPDATED = "historyUpdated";
-    
+
     private static final String CMB_KARTE = "カルテ";
     private static final String CMB_LETTER = "紹介状/診断書";
     //private static final Color DEFAULT_ODD_COLOR = ClientContext.getColor("color.odd");
     //private static final Color DEFAULT_EVENN_COLOR = ClientContext.getColor("color.even");
-    private static final Color SELF_INSURANCE_COLOR = new Color(255,255,102);
-    private static final Color JIBAISEKI_INSURANCE_COLOR = new Color(102,153,255);
+    private static final Color SELF_INSURANCE_COLOR = new Color(255, 255, 102);
+    private static final Color JIBAISEKI_INSURANCE_COLOR = new Color(102, 153, 255);
     private static final Color ROSAI_INSURANCE_COLOR = Color.orange; //new Color(255,102,204);
-            
+
     private static final String YEAR_1 = "1年";
     private static final String YEAR_2 = "2年";
     private static final String YEAR_3 = "3年";
@@ -97,59 +98,96 @@ public class DocumentHistory {
     private static final String MONTH_60 = "-60";
     private static final String MONTH_120 = "-120";
 
-
     // 文書履歴テーブル
     private ListTableModel<DocInfoModel> tableModel;
-    
+
     private DocumentHistoryView view;
-    
+
     // 抽出期間コンボボックス
     private JComboBox extractionCombo;
-    
+
     // 文書種別コンボボックス
     private JComboBox contentCombo;
-    
+
     // 件数フィールド 
     private JLabel countField;
-    
+
     // 束縛サポート
     private PropertyChangeSupport boundSupport;
-    
+
     // context 
     private ChartImpl context;
-    
+
     // 選択された文書情報(DocInfo)の配列
     private DocInfoModel[] selectedHistories;
-    
+
     // 抽出コンテント(文書種別)
     private String extractionContent;
-    
+
     // 抽出開始日 
     private Date extractionPeriod;
-    
+
     // 自動的に取得する文書数
     private int autoFetchCount;
-    
+
     // 昇順降順のフラグ 
     private boolean ascending;
-    
+
     // 修正版も表示するかどうかのフラグ
     private boolean showModified;
-    
+
     // フラグ
     private boolean start;
     private NameValuePair[] contentObject;
     private NameValuePair[] extractionObjects;
-    
+
     // Key入力をブロックするリスナ
     private BlockKeyListener blockKeyListener;
 
+    // カラム仕様ヘルパー
+    private ColumnSpecHelper columnHelper;
+
+    // カラム仕様名
+    private static final String COLUMN_SPEC_NAME = "docHistoryTable.column.spec";
+    private static final String[] COLUMN_NAMES = ClientContext.getStringArray("docHistory.columnNames");
+    private static final String[] PROPERTY_NAMES = ClientContext.getStringArray("docHistory.methodNames");
+    private static final Class[] COLUMN_CLASSES = {String.class, String.class, String.class, String.class};
+    private static final int[] COLUMN_WIDTH = {130, 80, 100, 130};
+
+    // 受付時間カラム
+    private int firstConfirmDateTrimTimeColumn;
+
+    // タイトルカラム
+    private int titleColumn;
+
+    // カルテ作成者カラム
+    private int commonNameColumn;
+
+    // 最終更新日時カラム
+    private int confirmDateTimeColumn;
+
+    private void setup() {
+
+        // ColumnSpecHelperを準備する
+        columnHelper = new ColumnSpecHelper(COLUMN_SPEC_NAME, COLUMN_NAMES,
+                PROPERTY_NAMES, COLUMN_CLASSES, COLUMN_WIDTH);
+        columnHelper.loadProperty();
+
+        // Scan して各カラムを設定する
+        firstConfirmDateTrimTimeColumn = columnHelper.getColumnPosition("getFirstConfirmDateTime");
+        titleColumn = columnHelper.getColumnPosition("getTitle");
+        commonNameColumn = columnHelper.getColumnPositionEndsWith("getPurpose");
+        confirmDateTimeColumn = columnHelper.getColumnPosition("getConfirmDateTime");
+    }
+
     /**
      * 文書履歴オブジェクトを生成する。
+     *
      * @param owner コンテキシト
      */
     public DocumentHistory(ChartImpl context) {
         this.context = context;
+        setup();
         initComponent();
         connect();
         start = true;
@@ -157,11 +195,11 @@ public class DocumentHistory {
 
     // (予定カルテ対応)    
     public int getDocumentCount() {
-        if (tableModel==null) {
+        if (tableModel == null) {
             return 0;
         }
         List<DocInfoModel> list = tableModel.getDataProvider();
-        return list!=null ? list.size() : 0;
+        return list != null ? list.size() : 0;
     }
 
     /**
@@ -179,6 +217,7 @@ public class DocumentHistory {
 
     /**
      * 束縛プロパティリスナを登録する。
+     *
      * @param propName プロパティ名
      * @param listener リスナ
      */
@@ -191,6 +230,7 @@ public class DocumentHistory {
 
     /**
      * 束縛プロパティを削除する。
+     *
      * @param propName プロパティ名
      * @param listener リスナ
      */
@@ -203,6 +243,7 @@ public class DocumentHistory {
 
     /**
      * 選択された文書履歴(複数)を返す。
+     *
      * @return 選択された文書履歴(複数)
      */
     public DocInfoModel[] getSelectedHistories() {
@@ -211,6 +252,7 @@ public class DocumentHistory {
 
     /**
      * 束縛プロパティの選択された文書履歴(複数)を設定する。通知を行う。
+     *
      * @param newSelected 選択された文書履歴(複数)
      */
     public void setSelectedHistories(DocInfoModel[] newSelected) {
@@ -227,6 +269,7 @@ public class DocumentHistory {
 
     /**
      * 履歴の検索時にテーブルのキー入力をブロックする。
+     *
      * @param busy true の時検索中
      */
     public void blockHistoryTable(boolean busy) {
@@ -247,10 +290,8 @@ public class DocumentHistory {
     }
 
     /**
-     * 文書履歴を取得する。
-     * 取得するパラメータ(患者ID、文書タイプ、抽出期間)はこのクラスの属性として
-     * 定義されている。これらのパラメータは comboBox等で選択される。値が変化する度に
-     * このメソッドがコールされる。
+     * 文書履歴を取得する。 取得するパラメータ(患者ID、文書タイプ、抽出期間)はこのクラスの属性として 定義されている。これらのパラメータは
+     * comboBox等で選択される。値が変化する度に このメソッドがコールされる。
      */
     public void getDocumentHistory() {
 
@@ -269,9 +310,9 @@ public class DocumentHistory {
             task.execute();
         }
     }
-    
+
     public void getLetterHistory() {
-        if (contentCombo.getSelectedIndex()==0) {
+        if (contentCombo.getSelectedIndex() == 0) {
             contentCombo.setSelectedIndex(1);
         } else {
             getDocumentHistory();
@@ -376,12 +417,14 @@ public class DocumentHistory {
     private void initComponent() {
 
         view = new DocumentHistoryView();
+        // ColumnSpecHelperにテーブルを設定する
+        columnHelper.setTable(view.getTable());
 
         // 履歴テーブルのパラメータを取得する
-        String[] columnNames = ClientContext.getStringArray("docHistory.columnNames"); // {"確定日", "内容"};
-        String[] methodNames = ClientContext.getStringArray("docHistory.methodNames"); // {"getFirstConfirmDateTrimTime",// "getTitle"};
-        Class[] columnClasses = {String.class, String.class};
-        
+        String[] columnNames = ClientContext.getStringArray("docHistory.columnNames");
+        String[] methodNames = ClientContext.getStringArray("docHistory.methodNames");
+        Class[] columnClasses = {String.class, String.class, String.class, String.class};
+
         // ToDO
         extractionObjects = new NameValuePair[7];
         extractionObjects[0] = new NameValuePair(YEAR_1, MONTH_12);
@@ -396,7 +439,7 @@ public class DocumentHistory {
 
             @Override
             public boolean isCellEditable(int row, int col) {
-                
+
                 // readOnlyを拒否
                 if (context.isReadOnly()) {
                     return false;
@@ -404,8 +447,8 @@ public class DocumentHistory {
 
                 if (col == 1 && getObject(row) != null) {
                     DocInfoModel docInfo = getObject(row);
-                    return (docInfo.getDocType().equals(IInfoModel.DOCTYPE_KARTE) ||
-                            docInfo.getDocType().equals(IInfoModel.DOCTYPE_S_KARTE)) 
+                    return (docInfo.getDocType().equals(IInfoModel.DOCTYPE_KARTE)
+                            || docInfo.getDocType().equals(IInfoModel.DOCTYPE_S_KARTE))
                             ? true
                             : false;
                 }
@@ -424,8 +467,8 @@ public class DocumentHistory {
                     return;
                 }
 
-                if (docInfo.getDocType().equals(IInfoModel.DOCTYPE_KARTE) ||
-                    docInfo.getDocType().equals(IInfoModel.DOCTYPE_S_KARTE)) {
+                if (docInfo.getDocType().equals(IInfoModel.DOCTYPE_KARTE)
+                        || docInfo.getDocType().equals(IInfoModel.DOCTYPE_S_KARTE)) {
                     // 文書タイトルを変更し通知する
                     docInfo.setTitle((String) value);
                     titleChanged(docInfo);
@@ -433,7 +476,7 @@ public class DocumentHistory {
             }
         };
         view.getTable().setModel(tableModel);
-        
+
         // カラム幅を調整する
         view.getTable().getColumnModel().getColumn(0).setPreferredWidth(90);
         view.getTable().getColumnModel().getColumn(1).setPreferredWidth(190);
@@ -475,12 +518,15 @@ public class DocumentHistory {
                     JMenuItem item2 = new JMenuItem(copyAction);
                     pop.add(item2);
 
-                    if (Project.getBoolean("allow.delete.letter", false) &&
-                            extractionContent.equals(IInfoModel.DOCTYPE_LETTER)) {
+                    if (Project.getBoolean("allow.delete.letter", false)
+                            && extractionContent.equals(IInfoModel.DOCTYPE_LETTER)) {
                         pop.addSeparator();
                         JMenuItem item3 = new JMenuItem(deleteAction);
                         pop.add(item3);
                     }
+                    
+                    JMenu menu = columnHelper.createMenuItem();
+                    pop.add(menu);
 
                     pop.show(e.getComponent(), e.getX(), e.getY());
                 }
@@ -496,18 +542,20 @@ public class DocumentHistory {
                 mabeShowPopup(e);
             }
         });
-        
+
         // タイトルカラムに IME ON を設定する
         JTextField tf = new JTextField();
         tf.addFocusListener(AutoKanjiListener.getInstance());
         TableColumn column = view.getTable().getColumnModel().getColumn(1);
         column.setCellEditor(new DefaultCellEditor(tf));
-        
+
         // 奇数偶数レンダラを設定する
         //view.getTable().setDefaultRenderer(Object.class, new DocInfoRenderer());
         DocInfoRenderer rederer = new DocInfoRenderer();
         rederer.setTable(view.getTable());
         rederer.setDefaultRenderer();
+        // カラム幅更新
+        columnHelper.updateColumnWidth();
         // 行の高さ
         view.getTable().setRowHeight(ClientContext.getMoreHigherRowHeight());
 
@@ -517,7 +565,7 @@ public class DocumentHistory {
         contentObject[1] = new NameValuePair(CMB_LETTER, IInfoModel.DOCTYPE_LETTER);
         //contentObject[2] = new NameValuePair(CMB_REPLY, IInfoModel.DOCTYPE_LETTER_REPLY);
         //contentObject[3] = new NameValuePair(CMB_REPLY2, IInfoModel.DOCTYPE_LETTER_REPLY2);
-        
+
         contentCombo = view.getDocTypeCombo();
 
         // 抽出機関 ComboBox を生成する
@@ -529,6 +577,7 @@ public class DocumentHistory {
 
     /**
      * レイアウトパネルを返す。
+     *
      * @return
      */
     public JPanel getPanel() {
@@ -539,6 +588,9 @@ public class DocumentHistory {
      * Event 接続を行う
      */
     private void connect() {
+
+        // ColumnHelperでカラム変更関連イベントを設定する
+        columnHelper.connect();
 
         // 履歴テーブルで選択された行の文書を表示する
         ListSelectionModel slm = view.getTable().getSelectionModel();
@@ -600,7 +652,6 @@ public class DocumentHistory {
         //showModified = Project.getBoolean(Project.DOC_HISTORY_SHOWMODIFIED, false);
         //showModified = Project.getBoolean(Project.DOC_HISTORY_SHOWMODIFIED);
         // 修正履歴は Project 設定から外す 常に false
-
         // 文書履歴テーブルのキーボード入力をブロックするリスナ
         blockKeyListener = new BlockKeyListener();
     }
@@ -619,13 +670,13 @@ public class DocumentHistory {
             StringBuilder s = new StringBuilder();
             for (int col = 0; col < numColumns; col++) {
                 Object o = view.getTable().getValueAt(rowsSelected[i], col);
-                if (o!=null) {
+                if (o != null) {
                     s.append(o.toString());
                 }
                 s.append(",");
             }
-            if (s.length()>0) {
-                s.setLength(s.length()-1);
+            if (s.length() > 0) {
+                s.setLength(s.length() - 1);
             }
             sb.append(s.toString()).append("\n");
 
@@ -642,7 +693,7 @@ public class DocumentHistory {
     public void deleteRow() {
         int row = view.getTable().getSelectedRow();
         DocInfoModel m = tableModel.getObject(row);
-        if (m==null) {
+        if (m == null) {
             return;
         }
 
@@ -658,11 +709,11 @@ public class DocumentHistory {
                 ClientContext.getFrameTitle("削除"),
                 JOptionPane.YES_NO_CANCEL_OPTION,
                 JOptionPane.QUESTION_MESSAGE,
-//minagawa^ Icon Server                
+                //minagawa^ Icon Server                
                 //ClientContext.getImageIcon("cancl_32.gif"),
                 ClientContext.getImageIconArias("icon_caution"),
-//minagawa$                
-                cstOptions,"はい");
+                //minagawa$                
+                cstOptions, "はい");
         Log.outputFuncLog(Log.LOG_LEVEL_0, Log.FUNCTIONLOG_KIND_OTHER, ClientContext.getFrameTitle("削除"), msg);
 
         if (select != 0) {
@@ -685,13 +736,17 @@ public class DocumentHistory {
             e.consume();
         }
 
-        /** Handle the key-pressed event from the text field. */
+        /**
+         * Handle the key-pressed event from the text field.
+         */
         @Override
         public void keyPressed(KeyEvent e) {
             e.consume();
         }
 
-        /** Handle the key-released event from the text field. */
+        /**
+         * Handle the key-released event from the text field.
+         */
         @Override
         public void keyReleased(KeyEvent e) {
             e.consume();
@@ -700,6 +755,7 @@ public class DocumentHistory {
 
     /**
      * 検索パラメータの文書タイプを設定する。。
+     *
      * @param extractionContent 文書タイプ
      */
     public void setExtractionContent(String extractionContent) {
@@ -718,6 +774,7 @@ public class DocumentHistory {
 
     /**
      * 検索パラメータの文書タイプを返す。
+     *
      * @return 文書タイプ
      */
     public String getExtractionContent() {
@@ -726,6 +783,7 @@ public class DocumentHistory {
 
     /**
      * 検索パラメータの抽出期間を設定する。
+     *
      * @param extractionPeriod 抽出期間
      */
     public void setExtractionPeriod(Date extractionPeriod) {
@@ -735,6 +793,7 @@ public class DocumentHistory {
 
     /**
      * 検索パラメータの抽出期間を返す。
+     *
      * @return 抽出期間
      */
     public Date getExtractionPeriod() {
@@ -743,6 +802,7 @@ public class DocumentHistory {
 
     /**
      * 文書履歴表示の昇順/降順を設定する。
+     *
      * @param ascending 昇順の時 true
      */
     public void setAscending(boolean ascending) {
@@ -752,6 +812,7 @@ public class DocumentHistory {
 
     /**
      * 文書履歴表示の昇順/降順を返す。
+     *
      * @return 昇順の時 true
      */
     public boolean isAscending() {
@@ -760,6 +821,7 @@ public class DocumentHistory {
 
     /**
      * 修正版を表示するかどうかを設定する。
+     *
      * @param showModifyed 表示する時 true
      */
     public void setShowModified(boolean showModifyed) {
@@ -769,6 +831,7 @@ public class DocumentHistory {
 
     /**
      * 修正版を表示するかどうかを返す。
+     *
      * @return 表示する時 true
      */
     public boolean isShowModified() {
@@ -866,19 +929,19 @@ public class DocumentHistory {
         @Override
         public Component getTableCellRendererComponent(
                 JTable table, Object value,
-                boolean isSelected, boolean hasFocus, int row, int column ) {
-            
+                boolean isSelected, boolean hasFocus, int row, int column) {
+
             super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-            
+
             DocInfoModel info = tableModel.getObject(row);
             ImageIcon icon = null;
             // Attachmentの判定 まずい...ICON_TEMP_SAVE_SMALL
-            if (column==1 && info!=null && info.isHasMark()) {
+            if (column == 1 && info != null && info.isHasMark()) {
 //minagawa^ Icon Server                
                 //icon = ClientContext.getImageIcon(GUIConst.ICON_ATTACHMENT_SMALL);
                 icon = ClientContext.getImageIconArias("icon_attachment_small");
 //minagawa$                
-            } else if (column==1 && info!=null && IInfoModel.STATUS_TMP.equals(info.getStatus())) {
+            } else if (column == 1 && info != null && IInfoModel.STATUS_TMP.equals(info.getStatus())) {
                 // 仮保存
 //minagawa^ Icon Server                
                 //icon = ClientContext.getImageIcon(GUIConst.ICON_TEMP_SAVE_SMALL);
@@ -887,35 +950,32 @@ public class DocumentHistory {
             }
 
             //if (isSelected) {
-                //setBackground(table.getSelectionBackground());
-                //setForeground(table.getSelectionForeground());
-
+            //setBackground(table.getSelectionBackground());
+            //setForeground(table.getSelectionForeground());
             //} else {
-
                 //setForeground(table.getForeground());
-                
-                if ((!isSelected) && info!= null && 
-                    info.getDocType().equals(IInfoModel.DOCTYPE_KARTE) &&
-                    info.getHealthInsurance()!=null) {
-                    
-                    if (Project.getBoolean("docHistory.coloring.rosai") && info.getHealthInsurance().startsWith(IInfoModel.INSURANCE_ROSAI_PREFIX)) {
-                        // 労災
-                        setBackground(ROSAI_INSURANCE_COLOR);
-                        
-                    } else if (Project.getBoolean("docHistory.coloring.jibaiseki") && info.getHealthInsurance().startsWith(IInfoModel.INSURANCE_JIBAISEKI_PREFIX)) {
-                        // 自賠責
-                        setBackground(JIBAISEKI_INSURANCE_COLOR);
-                        
-                    } else if (Project.getBoolean("docHistory.coloring.jihi") && info.getHealthInsurance().startsWith(IInfoModel.INSURANCE_SELF_PREFIX)) {
-                        // 自費
-                        setBackground(SELF_INSURANCE_COLOR);   
-                    } 
+            if ((!isSelected) && info != null
+                    && info.getDocType().equals(IInfoModel.DOCTYPE_KARTE)
+                    && info.getHealthInsurance() != null) {
+
+                if (Project.getBoolean("docHistory.coloring.rosai") && info.getHealthInsurance().startsWith(IInfoModel.INSURANCE_ROSAI_PREFIX)) {
+                    // 労災
+                    setBackground(ROSAI_INSURANCE_COLOR);
+
+                } else if (Project.getBoolean("docHistory.coloring.jibaiseki") && info.getHealthInsurance().startsWith(IInfoModel.INSURANCE_JIBAISEKI_PREFIX)) {
+                    // 自賠責
+                    setBackground(JIBAISEKI_INSURANCE_COLOR);
+
+                } else if (Project.getBoolean("docHistory.coloring.jihi") && info.getHealthInsurance().startsWith(IInfoModel.INSURANCE_SELF_PREFIX)) {
+                    // 自費
+                    setBackground(SELF_INSURANCE_COLOR);
+                }
 //                    else if ((row & (1)) == 0) {
 //                        setBackground(DEFAULT_EVENN_COLOR);
 //                    } else {
 //                        setBackground(DEFAULT_ODD_COLOR);
 //                    }
-                } 
+            }
 //                else if((row & (1)) == 0) {
 //                    setBackground(DEFAULT_EVENN_COLOR);
 //                } else {

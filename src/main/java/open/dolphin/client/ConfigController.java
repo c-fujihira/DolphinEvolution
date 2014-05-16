@@ -204,6 +204,11 @@ public class ConfigController extends AnchorPane implements Initializable {
     RadioButton etcOperationAllcopy;
     @FXML
     RadioButton etcOperationPrescription;
+    //- カルテ記入時
+    @FXML
+    RadioButton etcKarteSplitUp;
+    @FXML
+    RadioButton etcKarteSplitDown;
     //- 年齢
     @FXML
     TextField etcAgeOfTheMoon;
@@ -214,7 +219,7 @@ public class ConfigController extends AnchorPane implements Initializable {
     RadioButton etcFontMiddle;
     @FXML
     RadioButton etcFontLarge;
-
+    
     //- 印刷/印刷方法
     @FXML
     RadioButton printWindows;
@@ -247,6 +252,8 @@ public class ConfigController extends AnchorPane implements Initializable {
     //- スタンプ展開時にスタンプ名を表示する
     @FXML
     CheckBox stampStampname;
+    @FXML
+    CheckBox stampAutoSetName;
 
     //- スタンプ動作設定
     //- 錠剤
@@ -528,6 +535,8 @@ public class ConfigController extends AnchorPane implements Initializable {
         setEtcPrintingSheetsTextField();
         //動作
         setEtcOperationAllcopyRadioButton();
+        //- カルテ記入時
+        setEtcKarteSplitRadioButton();
         //月例を表示する年齢
         setEtcAgeOfTheMoonTextField();
         //文字サイズ
@@ -552,6 +561,8 @@ public class ConfigController extends AnchorPane implements Initializable {
         setStampSpecimenCheckBox();
         //カルテ展開時にスタンプ名を表示する
         setStampStampnameCheckBox();
+        //- セット名を自動入力する
+        setStampAutoNameCheckBox();
         //錠剤の場合のメソッド
         setStampTabletTextField();
         //水薬の場合のメソッド
@@ -1090,6 +1101,15 @@ public class ConfigController extends AnchorPane implements Initializable {
         etcAgeOfTheMoon.setText(Project.getString(Project.KARTE_AGE_TO_NEED_MONTH));
     }
 
+    //- カルテ記入時 Split設定
+    public void setEtcKarteSplitRadioButton() {
+        if (Boolean.valueOf(Project.getString(Project.KARTE_SPLIT_SELECT))) {
+            etcKarteSplitUp.setSelected(true);
+        } else {
+            etcKarteSplitUp.setSelected(false);
+        }
+    }
+    
     //- 文字サイズ
     public void setEtcFontSizeRadioButton() {
         switch (Project.getString(Project.FONT_SIZE)) {
@@ -1175,6 +1195,15 @@ public class ConfigController extends AnchorPane implements Initializable {
             stampStampname.setSelected(true);
         } else {
             stampStampname.setSelected(false);
+        }
+    }
+    
+    //- セット名を自動入力する
+    public void setStampAutoNameCheckBox() {
+        if (Boolean.valueOf(Project.getString(Project.STAMP_AUTO_SETNAME))) {
+            stampAutoSetName.setSelected(true);
+        } else {
+            stampAutoSetName.setSelected(false);
         }
     }
 
@@ -1687,6 +1716,9 @@ public class ConfigController extends AnchorPane implements Initializable {
             Project.setString(Project.KARTE_SAVE_ACTION, "1");
         }
 
+        //- カルテ記入時 Split設定
+        Project.setString(Project.KARTE_SPLIT_SELECT, String.valueOf(etcKarteSplitUp.isSelected()));
+        
         //月例を表示する年齢
         Project.setString(Project.KARTE_AGE_TO_NEED_MONTH, etcAgeOfTheMoon.getText());
 
@@ -1726,6 +1758,9 @@ public class ConfigController extends AnchorPane implements Initializable {
         //カルテ展開時にスタンプ名を表示する
         Project.setString(Project.DEFAULT_STAMP_NAME, String.valueOf(stampStampname.isSelected()));
 
+        //- セット名を自動入力する
+        Project.setString(Project.STAMP_AUTO_SETNAME, String.valueOf(stampAutoSetName.isSelected()));
+        
         //スタンプ動作設定/錠剤の場合
         Project.setString(Project.DEFAULT_ZYOZAI_NUM, stampTablet.getText());
         //水薬の場合

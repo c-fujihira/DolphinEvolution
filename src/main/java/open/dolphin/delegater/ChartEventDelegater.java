@@ -45,8 +45,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import javax.ws.rs.core.MediaType;
 import open.dolphin.client.ChartEventHandler;
+import open.dolphin.client.ClientContext;
 import open.dolphin.client.Evolution;
 import open.dolphin.converter.ChartEventModelConverter;
+import static open.dolphin.delegater.BusinessDelegater.CLIENTVERSION;
 import open.dolphin.infomodel.ChartEventModel;
 import open.dolphin.project.Project;
 import open.dolphin.util.Log;
@@ -207,6 +209,7 @@ public class ChartEventDelegater extends BusinessDelegater {
         request.setHeader(USER_NAME, Project.getUserModel().getUserId());
         request.setHeader(PASSWORD, Project.getUserModel().getPassword());
         request.setHeader(CLINET_UUID, Evolution.getInstance().getClientUUID());
+        request.setHeader(CLIENTVERSION, ClientContext.getProductName() + "_" + ClientContext.getVersion() + "_" + Project.getClientBuild());
 
 //        final Future<HttpResponse> future = getHttpAsyncClient().execute(request, new FutureCallback<HttpResponse>() { 
 //

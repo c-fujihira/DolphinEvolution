@@ -71,6 +71,11 @@ public class MultiUserLoginController extends AnchorPane implements Initializabl
     Button configButton;
     @FXML
     Button loginButton;
+    
+    @FXML
+    Text clVer;
+    @FXML
+    Text svVer;
 
     //- 親インスタンス
     private Stage mainStage;
@@ -469,5 +474,13 @@ public class MultiUserLoginController extends AnchorPane implements Initializabl
     public void execConfig(ActionEvent event) throws IOException, Exception {
         application.configDisplay();
         userId = Project.getProjectStub().getUserId();
+    }
+    
+    public void setServerBuild(String txt) {
+        svVer.setText(txt);
+    }
+    
+    public void setClientBuild(String txt) {
+        clVer.setText(txt);
     }
 }

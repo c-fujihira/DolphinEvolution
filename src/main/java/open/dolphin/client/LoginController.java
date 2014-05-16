@@ -70,7 +70,12 @@ public class LoginController extends AnchorPane implements Initializable {
     @FXML
     Button loginButton;
 
-    //- 親インスタンス
+    @FXML
+    Text clVer;
+    @FXML
+    Text svVer;
+    
+    //- 親インスタンス+
     private Stage mainStage;
     private Evolution application;
     private EvolutionWindow mainWindow;
@@ -452,5 +457,14 @@ public class LoginController extends AnchorPane implements Initializable {
     public void execConfig(ActionEvent event) throws IOException, Exception {
         application.configDisplay();
         userId.setText(Project.getProjectStub().getUserId());
+    }
+    
+    
+    public void setServerBuild(String txt) {
+        svVer.setText(txt);
+    }
+    
+    public void setClientBuild(String txt) {
+        clVer.setText(txt);
     }
 }
