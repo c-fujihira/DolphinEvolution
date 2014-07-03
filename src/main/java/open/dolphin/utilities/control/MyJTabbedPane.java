@@ -46,7 +46,7 @@ import open.dolphin.infomodel.PatientVisitModel;
  *
  * @author modified Chikara Fujihira <fujihirach@sandi.co.jp>, S&I Co.,Ltd.
  */
-public class MyJTabbedPane extends javax.swing.JFrame {
+public class MyJTabbedPane{
 
     private static final Icon icon = new CloseTabIcon();
 
@@ -107,27 +107,31 @@ public class MyJTabbedPane extends javax.swing.JFrame {
                 if (chart.getKarteEditor() != null) {
                     KarteEditor editor = chart.getKarteEditor();
                     String ret = chart.closeForEvo();
-                    // 保存時併用禁忌有無のチェック処理後にカルテタブ閉じる処理を行う
-                    if (!editor.isCancelFlag() && ret.equals("0") || ret.equals("3")) {
+                    if (!editor.isCancelFlag() && ret.equals("0")) {
+                        // 保存ダイアログが保存かつ保存時併用禁忌有無のチェック処理が無視の場合、カルテタブ閉じる処理を行う
                         tabClosingFunc(patientId, chart, c);
-                        // 保存ダイアログが破棄で無くかつ保存時併用禁忌有無のチェック処理が取消場合、何もしない
-                    } else if (editor.isCancelFlag() && !ret.equals("1")) {
-                        return;
-                        // 破棄時カルテタブを閉じる処理を行う
                     } else if (ret.equals("1")) {
+                        // 破棄時カルテタブを閉じる処理を行う
+                        tabClosingFunc(patientId, chart, c);
+                    } else if (ret.equals("2")) {
+                        // キャンセル時、何もしない
+                        return;
+                    } else if (ret.equals("3")){
+                        // dirtyListが無い時カルテタブを閉じる処理を行う
                         tabClosingFunc(patientId, chart, c);
                     }
                 } else {
                     String ret = chart.closeForEvo();
+                    KarteEditor editor = chart.getKarteEditor();
                     // 保存時併用禁忌有無のチェック処理後にカルテタブ閉じる処理を行う
-                    if (ret.equals("0") || ret.equals("3")) {
+                    if (editor != null && !editor.isCancelFlag() && ret.equals("0")) {
                         tabClosingFunc(patientId, chart, c);
-                        // 保存ダイアログが破棄で無くかつ保存時併用禁忌有無のチェック処理が取消場合、何もしない
-                    } else if (!ret.equals("1")) {
-                        return;
-                        // 破棄時カルテタブを閉じる処理を行う
                     } else if (ret.equals("1")) {
+                        // 破棄時カルテタブを閉じる処理を行う
                         tabClosingFunc(patientId, chart, c);
+                    } else if (ret.equals("2")) {
+                        // キャンセル時、何もしない
+                        return;
                     }
                 }
             }
@@ -154,27 +158,31 @@ public class MyJTabbedPane extends javax.swing.JFrame {
                 if (chart.getKarteEditor() != null) {
                     KarteEditor editor = chart.getKarteEditor();
                     String ret = chart.closeForEvo();
-                    // 保存時併用禁忌有無のチェック処理後にカルテタブ閉じる処理を行う
-                    if (!editor.isCancelFlag() && ret.equals("0") || ret.equals("3")) {
+                    if (!editor.isCancelFlag() && ret.equals("0")) {
+                        // 保存ダイアログが保存かつ保存時併用禁忌有無のチェック処理が無視の場合、カルテタブ閉じる処理を行う
                         tabClosingFunc(patientId, chart, c);
-                        // 保存ダイアログが破棄で無くかつ保存時併用禁忌有無のチェック処理が取消場合、何もしない
-                    } else if (editor.isCancelFlag() && !ret.equals("1")) {
-                        return;
-                        // 破棄時カルテタブを閉じる処理を行う
                     } else if (ret.equals("1")) {
+                        // 破棄時カルテタブを閉じる処理を行う
+                        tabClosingFunc(patientId, chart, c);
+                    } else if (ret.equals("2")) {
+                        // キャンセル時、何もしない
+                        return;
+                    } else if (ret.equals("3")){
+                        // dirtyListが無い時カルテタブを閉じる処理を行う
                         tabClosingFunc(patientId, chart, c);
                     }
                 } else {
                     String ret = chart.closeForEvo();
+                    KarteEditor editor = chart.getKarteEditor();
                     // 保存時併用禁忌有無のチェック処理後にカルテタブ閉じる処理を行う
-                    if (ret.equals("0") || ret.equals("3")) {
+                    if (editor != null && !editor.isCancelFlag() && ret.equals("0")) {
                         tabClosingFunc(patientId, chart, c);
-                        // 保存ダイアログが破棄で無くかつ保存時併用禁忌有無のチェック処理が取消場合、何もしない
-                    } else if (!ret.equals("1")) {
-                        return;
-                        // 破棄時カルテタブを閉じる処理を行う
                     } else if (ret.equals("1")) {
+                        // 破棄時カルテタブを閉じる処理を行う
                         tabClosingFunc(patientId, chart, c);
+                    } else if (ret.equals("2")) {
+                        // キャンセル時、何もしない
+                        return;
                     }
                 }
             }
@@ -229,7 +237,7 @@ public class MyJTabbedPane extends javax.swing.JFrame {
         c.getActionMap().put("foreTab", foreTabAction);
         c.getActionMap().put("jumpTab", jumpTabAction);
 
-        dndTabbedPane.setSelectedIndex(dndTabbedPane.getTabCount() - 1);
+//        dndTabbedPane.setSelectedIndex(dndTabbedPane.getTabCount() - 1);
     }
 
     public void selectTab(long id) {
@@ -261,7 +269,21 @@ public class MyJTabbedPane extends javax.swing.JFrame {
         patientIdMap.remove(patientId);
         chartImplMap.remove(patientId);
         // カルテを閉じた後にフォーカスを再度テーブルリストにセット
-        setTableListFocus(chart);
+//        setTableListFocus(chart);
+        // カルテがすべて閉じられた場合には受付リストを表示させ、リストへフォーカスする
+        if(dndTabbedPane.getTabCount() == 0){
+            owner.getApp().evoWindow.mainView.getTabbedPane().setSelectedIndex(0);
+            int row, col;
+            WatingListView wview = (WatingListView) owner.getApp().evoWindow.mainView.getTabbedPane().getComponentAt(0);
+            wview.getTable().setRowSelectionAllowed(true);
+            row = wview.getTable().getSelectedRow() < 0 ? 0 : wview.getTable().getSelectedRow();
+            col = wview.getTable().getSelectedColumn() < 0 ? 0 : wview.getTable().getSelectedColumn();
+//            wview.getTable().changeSelection(row, col, false, false);
+            if(wview.getTable().getRowCount() > 0){
+                wview.getTable().setRowSelectionInterval(row, row);
+            }
+            wview.getTable().requestFocusInWindow();
+        }
     }
     
     private void setTableListFocus(ChartImpl chart){

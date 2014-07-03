@@ -38,16 +38,16 @@
  */
 package open.dolphin.client;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.GridLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.SimpleAddressModel;
 import open.dolphin.project.Project;
-import open.dolphin.util.AgeCalculater;
+import open.dolphin.util.AgeCalculator;
 
 /**
  *
@@ -57,6 +57,7 @@ public class BasicInfoInspector {
     
     private JPanel basePanel; // このクラスのパネル
     private JLabel nameLabel;
+    private JLabel ageLabel;
     private JLabel addressLabel;
     private Color maleColor;
     private Color femaleColor;
@@ -91,9 +92,12 @@ public class BasicInfoInspector {
         StringBuilder sb = new StringBuilder();
         sb.append(context.getPatient().getFullName());
         sb.append("  ");
-        String age = AgeCalculater.getAgeAndBirthday(context.getPatient().getBirthday(), Project.getInt("ageToNeedMonth", 6));
-        sb.append(age);
+        String kana = context.getPatient().getKanaName();
+        sb.append(kana);
         nameLabel.setText(sb.toString());
+
+        String age = AgeCalculator.getAgeAndBirthday(context.getPatient().getBirthday(), Project.getInt("ageToNeedMonth", 6));
+        ageLabel.setText(age);
 
         SimpleAddressModel address = context.getPatient().getSimpleAddressModel();
         if (address != null) {
@@ -121,6 +125,7 @@ public class BasicInfoInspector {
                 break;
         }
         nameLabel.setBackground(color);
+        ageLabel.setBackground(color);
         addressLabel.setBackground(color);
         basePanel.setBackground(color);
     }
@@ -142,23 +147,22 @@ public class BasicInfoInspector {
         nameLabel.setForeground(foreground);
         nameLabel.setOpaque(true);
         nameLabel.setMinimumSize(new Dimension(220, 15));
-        nameLabel.setMaximumSize(new Dimension(220, 15));
-        nameLabel.setMaximumSize(new Dimension(220, 15));
         
+        ageLabel = new JLabel("　");
+        ageLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        ageLabel.setForeground(foreground);
+        ageLabel.setOpaque(true);
+        ageLabel.setMinimumSize(new Dimension(220, 15));
+
         addressLabel = new JLabel("　");
         addressLabel.setHorizontalAlignment(SwingConstants.CENTER);
         addressLabel.setForeground(foreground);
         addressLabel.setOpaque(true);
         addressLabel.setMinimumSize(new Dimension(220, 15));
-        addressLabel.setMaximumSize(new Dimension(220, 15));
-        addressLabel.setMaximumSize(new Dimension(220, 15));
 
-
-        basePanel = new JPanel(new BorderLayout(0, 1));
-        basePanel.setMinimumSize(new Dimension(220, 15));
-        basePanel.setMaximumSize(new Dimension(220, 15));
-        basePanel.setPreferredSize(new Dimension(220, 15));
-        basePanel.add(nameLabel, BorderLayout.NORTH);
-        basePanel.add(addressLabel, BorderLayout.SOUTH);
+        basePanel = new JPanel(new GridLayout(3, 1));
+        basePanel.add(nameLabel);
+        basePanel.add(ageLabel);
+        basePanel.add(addressLabel);
     }
 }

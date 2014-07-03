@@ -65,7 +65,8 @@ import open.dolphin.helper.ComponentMemory;
 public class ImageBox extends AbstractMainTool {
 
     private static final String DEFAULT_TAB = "基本セット";
-    private static final int DEFAULT_COLUMN_COUNT = 3;
+    //private static final int DEFAULT_COLUMN_COUNT = 3;
+    private static final int DEFAULT_COLUMN_COUNT = 2;
     private static final int DEFAULT_IMAGE_WIDTH = 120;
     private static final int DEFAULT_IMAGE_HEIGHT = 120;
     private static final String[] DEFAULT_IMAGE_SUFFIX = {".jpg", ".png"};

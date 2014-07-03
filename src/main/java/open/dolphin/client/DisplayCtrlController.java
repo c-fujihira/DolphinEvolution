@@ -62,10 +62,6 @@ public class DisplayCtrlController implements Initializable {
     @FXML
     ImageView ctrlView;
     @FXML
-    ToggleButton karteSw;
-    @FXML
-    ToggleButton karteToolCk;
-    @FXML
     Text clinicName;
     @FXML
     ToggleButton splitToggle;
@@ -74,7 +70,7 @@ public class DisplayCtrlController implements Initializable {
     private Evolution application;
 
     private final int SPLIT2_HIGHT = 305;
-    private final int SPLIT3_WIDTH = 481;
+    private final int SPLIT3_WIDTH = 330;
     
     private int work=0;
     private boolean doubleClickFlag = false;
@@ -122,7 +118,14 @@ public class DisplayCtrlController implements Initializable {
 
     public void setWinCtrlReset() {
         application.evoWindow.getSplitPane2().setDividerLocation(SPLIT2_HIGHT);
-        int position = work > 0 ? work : Project.getInt("karte.split.reserve.position");
+        int initPosition;
+        if (splitToggle.isSelected()) {
+            initPosition = Project.getInt("karte.split.reserve.position");
+        } else {
+            initPosition = application.evoWindow.getFrame().getWidth() - SPLIT3_WIDTH;
+            work = application.evoWindow.getFrame().getWidth() - SPLIT3_WIDTH;
+        }
+        int position = work > 0 ? work : initPosition;
         application.evoWindow.getSplitPane3().setDividerLocation(position);
         work = 0;
         doubleClickFlag = false;
@@ -130,21 +133,42 @@ public class DisplayCtrlController implements Initializable {
     }
 
     public void setWinCtrlPvtSet() {
-        // れんぞくして本ボタンが押下された場合には何もせずに終了
+        // 受付ビューを全体化
+        application.evoWindow.getTabbedPane().setSelectedIndex(0);
+
+        // れんぞくして全体表示系ボタンが押下された場合
         if(doubleClickFlag){
-            application.evoWindow.getSplitPane2().setDividerLocation(application.evoWindow.getFrame().getHeight());
-            application.evoWindow.getSplitPane3().setDividerLocation(0);
+            if (Boolean.valueOf(Project.getString("karte.tool"))) {
+                application.evoWindow.getSplitPane2().setDividerLocation(0);
+                application.evoWindow.getSplitPane3().setDividerLocation(work);
+            } else {
+                application.evoWindow.getSplitPane2().setDividerLocation(0);
+                application.evoWindow.getSplitPane3().setDividerLocation(application.evoWindow.getFrame().getWidth());
+            }
             return;
         }
         work = application.evoWindow.getSplitPane3().getDividerLocation();
-        application.evoWindow.getSplitPane2().setDividerLocation(application.evoWindow.getFrame().getHeight());
-        application.evoWindow.getSplitPane3().setDividerLocation(0);
+        if (Boolean.valueOf(Project.getString("karte.tool"))) {
+            application.evoWindow.getSplitPane2().setDividerLocation(0);
+            application.evoWindow.getSplitPane3().setDividerLocation(work);
+        } else {
+            application.evoWindow.getSplitPane2().setDividerLocation(0);
+            application.evoWindow.getSplitPane3().setDividerLocation(application.evoWindow.getFrame().getWidth());
+        }
         doubleClickFlag = true;
-        refresh();
     }
 
-    public void setWinCtrlKarteSet() {
-        // れんぞくして本ボタンが押下された場合には何もせずに終了
+    public void setWinCtrlKarteSet() {        
+        // カルテビューを全体化
+        int cnt;
+        for(cnt=0; cnt<application.evoWindow.mainView.getTabbedPane().getTabCount(); cnt++){
+            if(application.evoWindow.mainView.getTabbedPane().getTitleAt(cnt).equals("カルテ")){
+                break;
+            }
+        }
+        application.evoWindow.getTabbedPane().setSelectedIndex(cnt);
+        
+        // れんぞくして全体表示系ボタンが押下された場合
         if(doubleClickFlag){
             if (Boolean.valueOf(Project.getString("karte.tool"))) {
                 application.evoWindow.getSplitPane2().setDividerLocation(0);
@@ -166,26 +190,13 @@ public class DisplayCtrlController implements Initializable {
         doubleClickFlag = true;
     }
     
-    public void karteViewSw() {
-        if(karteSw.isSelected()) {
-            Project.setString("karte.view", "true");
-        } else {
-            Project.setString("karte.view", "false");
-        }
-    }
-    
-    public void setWinCtrlKarteToolSet() {
-        if(karteToolCk.isSelected()) {
-            Project.setString("karte.tool", "true");
-        } else {
-            Project.setString("karte.tool", "false");
-        }
-    }
-    
     public void setSplitReserve() {
         if (splitToggle.isSelected()) {
             Project.setString("karte.split.reserve", "true");
             Project.setInt("karte.split.reserve.position", application.evoWindow.getSplitPane3().getDividerLocation());
+            if(Project.getString("karte.split.reserve.edit.position") == null || Project.getInt("karte.split.reserve.edit.position") == 0){
+                Project.setInt("karte.split.reserve.edit.position", SPLIT2_HIGHT);
+            }
             splitToggle.setText("区切り位置解除");
         } else {
             Project.setString("karte.split.reserve", "false");
@@ -196,7 +207,7 @@ public class DisplayCtrlController implements Initializable {
             splitToggle.setText("区切り位置保存");
         }
     }
-    
+
     private void refresh(){
         //- リフレッシュ不具合対応
         Platform.runLater(new Runnable() {

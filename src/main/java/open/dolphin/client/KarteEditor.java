@@ -98,7 +98,6 @@ import open.dolphin.letter.KartePDFImpl2;
 import open.dolphin.plugin.PluginLoader;
 import open.dolphin.project.Project;
 import open.dolphin.util.BeanUtils;
-import open.dolphin.util.Log;
 import open.dolphin.util.ZenkakuUtils;
 import org.apache.log4j.Level;
 
@@ -1308,7 +1307,11 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel, NC
                     }
                 }
 
-                ((ChartImpl) getContext()).getKarteSplitPane().setBottomComponent(null);
+                if (Boolean.valueOf(Project.getString(Project.KARTE_SPLIT_SELECT))) {
+                    ((ChartImpl) getContext()).getKarteSplitPane().setBottomComponent(null);
+                } else {
+                    ((ChartImpl) getContext()).getKarteSplitPane().setTopComponent(null);
+                }
                 ((ChartImpl) getContext()).getKarteSplitPane().revalidate();
 
             } //minagawa^ lsctest  saveAll でキャンセルした場合、ここで通知する          
@@ -2641,6 +2644,13 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel, NC
                 chart.enabledAction(GUIConst.ACTION_PRINT, true);
                 chart.enabledAction(GUIConst.ACTION_CHANGE_NUM_OF_DATES_ALL, (getMode() == DOUBLE_MODE)); //true
                 chart.enabledAction(GUIConst.ACTION_SELECT_INSURANCE, (getMode() == DOUBLE_MODE));    //true
+
+                if(chart instanceof ChartImpl){
+                    chart.enabledAction(GUIConst.ACTION_ASCENDING, true);           // 昇順
+                    chart.enabledAction(GUIConst.ACTION_DESCENDING, true);          // 降順
+                    chart.enabledAction(GUIConst.ACTION_SHOW_MODIFIED, true);       // 修正履歴表示
+                    chart.enabledAction(GUIConst.ACTION_CHECK_INTERACTION, true);   // 併用禁忌チェック
+                }
                 stateMgr.setDirty(true);
                 return;
             }
@@ -2770,4 +2780,21 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel, NC
     public void showModified() {
         karteDocumentViewer.showModified();
     }
+
+    /**
+     * 昇順表示にする。
+     */
+    public void ascending() {
+        karteDocumentViewer.setAscending(true);
+        getContext().getDocumentHistory().setAscending(true);
+    }
+
+    /**
+     * 降順表示にする。
+     */
+    public void descending() {
+        karteDocumentViewer.setAscending(false);
+        getContext().getDocumentHistory().setAscending(false);
+    }
+
 }

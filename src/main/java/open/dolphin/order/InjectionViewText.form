@@ -8,13 +8,13 @@
       </Border>
     </Property>
     <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-      <Dimension value="[0, 0]"/>
+      <Dimension value="[1024, 768]"/>
     </Property>
     <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-      <Dimension value="[100, 100]"/>
+      <Dimension value="[700, 600]"/>
     </Property>
     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-      <Dimension value="[670, 355]"/>
+      <Dimension value="[700, 600]"/>
     </Property>
   </Properties>
   <AuxValues>
@@ -43,24 +43,25 @@
               <Component id="techChk" min="-2" max="-2" attributes="0"/>
           </Group>
           <Group type="102" alignment="1" attributes="0">
-              <Component id="searchTextField" min="-2" pref="209" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
-              <Component id="rtBtn" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
-              <Component id="partialChk" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="32767" attributes="0"/>
-              <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
-              <Component id="countField" min="-2" pref="64" max="-2" attributes="0"/>
-              <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
-          </Group>
-          <Group type="102" attributes="0">
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jScrollPane2" min="-2" pref="650" max="-2" attributes="0"/>
-                  <Component id="jScrollPane1" min="-2" pref="650" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                  <Component id="stampNameField" max="32767" attributes="0"/>
                   <Group type="102" alignment="0" attributes="0">
-                      <Component id="stampNameField" min="-2" pref="250" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="16" max="-2" attributes="0"/>
+                      <Component id="searchTextField" min="-2" pref="209" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="34" max="-2" attributes="0"/>
+                      <Component id="rtBtn" min="-2" max="-2" attributes="0"/>
+                  </Group>
+              </Group>
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" attributes="0">
+                      <Component id="partialChk" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace pref="194" max="32767" attributes="0"/>
+                      <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Component id="countField" min="-2" pref="64" max="-2" attributes="0"/>
+                  </Group>
+                  <Group type="102" attributes="0">
+                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                       <Component id="deleteBtn" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="clearBtn" min="-2" max="-2" attributes="0"/>
@@ -70,7 +71,6 @@
                       <Component id="okCntBtn" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
-              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -85,7 +85,7 @@
                   <Component id="infoLabel" alignment="1" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
-              <Component id="jScrollPane1" min="-2" pref="106" max="-2" attributes="0"/>
+              <Component id="jScrollPane1" min="-2" pref="184" max="-2" attributes="0"/>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="deleteBtn" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -94,20 +94,16 @@
                   <Component id="okCntBtn" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="stampNameField" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jLabel3" alignment="0" min="-2" max="-2" attributes="0"/>
-                  <Group type="103" alignment="0" groupAlignment="3" attributes="0">
-                      <Component id="searchTextField" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="rtBtn" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="partialChk" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="jLabel4" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="countField" alignment="3" min="-2" max="-2" attributes="0"/>
-                  </Group>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="searchTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="rtBtn" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="partialChk" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jLabel4" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="countField" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jScrollPane2" min="-2" pref="100" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
+              <Component id="jScrollPane2" pref="276" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -115,9 +111,6 @@
   <SubComponents>
     <Component class="javax.swing.JLabel" name="infoLabel">
       <Properties>
-        <Property name="icon" type="javax.swing.Icon" noResource="true" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="3" name="/open/dolphin/resources/images/about_16.gif"/>
-        </Property>
         <Property name="text" type="java.lang.String" value="info" noResource="true"/>
         <Property name="name" type="java.lang.String" value="infoLabel" noResource="true"/>
       </Properties>
@@ -190,7 +183,7 @@
     </Component>
     <Component class="javax.swing.JCheckBox" name="rtBtn">
       <Properties>
-        <Property name="text" type="java.lang.String" value="&#x30ea;&#x30a2;&#x30eb;&#x30bf;&#x30a4;&#x30e0;" noResource="true"/>
+        <Property name="text" type="java.lang.String" value="RT" noResource="true"/>
         <Property name="toolTipText" type="java.lang.String" value="&#x30c1;&#x30a7;&#x30c3;&#x30af;&#x3059;&#x308b;&#x3068;&#x5165;&#x529b;&#x4e2d;&#x306b;&#x30ea;&#x30a2;&#x30eb;&#x30bf;&#x30a4;&#x30e0;&#x3067;&#x691c;&#x7d22;&#x3057;&#x307e;&#x3059;&#x3002;" noResource="true"/>
       </Properties>
     </Component>
@@ -201,7 +194,7 @@
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel4">
       <Properties>
-        <Property name="text" type="java.lang.String" value="&#x691c;&#x7d22;&#x4ef6;&#x6570;" noResource="true"/>
+        <Property name="text" type="java.lang.String" value="&#x4ef6;&#x6570;" noResource="true"/>
       </Properties>
     </Component>
     <Container class="javax.swing.JScrollPane" name="jScrollPane2">
@@ -220,9 +213,6 @@
                 <Column editable="true" title="Title 3" type="java.lang.Object"/>
                 <Column editable="true" title="Title 4" type="java.lang.Object"/>
               </Table>
-            </Property>
-            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[250, 64]"/>
             </Property>
           </Properties>
         </Component>

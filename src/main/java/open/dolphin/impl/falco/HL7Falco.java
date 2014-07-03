@@ -50,7 +50,7 @@ import open.dolphin.client.ClientContext;
 import open.dolphin.client.LabResultParser;
 import open.dolphin.impl.labrcv.NLaboImportSummary;
 import open.dolphin.infomodel.*;
-import open.dolphin.util.AgeCalculater;
+import open.dolphin.util.AgeCalculator;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -316,7 +316,7 @@ public class HL7Falco implements LabResultParser {
 //        System.err.println("--------------------------");
 //        System.err.println(patient.getPatientId());
 //        System.err.println(patient.getBirthday().replaceAll("-", ""));
-//        System.err.println(String.valueOf(AgeCalculater.getAge(patient.getBirthday(), 6)));
+//        System.err.println(String.valueOf(AgeCalculator.getAge(patient.getBirthday(), 6)));
 //        System.err.println(creater.getDepartmentModel().getDepartmentDesc());
 //        System.err.println("--------------------------");
         set.studyDate = orderDate;
@@ -328,7 +328,7 @@ public class HL7Falco implements LabResultParser {
         set.patientNameKANA = patient.getKanaName();    //患者氏名（全角カナ）
         set.patientNameKANJI = patient.getFullName();   //患者氏名（全角漢字）:任意
         set.patientBirthdate = patient.getBirthday().replaceAll("-", "");   //"X"ライブラリで無条件でつける。（西暦固定）
-        set.patientAge = String.valueOf(AgeCalculater.getAge(patient.getBirthday(), 6));    //年齢(任意）
+        set.patientAge = String.valueOf(AgeCalculator.getAge(patient.getBirthday(), 6));    //年齢(任意）
         set.sex = ModelUtils.getGenderMFDesc(patient.getGender());                  //性別
 
         set.plocationCdep = creater.getDepartmentModel().getDepartmentDesc();//診療科

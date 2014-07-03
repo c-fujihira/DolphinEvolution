@@ -112,6 +112,7 @@ public class MultiUserLoginController extends AnchorPane implements Initializabl
             @Override
             public void changed(ObservableValue ov, String t, String t1) {
                 userId = t1;
+                Project.setString(Project.USER_ID, userId);
             }
         });
 

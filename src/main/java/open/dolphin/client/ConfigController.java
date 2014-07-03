@@ -1896,7 +1896,7 @@ public class ConfigController extends AnchorPane implements Initializable {
 
         //- 設定保存&読み直し
         Project.saveUserDefaults();
-        Project.setProjectStub(new ProjectStub());
+//        Project.setProjectStub(new ProjectStub());
         application.Dialog.close();
     }
 

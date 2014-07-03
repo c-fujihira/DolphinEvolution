@@ -48,25 +48,18 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Logger;
 import javax.swing.*;
 import open.dolphin.delegater.DocumentDelegater;
-import open.dolphin.delegater.LetterDelegater;
 import open.dolphin.delegater.OrcaRestDelegater;
 import open.dolphin.helper.DBTask;
 import open.dolphin.hiro.PrescriptionMaker;
 import open.dolphin.infomodel.DocInfoModel;
 import open.dolphin.infomodel.DocumentModel;
 import open.dolphin.infomodel.IInfoModel;
-import open.dolphin.infomodel.LetterModule;
 import open.dolphin.infomodel.ModuleModel;
 import open.dolphin.infomodel.PVTHealthInsuranceModel;
 import open.dolphin.letter.KartePDFImpl2;
 import open.dolphin.letter.KartePDFMaker;
-import open.dolphin.letter.LetterImpl;
-import open.dolphin.letter.MedicalCertificateImpl;
-import open.dolphin.letter.Reply1Impl;
-import open.dolphin.letter.Reply2Impl;
 import open.dolphin.project.Project;
 import open.dolphin.util.Log;
 
@@ -1241,8 +1234,15 @@ public class KarteDocumentViewer extends AbstractChartDocument implements Docume
                 }
             }
 //minagawa$            
-            getContext().enabledAction(GUIConst.ACTION_NEW_KARTE, newOk);        // 新規カルテ
-            getContext().enabledAction(GUIConst.ACTION_NEW_DOCUMENT, canEdit);   // 新規文書
+            ChartImpl impl = (ChartImpl) getContext();
+            // 現在カルテや文書を編集中でない場合には作成O.K
+            if(impl.getKarteSplitPane().getTopComponent() == null || impl.getKarteSplitPane().getBottomComponent() == null){
+                getContext().enabledAction(GUIConst.ACTION_NEW_KARTE, newOk);        // 新規カルテ
+                getContext().enabledAction(GUIConst.ACTION_NEW_DOCUMENT, canEdit);   // 新規文書
+            }else{
+                getContext().enabledAction(GUIConst.ACTION_NEW_KARTE, false);        // 新規カルテ
+                getContext().enabledAction(GUIConst.ACTION_NEW_DOCUMENT, false);     // 新規文書
+            }
             getContext().enabledAction(GUIConst.ACTION_MODIFY_KARTE, canEdit);   // 修正
             // delete^
 //s.oh^ 2013/06/13 カルテ履歴が複数の場合、カルテ削除メニューを無効
@@ -1301,129 +1301,13 @@ public class KarteDocumentViewer extends AbstractChartDocument implements Docume
             currentState.enter();
         }
     }
-    
-    public void save(){
-        ChartImpl impl = (ChartImpl) getContext();
-        List<UnsavedDocument> localDirtyList = impl.evoDirtyList();
-        for (UnsavedDocument doc : localDirtyList) {
-            
-            ChartDocument chart = doc.getDoc();
-            if(chart instanceof KarteEditor){
-                KarteEditor obj = (KarteEditor) doc.getDoc();
-                obj.save();
-                if(!obj.isCancelFlag()){
-                    impl.evoDirtyListClean(chart);
-                }
-                return;
-            }else if (chart instanceof LetterImpl) {
-                LetterImpl obj = (LetterImpl) doc.getDoc();
-                obj.viewToModel(true);
-                LetterModule model = obj.getModel();
-                LetterDelegater ddl = new LetterDelegater();
-                long result = 0;
-                try {
-                    result = ddl.saveOrUpdateLetter(model);
-                } catch (Exception ex) {
-                    Logger.getLogger(LetterImpl.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-                }
-                model.setId(result);
-                if (boundSupport != null) {
-                    Log.outputFuncLog(Log.LOG_LEVEL_0, Log.FUNCTIONLOG_KIND_INFORMATION, "診療情報提供書", "保存成功", "インスペクタの終了");
-                    setChartDocDidSave(true);
-                    return;
-                }
 
-                getContext().getDocumentHistory().getLetterHistory();
-                obj.stateMgr.processSavedEvent();
-
-                ((ChartImpl) getContext()).getKarteSplitPane().setBottomComponent(null);
-                ((ChartImpl) getContext()).getKarteSplitPane().revalidate();
-                Log.outputFuncLog(Log.LOG_LEVEL_0, Log.FUNCTIONLOG_KIND_INFORMATION, "診療情報提供書", "保存成功");
-                impl.evoDirtyListClean(chart);
-                
-                return;
-            } else if (chart instanceof MedicalCertificateImpl) {
-                MedicalCertificateImpl obj = (MedicalCertificateImpl) doc.getDoc();
-                obj.viewToModel(true);
-                LetterModule model = obj.getModel();
-                LetterDelegater ddl = new LetterDelegater();
-                long result = 0;
-                try {
-                    result = ddl.saveOrUpdateLetter(model);
-                } catch (Exception ex) {
-                    Logger.getLogger(MedicalCertificateImpl.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-                }
-                model.setId(result);
-                if (boundSupport != null) {
-                    Log.outputFuncLog(Log.LOG_LEVEL_0, Log.FUNCTIONLOG_KIND_INFORMATION, "診断書", "保存成功", "インスペクタの終了");
-                    setChartDocDidSave(true);
-                    return;
-                }
-
-                getContext().getDocumentHistory().getLetterHistory();
-                obj.stateMgr.processSavedEvent();
-
-                ((ChartImpl) getContext()).getKarteSplitPane().setBottomComponent(null);
-                ((ChartImpl) getContext()).getKarteSplitPane().revalidate();
-                Log.outputFuncLog(Log.LOG_LEVEL_0, Log.FUNCTIONLOG_KIND_INFORMATION, "診断書", "保存成功");
-                impl.evoDirtyListClean(chart);
-
-                return;
-            } else if (chart instanceof Reply1Impl) {
-                Reply1Impl obj = (Reply1Impl) doc.getDoc();
-                obj.viewToModel(true);
-                LetterModule model = obj.getModel();
-                LetterDelegater ddl = new LetterDelegater();
-                long result = 0;
-                try {
-                    result = ddl.saveOrUpdateLetter(model);
-                } catch (Exception ex) {
-                    Logger.getLogger(Reply1Impl.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-                }
-                model.setId(result);
-                if (boundSupport != null) {
-                    Log.outputFuncLog(Log.LOG_LEVEL_0, Log.FUNCTIONLOG_KIND_INFORMATION, "紹介患者経過報告書", "保存成功", "インスペクタの終了");
-                    setChartDocDidSave(true);
-                    return;
-                }
-
-                getContext().getDocumentHistory().getLetterHistory();
-                obj.stateMgr.processSavedEvent();
-
-                ((ChartImpl) getContext()).getKarteSplitPane().setBottomComponent(null);
-                ((ChartImpl) getContext()).getKarteSplitPane().revalidate();
-                Log.outputFuncLog(Log.LOG_LEVEL_0, Log.FUNCTIONLOG_KIND_INFORMATION, "紹介患者経過報告書", "保存成功");
-                impl.evoDirtyListClean(chart);
-
-                return;
-            } else if (chart instanceof Reply2Impl) {
-                Reply2Impl obj = (Reply2Impl) doc.getDoc();
-                obj.viewToModel(true);
-                LetterModule model = obj.getModel();
-                LetterDelegater ddl = new LetterDelegater();
-                long result = 0;
-                try {
-                    result = ddl.saveOrUpdateLetter(model);
-                } catch (Exception ex) {
-                    Logger.getLogger(Reply2Impl.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-                }
-                model.setId(result);
-                if (boundSupport != null) {
-                    Log.outputFuncLog(Log.LOG_LEVEL_0, Log.FUNCTIONLOG_KIND_INFORMATION, "ご　報　告", "保存成功", "インスペクタの終了");
-                    setChartDocDidSave(true);
-                    return;
-                }
-
-                getContext().getDocumentHistory().getLetterHistory();
-                obj.stateMgr.processSavedEvent();
-
-                ((ChartImpl) getContext()).getKarteSplitPane().setBottomComponent(null);
-                ((ChartImpl) getContext()).getKarteSplitPane().revalidate();
-                Log.outputFuncLog(Log.LOG_LEVEL_0, Log.FUNCTIONLOG_KIND_INFORMATION, "ご　報　告", "保存成功");
-                impl.evoDirtyListClean(chart);
-
-                return;
-            }
-        }
+    public boolean isAscending() {
+        return ascending;
     }
+
+    public void setAscending(boolean ascending) {
+        this.ascending = ascending;
+    }
+    
 }

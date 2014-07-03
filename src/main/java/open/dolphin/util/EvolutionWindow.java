@@ -67,9 +67,12 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.PrintRequestAttributeSet;
+import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ActionMap;
 import javax.swing.BoxLayout;
+import javax.swing.InputMap;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -80,6 +83,7 @@ import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
+import javax.swing.KeyStroke;
 import javax.swing.ProgressMonitor;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
@@ -117,6 +121,7 @@ import open.dolphin.delegater.StampDelegater;
 import open.dolphin.helper.MenuSupport;
 import open.dolphin.helper.SimpleWorker;
 import open.dolphin.helper.WindowSupport;
+import open.dolphin.impl.pvt.WatingListView;
 import open.dolphin.impl.schedule.PatientScheduleImpl;
 import open.dolphin.infomodel.FacilityModel;
 import open.dolphin.infomodel.IStampTreeModel;
@@ -296,6 +301,42 @@ public final class EvolutionWindow implements MainWindow {
     }
 
     public void initComponents() {
+        mainView = new MainView();
+
+        //-------------------------------------------------------------
+        // Bonus: Adding a <Ctrl-L> keystroke binding to back the tab
+        //-------------------------------------------------------------
+        AbstractAction jumpTabAction = new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int currentIndex = mainView.getTabbedPane().getSelectedIndex();
+                if (currentIndex == mainView.getTabbedPane().getTabCount() - 1) {
+                    mainView.getTabbedPane().setSelectedIndex(0);
+                    // フォーカスをテーブルの行へ合わせる
+                    int row, col;
+                    WatingListView wview = (WatingListView) application.evoWindow.mainView.getTabbedPane().getComponentAt(0);
+                    wview.getTable().setRowSelectionAllowed(true);
+                    row = wview.getTable().getSelectedRow() < 0 ? 0 : wview.getTable().getSelectedRow();
+                    col = wview.getTable().getSelectedColumn() < 0 ? 0 : wview.getTable().getSelectedColumn();
+                    //            wview.getTable().changeSelection(row, col, false, false);
+                    if (wview.getTable().getRowCount() > 0) {
+                        wview.getTable().setRowSelectionInterval(row, row);
+                    }
+                    wview.getTable().requestFocusInWindow();
+                } else {
+                    mainView.getTabbedPane().setSelectedIndex(currentIndex + 1);
+                }
+            }
+        };
+        // Create a keystroke
+        KeyStroke controlL = KeyStroke.getKeyStroke("control L");
+        // Get the appropriate input map using the JComponent constants.
+        // This one works well when the component is a container. 
+        InputMap inputMap = mainView.getTabbedPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+        // Add the key binding for the keystroke to the action name
+        inputMap.put(controlL, "progressTab");
+        // Now add a single binding for the action name to the anonymous action
+        mainView.getTabbedPane().getActionMap().put("progressTab", jumpTabAction);
 
         //- Closing処理はリスナーで行う
         getFrame().setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -315,7 +356,7 @@ public final class EvolutionWindow implements MainWindow {
         getPanel3().add(tabPane);
 
         //- 仕切り線サイズ, 仕切り位置, リサイズ時倍率 (ListView/ControlPanel)
-        splitPane2 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, getPanel1(), getPanel3());
+        splitPane2 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, null, getPanel3());
         AncestorListener ancListener = new AncestorListener() {
             @Override
             public void ancestorAdded(AncestorEvent ancestorEvent) {
@@ -333,9 +374,10 @@ public final class EvolutionWindow implements MainWindow {
             public void ancestorRemoved(AncestorEvent ancestorEvent) {
             }
         };
-        panel2.addAncestorListener(ancListener);
         splitPane2.addAncestorListener(ancListener);
         //- 仕切り線サイズ, 仕切り位置, リサイズ時倍率 (KarteView/ListView/ControlPanel)
+        getPanel2().add(mainView);
+        getPanel2().setLayout(new GridLayout(1, 1));
         splitPane3 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true, getPanel2(), getSplitPane2());
 
         //- 仕切り線サイズ, 仕切り位置, リサイズ時倍率 (CtrlViewPanel/KarteView/ListView/ControlPanel)
@@ -363,21 +405,19 @@ public final class EvolutionWindow implements MainWindow {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-M-d(EEE) HH:mm");
         sb.append(sdf.format(new Date()));
         String loginInfo = sb.toString();
-        mainView = new MainView();
         mainView.getDateLbl().setText(loginInfo);
         mainView.setOpaque(true);
 
-        //- mainViewの初期サイズ
-        mainView.getMainPanel().setPreferredSize(new Dimension(getPanel1().getSize().width, getPanel1().getSize().height));
-        getPanel1().add(mainView);
-
+//        //- mainViewの初期サイズ
+//        mainView.getMainPanel().setPreferredSize(new Dimension(getPanel1().getSize().width, getPanel1().getSize().height));
+//        getPanel1().add(mainView);
         //- Set SplitPane
         splitPane1.setDividerSize(0);
         splitPane1.setDividerLocation(40);
         splitPane2.setDividerSize(5);
         splitPane2.setDividerLocation(305);
         splitPane3.setDividerSize(5);
-        splitPane3.setDividerLocation(getFrame().getWidth() - 481);
+        splitPane3.setDividerLocation(getFrame().getWidth() - 310);
         splitPane3.setResizeWeight(1.0);
 
         // タブペインに格納する Plugin をロードする
@@ -422,8 +462,25 @@ public final class EvolutionWindow implements MainWindow {
             public void stateChanged(ChangeEvent e) {
                 mainView.getStatusLbl().setText("");
                 int index = mainView.getTabbedPane().getSelectedIndex();
+                JTabbedPane sourceTabbedPane = (JTabbedPane) e.getSource();
+                if (index == 0) {
+                    // フォーカスをテーブルの行へ合わせる
+                    int row, col;
+                    WatingListView wview = (WatingListView) application.evoWindow.mainView.getTabbedPane().getComponentAt(0);
+                    wview.getTable().setRowSelectionAllowed(true);
+                    row = wview.getTable().getSelectedRow() < 0 ? 0 : wview.getTable().getSelectedRow();
+                    col = wview.getTable().getSelectedColumn() < 0 ? 0 : wview.getTable().getSelectedColumn();
+                    //            wview.getTable().changeSelection(row, col, false, false);
+                    if (wview.getTable().getRowCount() > 0) {
+                        wview.getTable().setRowSelectionInterval(row, row);
+                    }
+                    wview.getTable().requestFocusInWindow();
+                }
+
                 MainComponent plugin = (MainComponent) providers.get(String.valueOf(index));
-                if (plugin.getContext() == null) {
+                if (plugin == null) {
+                    return;
+                } else if (plugin.getContext() == null) {
                     plugin.setContext(EvolutionWindow.this);
                     plugin.start();
                     mainView.getTabbedPane().setComponentAt(index, plugin.getUI());
@@ -433,6 +490,8 @@ public final class EvolutionWindow implements MainWindow {
                 mediator.addChain(plugin);
             }
         });
+
+        mainView.getTabbedPane().addTab("カルテ", baseTabPane.getTabbedPane());
 
         //- WindowListener登録
         getFrame().addWindowListener(createWindowListener());
@@ -446,7 +505,9 @@ public final class EvolutionWindow implements MainWindow {
 
     public void windowMaximum() {
         //- 最大化
-        this.frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        if (!ClientContext.isMac()) {
+            this.frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        }
     }
 
     public void setWinCtrlMacro() {
@@ -612,10 +673,6 @@ public final class EvolutionWindow implements MainWindow {
         application = app;
     }
 
-    public void addTabPane(MyJTabbedPane tabPane) {
-        panel2.add(tabPane.getTabbedPane());
-    }
-
     public void reFleshJFrame0() {
         //- リフレッシュ不具合対応
         panel0.repaint();
@@ -705,6 +762,8 @@ public final class EvolutionWindow implements MainWindow {
                 opened = true;
                 //- カルテ再指定
                 baseTabPane.selectTab(ptId);
+                // カルテオープン時にはカルテ表示させる
+                mainView.getTabbedPane().setSelectedIndex(3);
                 break;
             }
         }
@@ -1253,17 +1312,16 @@ public final class EvolutionWindow implements MainWindow {
         Platform.runLater(new Runnable() {
             Parent root;
             AuditController auditCtr = null;
-            
+
             @Override
             public void run() {
                 try {
                     FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/resources/fxml/Audit.fxml"));
-                    root = (Parent)fxmlLoader.load();
+                    root = (Parent) fxmlLoader.load();
                     auditCtr = (AuditController) fxmlLoader.getController();
                 } catch (IOException ex) {
                     Logger.getLogger(EvolutionWindow.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                
 
                 Scene scene = new Scene(root);
                 jfxPanel.setScene(scene);
@@ -1716,7 +1774,6 @@ public final class EvolutionWindow implements MainWindow {
                     pl.stop();
                 }
                 Project.saveUserDefaults();
-
             } catch (Exception e) {
                 e.printStackTrace(System.err);
                 ClientContext.getBootLogger().warn(e.toString());
@@ -1766,7 +1823,26 @@ public final class EvolutionWindow implements MainWindow {
                 syncTreeAndShutDown(treeTosave);
                 break;
 
-            case 2:
+            default:
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        ClientContext.getBootLogger().info("ShutDown app.");
+                        shutdown();
+                        frame.setVisible(false);
+                        Platform.runLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                ClientContext.getBootLogger().info("Restart Fx Menu.");
+                                application.setScene(getScene());
+                                application.setStage(getStage());
+                                application.loginDisplay();
+                                ClientContext.getBootLogger().info("WindowClose.");
+                            }
+                        });
+                    }
+                });
+
                 break;
         }
     }
@@ -1901,6 +1977,16 @@ public final class EvolutionWindow implements MainWindow {
 
         if (option == 1) {
             shutdown();
+            frame.setVisible(false);
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    application.setScene(getScene());
+                    application.setStage(getStage());
+                    application.loginDisplay();
+                    ClientContext.getBootLogger().info("WindowClose.");
+                }
+            });
         }
     }
 

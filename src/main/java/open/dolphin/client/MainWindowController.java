@@ -785,15 +785,15 @@ public class MainWindowController implements Initializable {
                             switch (item.toString()) {
                                 case "0":
                                     setTooltip(new Tooltip("カルテ閲覧中"));
-                                    folderIcon = new Image(imagesPath + "open_16.gif");
+                                    folderIcon = new Image(imagesPath + "os_folder_vertical_document_16.png");
                                     break;
                                 case "1":
                                     setTooltip(new Tooltip("カルテ修正/再保存"));
-                                    folderIcon = new Image(imagesPath + "open_16.gif");
+                                    folderIcon = new Image(imagesPath + "os_network_wireless_16.png");
                                     break;
                                 case "2":
                                     setTooltip(new Tooltip("カルテ修正/再保存"));
-                                    folderIcon = new Image(imagesPath + "sinfo_16.gif");
+                                    folderIcon = new Image(imagesPath + "os_server_information_16.png");
                                     break;
                                 case "3":
                                     setTooltip(new Tooltip("検査/処置中"));
@@ -801,19 +801,19 @@ public class MainWindowController implements Initializable {
                                     break;
                                 case "4":
                                     setTooltip(new Tooltip("急患"));
-                                    folderIcon = new Image(imagesPath + "fastf_16.gif");
+                                    folderIcon = new Image(imagesPath + "os_hot_16.png");
                                     break;
                                 case "5":
                                     setTooltip(new Tooltip("外出中"));
-                                    folderIcon = new Image(imagesPath + "open_16.gif");
+                                    folderIcon = new Image(imagesPath + "os_cart_16.png");
                                     break;
                                 case "6":
                                     setTooltip(new Tooltip("キャンセル"));
-                                    folderIcon = new Image(imagesPath + "cancl_16.gif");
+                                    folderIcon = new Image(imagesPath + "os_cancel_16.png");
                                     break;
                                 case "8":
                                     setTooltip(new Tooltip("診療終了"));
-                                    folderIcon = new Image(imagesPath + "flag_16.gif");
+                                    folderIcon = new Image(imagesPath + "os_flag_yellow_16.png");
                                     break;
                             }
                             setGraphic(new ImageView(folderIcon));

@@ -59,7 +59,7 @@ import open.dolphin.infomodel.PVTHealthInsuranceModel;
 import open.dolphin.infomodel.PVTPublicInsuranceItemModel;
 import open.dolphin.infomodel.PatientModel;
 import open.dolphin.table.StripeTableCellRenderer;
-import open.dolphin.util.AgeCalculater;
+import open.dolphin.util.AgeCalculator;
 import open.dolphin.util.Log;
 
 /**
@@ -536,7 +536,7 @@ public class PatientInfoDocument extends AbstractChartDocument {
                         break;
 
                     case 5:
-                        int[] spec = AgeCalculater.getAgeSpec(patient.getBirthday());
+                        int[] spec = AgeCalculator.getAgeSpec(patient.getBirthday());
                         StringBuilder sb = new StringBuilder();
                         if (spec[0] != -1) {
                             sb.append(spec[0]).append("歳 ");

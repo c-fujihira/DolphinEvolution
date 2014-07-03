@@ -4,7 +4,7 @@
 
     <groupId>opendolphin</groupId>
     <artifactId>DolphinEvolution</artifactId>
-    <version>1.1-Build52</version>
+    <version>1.1-Build54</version>
     <packaging>jar</packaging>
 
     <name>DolphinEvolution</name>
@@ -15,6 +15,8 @@
         <permissions>all-permissions</permissions>
         <deployUrl>*</deployUrl>
         <Application-Name>DolphinEvolution</Application-Name>
+        <timestamp>${maven.build.timestamp}</timestamp>
+        <maven.build.timestamp.format>yyyyMMdd-HHmmss</maven.build.timestamp.format>        
     </properties>
 
     <organization>
@@ -183,7 +185,7 @@
         <dependency>
             <groupId>org.codehaus.jackson</groupId>
             <artifactId>jackson-mapper-asl</artifactId>
-            <version>1.8.11</version>
+            <version>1.9.9</version>
             <type>jar</type>
         </dependency>
         <dependency>
@@ -220,6 +222,12 @@
             <artifactId>httpasyncclient</artifactId>
             <version>4.0-beta3</version>
             <type>jar</type>
+            <exclusions>
+                <exclusion>
+                    <artifactId>httpcore</artifactId>
+                    <groupId>org.apache.httpcomponents</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>javax.persistence</groupId>
@@ -296,25 +304,25 @@
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpcore</artifactId>
-            <version>4.2.2</version>
+            <version>4.2.4</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.codehaus.jackson</groupId>
             <artifactId>jackson-core-asl</artifactId>
-            <version>1.8.11</version>
+            <version>1.9.9</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.codehaus.jackson</groupId>
             <artifactId>jackson-jaxrs</artifactId>
-            <version>1.8.11</version>
+            <version>1.9.9</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.codehaus.jackson</groupId>
             <artifactId>jackson-xc</artifactId>
-            <version>1.8.11</version>
+            <version>1.9.9</version>
             <type>jar</type>
         </dependency>
         <dependency>
@@ -357,6 +365,12 @@
             <groupId>org.apache.httpcomponents</groupId>
             <type>jar</type>
             <version>4.2.2</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>httpcore</artifactId>
+                    <groupId>org.apache.httpcomponents</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <artifactId>javassist</artifactId>
@@ -367,7 +381,7 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>DolphinEvolution2-common</artifactId>
-            <version>1.1-Build10</version>
+            <version>1.1-Build12</version>
             <type>jar</type>
         </dependency>
     </dependencies>

@@ -64,7 +64,7 @@
                       <Component id="partialChk" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" max="-2" attributes="0"/>
                       <Component id="usageCombo" min="-2" pref="134" max="-2" attributes="0"/>
-                      <EmptySpace pref="45" max="32767" attributes="0"/>
+                      <EmptySpace pref="71" max="32767" attributes="0"/>
                       <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
                       <Component id="countField" min="-2" pref="64" max="-2" attributes="0"/>
@@ -74,11 +74,11 @@
                       <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                       <Component id="deleteBtn" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="clearBtn" min="-2" pref="77" max="-2" attributes="0"/>
+                      <Component id="clearBtn" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="okBtn" min="-2" pref="75" max="-2" attributes="0"/>
+                      <Component id="okBtn" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="okCntBtn" min="-2" pref="88" max="-2" attributes="0"/>
+                      <Component id="okCntBtn" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
           </Group>
@@ -137,7 +137,7 @@
                   </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jScrollPane2" pref="269" max="32767" attributes="0"/>
+              <Component id="jScrollPane2" pref="292" max="32767" attributes="0"/>
               <EmptySpace min="-2" max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -146,8 +146,8 @@
   <SubComponents>
     <Component class="javax.swing.JLabel" name="infoLabel">
       <Properties>
-        <Property name="icon" type="javax.swing.Icon" noResource="true" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="3" name="/open/dolphin/resources/images/about_16.gif"/>
+        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+          <Image iconType="3" name="/resources/images/about_16.gif"/>
         </Property>
         <Property name="text" type="java.lang.String" value="info" noResource="true"/>
       </Properties>
@@ -234,8 +234,8 @@
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel3">
       <Properties>
-        <Property name="icon" type="javax.swing.Icon" noResource="true" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="3" name="/open/dolphin/resources/images/srch_16.gif"/>
+        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+          <Image iconType="2" name="D:\Project\DolphinEvolution\src\main\resources\resources\images\srch_16.gif"/>
         </Property>
       </Properties>
     </Component>

@@ -518,6 +518,13 @@ public class KartePane implements DocumentListener, MouseListener,
             mediator.getAction(GUIConst.ACTION_ATTACHMENT).setEnabled(true);
             contextMenu.add(mediator.getAction(GUIConst.ACTION_ATTACHMENT));
         }
+        
+        // Schemabox
+        if (getTextPane().isEditable() && getMyRole().equals(IInfoModel.ROLE_SOA)) {
+            contextMenu.addSeparator();
+            mediator.getAction(GUIConst.ACTION_SHOW_SCHEMABOX).setEnabled(true);
+            contextMenu.add(mediator.getAction(GUIConst.ACTION_SHOW_SCHEMABOX));
+        }
 
         // テキストカラーメニューを追加する
         if (getTextPane().isEditable()) {

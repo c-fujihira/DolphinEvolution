@@ -51,33 +51,31 @@ import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import javax.swing.JOptionPane;
 import open.dolphin.delegater.ChartEventDelegater;
 import open.dolphin.delegater.DResponse;
 import open.dolphin.infomodel.*;
 import open.dolphin.project.Project;
 import open.dolphin.util.BeanUtils;
 import open.dolphin.util.Log;
-import open.dolphin.util.EvolutionWindow;
 import org.apache.http.HttpResponse;
 import org.codehaus.jackson.map.ObjectMapper;
 
 /**
  * カルテオープンなどの状態の変化をまとめて管理する
+ *
  * @author masuda, Masuda Naika
- * 
- * modified minagawa
- * オリジナル Git Hub Masuda-Naika OpenDolphin-2.3.8m
+ *
+ * modified minagawa オリジナル Git Hub Masuda-Naika OpenDolphin-2.3.8m
  * PropertyChange systemへ変更
  */
-public class ChartEventHandler  {
-    
+public class ChartEventHandler {
+
     public static final String CHART_EVENT_PROP = "chartEventModelProp";
-    
+
     // プロパティ
     private ChartEventModel model;
-    
-     // このクライアントのパラメーター類
+
+    // このクライアントのパラメーター類
     private String clientUUID;
     private String orcaId;
     private String deptCode;
@@ -86,35 +84,37 @@ public class ChartEventHandler  {
     private String userId;
     private String jmariCode;
     private String facilityId;
-    
+
     // スレッド
 //minagawa^ 2013/08/29
     //private EventListenTask listenTask;
     private EventListenTask2 listenTask;
 //minagawa$
     private Thread thread;
-    
+
     // 状態変化を各listenerに通知するタスク
     private Executor exec;
-    
+
     private PropertyChangeSupport boundSupport;
-    
+
     private static final ChartEventHandler instance = new ChartEventHandler();
-    
+
     private boolean DEBUG;
-    
+
     int retryCnt = 0;
-    int retryLimit = Project.getInt("subscribe.retry.count", 10);
-    int retryTime = Project.getInt("subscribe.retry.time", 100);
+    //int retryLimit = Project.getInt("subscribe.retry.count", 10);
+    int retryLimit = Project.getInt("subscribe.retry.count", 100);
+    //int retryTime = Project.getInt("subscribe.retry.time", 100);
+    int retryTime = Project.getInt("subscribe.retry.time", 1000);
 
     private ChartEventHandler() {
         init();
-     }
+    }
 
     public static ChartEventHandler getInstance() {
         return instance;
     }
-    
+
     private void init() {
         clientUUID = Evolution.getInstance().getClientUUID();
         orcaId = Project.getUserModel().getOrcaId();
@@ -126,22 +126,22 @@ public class ChartEventHandler  {
         facilityId = Project.getFacilityId();
         boundSupport = new PropertyChangeSupport(this);
     }
-    
+
     public void addPropertyChangeListener(PropertyChangeListener l) {
-        boundSupport.addPropertyChangeListener(CHART_EVENT_PROP,l);
+        boundSupport.addPropertyChangeListener(CHART_EVENT_PROP, l);
     }
-    
+
     public void removePropertyChangeListener(PropertyChangeListener l) {
-        boundSupport.addPropertyChangeListener(CHART_EVENT_PROP,l);
+        boundSupport.addPropertyChangeListener(CHART_EVENT_PROP, l);
     }
-    
+
     public void setChartEventModel(ChartEventModel evt) {
         ChartEventModel old = this.model;
         this.model = evt;
         //boundSupport.firePropertyChange(CHART_EVENT_PROP, old, this.model);
         boundSupport.firePropertyChange(CHART_EVENT_PROP, null, this.model);
     }
-    
+
     private void logAndSetChartEventModel(boolean notify, ChartEventModel evt) {
         if (DEBUG) {
             String notifyOrReceived = notify ? "通知" : "受信";
@@ -152,42 +152,42 @@ public class ChartEventHandler  {
             sb.append("pvtPK=").append(evt.getPvtPk()).append("\n");
             sb.append("pvtState=").append(evt.getState()).append("\n");
             sb.append("ptPK=").append(evt.getPtPk()).append("\n");
-            sb.append("owner=" ).append(evt.getOwnerUUID()).append("\n");
-            sb.append("bitOpen=").append(evt.getOwnerUUID()!=null).append("\n");
+            sb.append("owner=").append(evt.getOwnerUUID()).append("\n");
+            sb.append("bitOpen=").append(evt.getOwnerUUID() != null).append("\n");
             System.err.println(sb.toString());
         }
         setChartEventModel(evt);
     }
-    
+
     public String getClientUUID() {
         return clientUUID;
     }
-    
+
     // 状態変更処理の共通入り口
     private void publish(ChartEventModel evt) {
         exec.execute(new LocalOnEventTask(evt));
     }
-    
+
     public void publishPvtDelete(PatientVisitModel pvt) {
-        
+
         ChartEventModel evt = new ChartEventModel(clientUUID);
         evt.setParamFromPvt(pvt);
         evt.setEventType(ChartEventModel.PVT_DELETE);
-        
+
         publish(evt);
     }
-    
+
     public void publishPvtState(PatientVisitModel pvt) {
-        
+
         ChartEventModel evt = new ChartEventModel(clientUUID);
         evt.setParamFromPvt(pvt);
         evt.setEventType(ChartEventModel.PVT_STATE);
-        
+
         publish(evt);
     }
-    
+
     public void publishKarteOpened(PatientVisitModel pvt) {
-        
+
         // 閲覧のみの処理、ええい！面倒だ！
         if (!clientUUID.equals(pvt.getPatientModel().getOwnerUUID())) {
             return;
@@ -199,50 +199,50 @@ public class ChartEventHandler  {
         ChartEventModel evt = new ChartEventModel(clientUUID);
         evt.setParamFromPvt(pvt);
         evt.setEventType(ChartEventModel.PVT_STATE);
-        
+
         publish(evt);
     }
-    
+
     public void publishKarteClosed(PatientVisitModel pvt) {
-        
+
         // 閲覧のみの処理、ええい！面倒だ！
         if (!clientUUID.equals(pvt.getPatientModel().getOwnerUUID())) {
             return;
         }
-        
+
         // PatientVisitModel.BIT_OPENとownerUUIDをリセットする
         pvt.setStateBit(PatientVisitModel.BIT_OPEN, false);
         pvt.getPatientModel().setOwnerUUID(null);
-        
+
         // ChartStateListenerに通知する
         ChartEventModel evt = new ChartEventModel(clientUUID);
         evt.setParamFromPvt(pvt);
         evt.setEventType(ChartEventModel.PVT_STATE);
-        
+
         publish(evt);
     }
 
 // 2013/07/18    
 //minagawa^ LSC red flag    
     public int publishKarteClosedInWorkerThread(PatientVisitModel pvt) throws Exception {
-        
+
         // 閲覧のみの処理、ええい！面倒だ！
         if (!clientUUID.equals(pvt.getPatientModel().getOwnerUUID())) {
             return 0;
         }
-        
+
         // PatientVisitModel.BIT_OPENとownerUUIDをリセットする
         pvt.setStateBit(PatientVisitModel.BIT_OPEN, false);
         pvt.getPatientModel().setOwnerUUID(null);
-        
+
         // ChartStateListenerに通知する
         ChartEventModel evt = new ChartEventModel(clientUUID);
         evt.setParamFromPvt(pvt);
         evt.setEventType(ChartEventModel.PVT_STATE);
-        
+
         // まずは自クライアントを更新
-        logAndSetChartEventModel(true,evt);
-        
+        logAndSetChartEventModel(true, evt);
+
         // サーバーへ通知
         ChartEventDelegater del = ChartEventDelegater.getInstance();
         return del.putChartEvent(evt);
@@ -263,7 +263,7 @@ public class ChartEventHandler  {
     }
 
     public void stop() {
-        
+
         listenTask.stop();
         thread.interrupt();
         thread = null;
@@ -271,12 +271,12 @@ public class ChartEventHandler  {
 
     // Commetでサーバーと同期するスレッド
     private class EventListenTask implements Runnable {
-        
+
         //private Future<Response> future;
         private Future<HttpResponse> future;
-        
+
         private boolean isRunning;
-        
+
         private EventListenTask() {
             isRunning = true;
         }
@@ -287,15 +287,15 @@ public class ChartEventHandler  {
                 future.cancel(true);
             }
         }
-        
+
         @Override
         public void run() {
-            
+
             //long t1 = System.currentTimeMillis();
             int retryCnt = 0;
             int retryLimit = Project.getInt("subscribe.retry.count", 10);
             int retryTime = Project.getInt("subscribe.retry.time", 100);
-            
+
             while (isRunning) {
                 try {
                     future = ChartEventDelegater.getInstance().subscribe();
@@ -316,16 +316,17 @@ public class ChartEventHandler  {
                     System.out.println(e.toString());
                     Log.outputFuncLog(Log.LOG_LEVEL_3, Log.FUNCTIONLOG_KIND_WARNING, "subscribe warning：", e.toString());
 //s.oh^ 2013/08/01
-                    if(Project.getBoolean("subscribe.retry.check", true)) {
+                    if (Project.getBoolean("subscribe.retry.check", true)) {
                         retryCnt += 1;
-                        if(retryCnt > retryLimit) {
+                        if (retryCnt > retryLimit) {
                             isRunning = false;
                             //JOptionPane.showMessageDialog(null, "同期通信に異常が発生したため、アプリを再起動してください。", ClientContext.getString("productString"), JOptionPane.WARNING_MESSAGE);
                             Log.outputFuncLog(Log.LOG_LEVEL_3, Log.FUNCTIONLOG_KIND_WARNING, "同期通信に異常が発生しました。");
-                        }else{
-                            try{
+                        } else {
+                            try {
                                 Thread.sleep(retryTime);
-                            }catch(InterruptedException ex) {}
+                            } catch (InterruptedException ex) {
+                            }
                         }
                     }
 //s.oh$
@@ -333,15 +334,15 @@ public class ChartEventHandler  {
             }
         }
     }
-    
+
 //minagawa^ 2013/08/29
-   // Commetでサーバーと同期するスレッド
-   private class EventListenTask2 implements Runnable {
-        
+    // Commetでサーバーと同期するスレッド
+    private class EventListenTask2 implements Runnable {
+
         private Future<DResponse> future;
-        
+
         private boolean isRunning;
-        
+
         private EventListenTask2() {
             isRunning = true;
         }
@@ -352,10 +353,10 @@ public class ChartEventHandler  {
                 future.cancel(true);
             }
         }
-        
+
         @Override
         public void run() {
-            
+
             while (isRunning) {
                 try {
                     future = ChartEventDelegater.getInstance().subscribe2();
@@ -366,45 +367,36 @@ public class ChartEventHandler  {
                 } catch (Exception e) {
                     System.err.print("future exception");
                     System.out.println(e.toString());
+                    isRunning = false;
                     Log.outputFuncLog(Log.LOG_LEVEL_3, Log.FUNCTIONLOG_KIND_WARNING, "subscribe2 warning：", e.toString());
-//s.oh^ 2013/08/01
-                    if(Project.getBoolean("subscribe.retry.check", true)) {
-                        retryCnt += 1;
-                        if(retryCnt > retryLimit) {
-                            isRunning = false;
-                           //JOptionPane.showMessageDialog(null, "同期通信に異常が発生したため、アプリを再起動してください。", ClientContext.getString("productString"), JOptionPane.WARNING_MESSAGE);
-                            Log.outputFuncLog(Log.LOG_LEVEL_3, Log.FUNCTIONLOG_KIND_WARNING, "同期通信に異常が発生しました。");
-                        }else{
-                            if(Project.getBoolean("subscribe.retry.restart", false)) {
-                                listenTask.stop();
-                                thread.interrupt();
-                                thread = null;
-                                
-                                exec = Executors.newSingleThreadExecutor();
-                                listenTask = new EventListenTask2();
-                                thread = new Thread(listenTask, "ChartEvent Listen Task");
-                                thread.setPriority(Thread.NORM_PRIORITY);
-                                thread.start();
-                                
-                                Log.outputFuncLog(Log.LOG_LEVEL_3, Log.FUNCTIONLOG_KIND_WARNING, "同期通信に異常が発生したためsubscribeをリスタート。");
-                            }
-                            try{
-                                Thread.sleep(retryTime);
-                            }catch(InterruptedException ex) {}
-                        }
+                    try {
+                        listenTask.stop();
+                        thread.interrupt();
+                    } catch (NullPointerException ee) {
                     }
-//s.oh$
+                    thread = null;
+                    exec = Executors.newSingleThreadExecutor();
+                    listenTask = new EventListenTask2();
+                    thread = new Thread(listenTask, "ChartEvent Listen Task");
+                    thread.setPriority(Thread.NORM_PRIORITY);
+                    thread.start();
+                    System.out.println("同期通信に異常が発生したためsubscribeをリスタートします");
+                    Log.outputFuncLog(Log.LOG_LEVEL_3, Log.FUNCTIONLOG_KIND_WARNING, "同期通信に異常が発生したためsubscribeをリスタートします");
+                    try {
+                        Thread.sleep(retryTime);
+                    } catch (InterruptedException ex) {
+                    }
                 }
             }
         }
-    }    
+    }
 //minagawa$
-    
+
     // 自クライアントの状態変更後、サーバーに通知するタスク
     private class LocalOnEventTask implements Runnable {
-        
+
         private ChartEventModel evt;
-        
+
         private LocalOnEventTask(ChartEventModel evt) {
             this.evt = evt;
         }
@@ -412,7 +404,7 @@ public class ChartEventHandler  {
         @Override
         public void run() {
             // まずは自クライアントを更新
-            logAndSetChartEventModel(true,evt);
+            logAndSetChartEventModel(true, evt);
             // サーバーに更新を通知
             try {
                 ChartEventDelegater del = ChartEventDelegater.getInstance();
@@ -422,7 +414,7 @@ public class ChartEventHandler  {
             }
         }
     }
-    
+
 //    // 状態変化通知メッセージをデシリアライズし各リスナに処理を分配する
 //    private class RemoteOnEventTask implements Runnable {
 //        
@@ -457,12 +449,11 @@ public class ChartEventHandler  {
 //            }         
 //        }        
 //    }
-    
 //minagawa^ 2013/08/29
     private class RemoteOnEventTask implements Runnable {
-        
+
         private HttpResponse response;
-        
+
         private RemoteOnEventTask(HttpResponse response) {
             this.response = response;
         }
@@ -471,10 +462,10 @@ public class ChartEventHandler  {
         public void run() {
 
             try {
-                
+
                 ChartEventModel evt = responseToEvent2(response);
-                
-                if (evt!=null) {
+
+                if (evt != null) {
                     // PatientModelが乗っかってきている場合は保険をデコード
                     PatientModel pm = evt.getPatientModel();
                     if (pm != null) {
@@ -485,17 +476,17 @@ public class ChartEventHandler  {
                         decodeHealthInsurance(pvt.getPatientModel());
                     }
                 }
-                logAndSetChartEventModel(false,evt);
-                
+                logAndSetChartEventModel(false, evt);
+
             } catch (Exception e) {
                 e.printStackTrace(System.err);
-            }         
-        }        
+            }
+        }
     }
 //minagawa$
-    
+
     private class RemoteOnEventTask2 implements Runnable {
-        
+
 //minagawa^ 2013/08/29
         //private HttpResponse response;
         //
@@ -529,7 +520,7 @@ public class ChartEventHandler  {
         //    }         
         //}        
         private DResponse dResponse;
-        
+
         private RemoteOnEventTask2(DResponse response) {
             this.dResponse = response;
         }
@@ -538,10 +529,10 @@ public class ChartEventHandler  {
         public void run() {
 
             try {
-                
+
                 ChartEventModel evt = responseToEvent3(dResponse);
-                
-                if (evt!=null) {
+
+                if (evt != null) {
                     // PatientModelが乗っかってきている場合は保険をデコード
                     PatientModel pm = evt.getPatientModel();
                     if (pm != null) {
@@ -552,15 +543,15 @@ public class ChartEventHandler  {
                         decodeHealthInsurance(pvt.getPatientModel());
                     }
                 }
-                logAndSetChartEventModel(false,evt);
-                
+                logAndSetChartEventModel(false, evt);
+
             } catch (Exception e) {
                 e.printStackTrace(System.err);
-            }         
-        }        
+            }
+        }
 //minagawa$
     }
-    
+
 //    private ChartEventModel responseToEvent(Response response) throws Exception {
 //        InputStream in = response.getResponseBodyAsStream();
 //        InputStreamReader ir = new InputStreamReader(in, "UTF-8");
@@ -570,13 +561,12 @@ public class ChartEventHandler  {
 //        br.close();
 //        return evt;
 //    }
-    
 //minagawa^ 2013/08/29
     private ChartEventModel responseToEvent3(DResponse response) throws Exception {
         InputStream in = response.getBody();
-        if (in!=null) {
+        if (in != null) {
             //byte[] bytes = response.getBody().getEntity().getBytes("UTF-8");
-            BufferedReader br =new BufferedReader(new InputStreamReader(in,"UTF-8"));
+            BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF-8"));
             ObjectMapper mapper = new ObjectMapper();
             ChartEventModel evt = mapper.readValue(br, ChartEventModel.class);
             br.close();
@@ -585,7 +575,7 @@ public class ChartEventHandler  {
         return null;
     }
 //minagawa$
-    
+
     private ChartEventModel responseToEvent2(HttpResponse response) throws Exception {
         InputStream in = response.getEntity().getContent();
         InputStreamReader ir = new InputStreamReader(in, "UTF-8");
@@ -595,7 +585,7 @@ public class ChartEventHandler  {
         br.close();
         return evt;
     }
-    
+
     /**
      * バイナリの健康保険データをオブジェクトにデコードする。
      *
@@ -608,13 +598,12 @@ public class ChartEventHandler  {
 
         if (c != null && !c.isEmpty()) {
 
-            List<PVTHealthInsuranceModel> list = new ArrayList<PVTHealthInsuranceModel>(c.size());
+            List<PVTHealthInsuranceModel> list = new ArrayList<>(c.size());
 
             for (HealthInsuranceModel hm : c) {
                 try {
                     // byte[] を XMLDecord
-                    PVTHealthInsuranceModel hModel = (PVTHealthInsuranceModel) 
-                            BeanUtils.xmlDecode(hm.getBeanBytes());
+                    PVTHealthInsuranceModel hModel = (PVTHealthInsuranceModel) BeanUtils.xmlDecode(hm.getBeanBytes());
                     list.add(hModel);
                 } catch (Exception e) {
                     e.printStackTrace(System.err);
@@ -626,7 +615,7 @@ public class ChartEventHandler  {
             patient.setHealthInsurances(null);
         }
     }
-    
+
     // FakePatientVisitModelを作る
     public PatientVisitModel createFakePvt(PatientModel pm) {
 
@@ -650,7 +639,7 @@ public class ChartEventHandler  {
             pvt.setDoctorId(userId);
         }
         pvt.setJmariNumber(jmariCode);
-        
+
         // 来院日
         pvt.setPvtDate(ModelUtils.getDateTimeAsString(new Date()));
         return pvt;

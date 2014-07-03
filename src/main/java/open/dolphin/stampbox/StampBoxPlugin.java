@@ -135,6 +135,9 @@ public class StampBoxPlugin extends AbstractMainTool {
 
     // Logger
     private boolean DEBUG;
+    
+    //- 区切り位置戻りの一時保存
+    private int splitPos;
 
     /**
      * Creates new StampBoxPlugin
@@ -335,6 +338,7 @@ public class StampBoxPlugin extends AbstractMainTool {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!editing) {
+                    splitPos = evoWindow.getFrame().getWidth() - Project.getInt("karte.split.reserve.position");
                     startStampMake();
                     editing = true;
                     evoWindow.getSplitPane2().setDividerLocation(0);
@@ -342,8 +346,12 @@ public class StampBoxPlugin extends AbstractMainTool {
                 } else {
                     stopStampMake();
                     editing = false;
-                    evoWindow.getSplitPane2().setDividerLocation(305);
-                    evoWindow.getSplitPane3().setDividerLocation(evoWindow.getFrame().getWidth() - 481);
+                    if(Boolean.valueOf(Project.getString("karte.split.reserve"))){
+                        evoWindow.getSplitPane3().setDividerLocation(evoWindow.getFrame().getWidth() - splitPos);
+                    } else {
+                        evoWindow.getSplitPane2().setDividerLocation(305);
+                        evoWindow.getSplitPane3().setDividerLocation(evoWindow.getFrame().getWidth() - 330);
+                    }
                 }
             }
         });

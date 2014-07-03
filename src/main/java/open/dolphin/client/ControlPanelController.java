@@ -19,7 +19,6 @@ package open.dolphin.client;
 import java.io.IOException;
 import java.net.CookieHandler;
 import java.net.CookieManager;
-import java.net.CookiePolicy;
 import java.net.URI;
 import java.net.URL;
 import java.util.Arrays;
@@ -31,6 +30,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.TitledPane;
 import javafx.scene.text.Text;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
@@ -51,9 +51,10 @@ public class ControlPanelController implements Initializable {
 
     @FXML
     WebView webView;
-
     @FXML
     Text evoDisp;
+    @FXML
+    TitledPane cfgPane;
 
     /**
      * Initializes the controller class.
@@ -64,6 +65,7 @@ public class ControlPanelController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         getWebResponce();
+        switchWebView();
     }
 
     public void setApp(Evolution application) {
@@ -147,5 +149,13 @@ public class ControlPanelController implements Initializable {
         System.setProperty("jsse.enableSNIExtension", "false");
         webView.getEngine().load(Project.getEvoUrl());
         evoDisp.setText(Project.getEvoDisp());
+    }
+    
+    public void switchWebView() {
+        if(cfgPane.isExpanded()) {
+            webView.toBack();
+        } else {
+            webView.toFront();
+        }
     }
 }

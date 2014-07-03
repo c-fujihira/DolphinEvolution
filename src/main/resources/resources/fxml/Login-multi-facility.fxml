@@ -28,7 +28,7 @@
         <Image url="@../images/karte-splash.png" />
       </image>
     </ImageView>
-    <ProgressIndicator id="progressIn" fx:id="progressIndi" layoutX="584.0" layoutY="282.0" pickOnBounds="false" visible="false">
+    <ProgressIndicator id="progressIn" fx:id="progressIndi" layoutX="584.0" layoutY="286.0" pickOnBounds="false" visible="false">
       <effect>
         <DropShadow color="#0029ff" />
       </effect>

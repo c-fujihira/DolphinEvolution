@@ -372,7 +372,7 @@ public class Evolution extends Application {
             mainWinCtrl.setApp(Evolution.this);
             dispWinCtrl = (DisplayCtrlController) dispPanelLoader.getController();
             dispWinCtrl.setApp(Evolution.this);
-            evoWindow.getJfxPanel1().setScene(new Scene(ctrlRoot, 410, 425));
+            evoWindow.getJfxPanel1().setScene(new Scene(ctrlRoot, 286, 430));
             evoWindow.getJfxPanel2().setScene(new Scene(dispRoot, 900, 40));
             evoWindow.setWinCtrlMacro();
         } catch (IOException ex) {

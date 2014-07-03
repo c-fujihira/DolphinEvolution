@@ -113,6 +113,9 @@ public class MultiFacilityLoginController extends AnchorPane implements Initiali
         final String[] facilityNameArray = projectStub.getString("login.set.facility.name", null).split(",");
         final String[] facilityIdArray = projectStub.getString("login.set.facility.id", null).split(",");
         final String[] baseUriArray = projectStub.getString("login.set.base.uri", null).split(",");
+        final String[] jmariCodeArray = projectStub.getString("login.set.jmari.code", null).split(",");
+//        final String[] claimAddressArray = projectStub.getString("login.set.orca.address", null).split(",");
+//        final String[] claimPortArray = projectStub.getString("login.set.orca.port", null).split(",");
         multiFacility.getItems().addAll(facilityNameArray);
         multiFacility.valueProperty().addListener(new javafx.beans.value.ChangeListener<String>() {
             @Override
@@ -120,15 +123,22 @@ public class MultiFacilityLoginController extends AnchorPane implements Initiali
                 for (int i = 0; i < facilityNameArray.length; i++) {
                     if (facilityNameArray[i].equals(t1)) {
                         facility = facilityIdArray[i];
+                        projectStub.setFacilityId(facilityIdArray[i]);
                         projectStub.setServerURI(baseUriArray[i]);
-                        break;
+                        projectStub.setJPNCode(jmariCodeArray[i]);
+//                        Project.setString(Project.CLAIM_ADDRESS, claimAddressArray[i]);
+//                        Project.setInt(Project.CLAIM_PORT, Integer.parseInt(claimPortArray[i]));
                     }
                 }
             }
         });
         facility = facilityIdArray[0];
         multiFacility.setValue(facilityNameArray[0]);
+        projectStub.setFacilityId(facilityIdArray[0]);
         projectStub.setServerURI(baseUriArray[0]);
+        projectStub.setJPNCode(jmariCodeArray[0]);
+//        Project.setString(Project.CLAIM_ADDRESS, claimAddressArray[0]);
+//        Project.setInt(Project.CLAIM_PORT, Integer.parseInt(claimPortArray[0]));
     }
 
     public void setMainWindow(EvolutionWindow mainWindow) {

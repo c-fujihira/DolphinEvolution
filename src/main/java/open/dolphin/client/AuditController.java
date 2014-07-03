@@ -83,7 +83,7 @@ import open.dolphin.infomodel.IInfoModel;
 import open.dolphin.infomodel.KarteBean;
 import open.dolphin.infomodel.PatientModel;
 import open.dolphin.project.Project;
-import open.dolphin.util.AgeCalculater;
+import open.dolphin.util.AgeCalculator;
 import open.dolphin.util.Log;
 import open.dolphin.util.StringTool;
 
@@ -161,7 +161,7 @@ public class AuditController implements Initializable {
 
         searchCount.setText("0件");
 
-        String outputDIR = null;
+        String outputDIR;
         if (ClientContext.isMac()) {
             outputDIR = "~/";
         } else {
@@ -455,7 +455,7 @@ public class AuditController implements Initializable {
                             String sex = (model.getGender() != null) ? (model.getGender().toLowerCase().startsWith("m") ? "男" : "女") : "";
                             // 数え年の計算・取得
                             int showMonth = Project.getInt("ageToNeedMonth", 6);
-                            String ret = AgeCalculater.getAgeAndBirthday(model.getBirthday(), showMonth);
+                            String ret = AgeCalculator.getAgeAndBirthday(model.getBirthday(), showMonth);
                             Person person = new Person(false, model.getPatientId(), model.getFullName(), model.getKanaName(), sex, ret, model.getPvtDate(), model.getId());
                             plist.add(person);
                         }
@@ -512,7 +512,7 @@ public class AuditController implements Initializable {
     }
 
     private void sortList(ObservableList<Person> list) {
-        int ret = 0;
+        int ret;
         if (searchType.getValue() != null && searchType.getValue().equals("患者ID")) {
             ret = 0;
         } else {
@@ -804,14 +804,20 @@ public class AuditController implements Initializable {
                 int tempCount = 0;
                 int pageCount = 0;
 
+                String firstKarteMaker = null;
+                String karteMakeDate = null;
                 if (docInfoList != null) {
                     for (int i = 0; i < docInfoList.size(); ++i) {
                         DocInfoModel docInfo = docInfoList.get(i);
                         Cell cell = new Cell(new Phrase(docInfo.getFirstConfirmDateTime(), font_m8));
+                        if(karteMakeDate == null || !karteMakeDate.equals(docInfo.getFirstConfirmDateTime())){
+                            karteMakeDate = docInfo.getFirstConfirmDateTime();
+                            firstKarteMaker = docInfo.getPurpose();
+                        }
                         cell.setHorizontalAlignment(0);
                         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
                         karteHistoryTable.addCell(cell);
-                        cell = new Cell(new Phrase(docInfo.getAssignedDoctorName(), font_m8));
+                        cell = new Cell(new Phrase(firstKarteMaker, font_m8));
                         cell.setHorizontalAlignment(0);
                         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
                         karteHistoryTable.addCell(cell);
@@ -910,7 +916,7 @@ public class AuditController implements Initializable {
                 personStrBuf.append(",");
                 personStrBuf.append(person.birthdayProperty().get()); // 生年月日
 
-                StringBuffer docStrBuf = null;
+                StringBuffer docStrBuf;
                 List<KarteBean> list = bean.getResult();
                 KarteBean karteInfo = list.get(0);
                 List<DocInfoModel> docInfoList = karteInfo.getDocInfoList();

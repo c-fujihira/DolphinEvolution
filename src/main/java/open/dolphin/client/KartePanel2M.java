@@ -39,6 +39,11 @@
 package open.dolphin.client;
 
 import java.awt.Color;
+import java.awt.Font;
+import javax.swing.GroupLayout;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.BoxView;
 import javax.swing.text.ComponentView;
@@ -85,22 +90,59 @@ public class KartePanel2M extends Panel2 {
 //masuda$        
         setAutoscrolls(true);
 
-        jPanel2.setMaximumSize(new java.awt.Dimension(55, 26));
+//        jPanel2.setMaximumSize(new java.awt.Dimension(55, 26));
 
         timeStampLabel.setText("");
-        jPanel2.add(timeStampLabel);
+//        jPanel2.add(timeStampLabel);
+        timeStampLabel.setBackground(new Color(195, 195, 195));
         
+        //- 2号用紙 ディテール
+        GroupLayout jPanelLayout = new GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanelLayout);
+
+        JLabel leftLabel = new JLabel("既往症・原因・主要症状・経過等");
+        leftLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        leftLabel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        leftLabel.setBackground(new Color(195, 195, 195));
+        JLabel rightLabel = new JLabel("処　方・手　術・処　置　等");
+        rightLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        rightLabel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        rightLabel.setBackground(new Color(195, 195, 195));
+        timeStampLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        
+        jPanelLayout.setHorizontalGroup(
+            jPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelLayout.createSequentialGroup()
+                .addGap(0, 0, 0)
+                .addGroup(jPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(timeStampLabel, javax.swing.GroupLayout.DEFAULT_SIZE, PREFERED_WIDTH*2+2, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanelLayout.createSequentialGroup()
+                        .addComponent(leftLabel, javax.swing.GroupLayout.DEFAULT_SIZE, PREFERED_WIDTH, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(rightLabel, javax.swing.GroupLayout.DEFAULT_SIZE, PREFERED_WIDTH, Short.MAX_VALUE)))
+                .addGap(0, 0, 0))
+        );
+        jPanelLayout.setVerticalGroup(
+            jPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelLayout.createSequentialGroup()
+                .addComponent(timeStampLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(leftLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(rightLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 0, 0))
+        );
         jPanel2.setBackground(new Color(195, 195, 195));
         timeStampLabel.setForeground(new Color(50, 50, 150));
 
         //soaTextPane.setFont(new java.awt.Font("SansSerif", 0, fontSize));
         soaTextPane.setFont(new java.awt.Font("Lucida Grande", 0, fontSize));
-        soaTextPane.setMargin(new java.awt.Insets(10, 10, 10, 10));
+        soaTextPane.setMargin(new java.awt.Insets(0, 10, 10, 10));
         soaTextPane.setPreferredSize(new java.awt.Dimension(PREFERED_WIDTH, PREFERED_HEIGHT));
 
         //pTextPane.setFont(new java.awt.Font("SansSerif", 0, fontSize));
         pTextPane.setFont(new java.awt.Font("Lucida Grande", 0, fontSize));
-        pTextPane.setMargin(new java.awt.Insets(10, 10, 10, 10));
+        pTextPane.setMargin(new java.awt.Insets(0, 10, 10, 10));
         pTextPane.setPreferredSize(new java.awt.Dimension(PREFERED_WIDTH, PREFERED_HEIGHT));
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
@@ -109,14 +151,14 @@ public class KartePanel2M extends Panel2 {
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .add(soaTextPane, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, PREFERED_WIDTH, Short.MAX_VALUE)
-                .add(2, 2, 2)
+                .add(0, 2, 2)
                 .add(pTextPane, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, PREFERED_WIDTH, Short.MAX_VALUE))
             .add(jPanel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, PREFERED_WIDTH*2+2, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
-                .add(jPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 26, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(jPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 46, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
                     .add(pTextPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, MAX_HEIGHT, Short.MAX_VALUE)

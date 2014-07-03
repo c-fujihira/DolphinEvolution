@@ -56,6 +56,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -201,6 +202,9 @@ public class WatingListImpl extends AbstractMainComponent implements PropertyCha
 
     // 選択されている行を保存
     private int selectedRow;
+
+    // 選択されている行を保存
+    private int[] selectedRows;
 
     // View class
     private WatingListView view;
@@ -539,7 +543,7 @@ public class WatingListImpl extends AbstractMainComponent implements PropertyCha
         sorter.setTableHeader(pvtTable.getTableHeader());
 
         // 選択モード
-        pvtTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        pvtTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
         // Memo 欄 clickCountToStart=1
         JTextField tf = new JTextField();
@@ -598,7 +602,7 @@ public class WatingListImpl extends AbstractMainComponent implements PropertyCha
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            openKarte();
+            openKartes();
         }
     }
 
@@ -700,8 +704,8 @@ public class WatingListImpl extends AbstractMainComponent implements PropertyCha
     @Override
     public void enter() {
         controlMenu();
-        //getContext().getStatusLabel().setText(statusInfo);
-        getContext().getStatusLabel().setText("");
+        getContext().getStatusLabel().setText(statusInfo);
+//        getContext().getStatusLabel().setText("");
     }
 
     /**
@@ -800,6 +804,20 @@ public class WatingListImpl extends AbstractMainComponent implements PropertyCha
     }
 
     /**
+     * 選択されている来院情報を複数設定返す
+     *
+     * @return 選択されている来院情報
+     */
+    public List<PatientVisitModel> getSelectedPvts() {
+        selectedRows = pvtTable.getSelectedRows();
+        List<PatientVisitModel> list = new LinkedList<>();
+        for (int i = 0; i < selectedRows.length; i++) {
+            list.add((PatientVisitModel) sorter.getObject(selectedRows[i]));
+        }
+        return list;
+    }
+
+    /**
      * カルテオープンメニューを制御する。
      */
     private void controlMenu() {
@@ -815,6 +833,17 @@ public class WatingListImpl extends AbstractMainComponent implements PropertyCha
             return;
         }
         getContext().openKarte(pvt);
+    }
+
+    public void openKartes() {
+
+        List<PatientVisitModel> pvt = getSelectedPvts();
+        if (pvt == null) {
+            return;
+        }
+        for (int i = 0; i < pvt.size(); i++) {
+            getContext().openKarte(pvt.get(i));
+        }
     }
 
     /**

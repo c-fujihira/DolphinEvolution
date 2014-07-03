@@ -47,8 +47,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Paths;
 import java.util.Date;
-import java.util.List;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -57,8 +55,6 @@ import javax.swing.SwingWorker;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import open.dolphin.client.*;
-import open.dolphin.delegater.LetterDelegater;
-import open.dolphin.helper.DBTask;
 import open.dolphin.infomodel.*;
 import open.dolphin.project.Project;
 import open.dolphin.util.Log;
@@ -300,179 +296,6 @@ public class MedicalCertificateImpl extends AbstractChartDocument implements Let
 
     @Override
     public void stop() {
-    }
-
-    @Override
-    public void save() {
-
-        ChartImpl impl = (ChartImpl) getContext();
-        List<UnsavedDocument> localDirtyList = impl.evoDirtyList();
-        for (UnsavedDocument doc : localDirtyList) {
-
-            ChartDocument chart = doc.getDoc();
-            if(chart instanceof KarteEditor){
-                KarteEditor obj = (KarteEditor) doc.getDoc();
-                obj.save();
-                if(!obj.isCancelFlag()){
-                    impl.evoDirtyListClean(chart);
-                }
-                return;
-            }else if (chart instanceof LetterImpl) {
-                LetterImpl obj = (LetterImpl) doc.getDoc();
-                obj.viewToModel(true);
-                LetterModule model = obj.getModel();
-                LetterDelegater ddl = new LetterDelegater();
-                long result = 0;
-                try {
-                    result = ddl.saveOrUpdateLetter(model);
-                } catch (Exception ex) {
-                    Logger.getLogger(LetterImpl.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-                }
-                model.setId(result);
-                if (boundSupport != null) {
-                    Log.outputFuncLog(Log.LOG_LEVEL_0, Log.FUNCTIONLOG_KIND_INFORMATION, "診療情報提供書", "保存成功", "インスペクタの終了");
-                    setChartDocDidSave(true);
-                    return;
-                }
-
-                getContext().getDocumentHistory().getLetterHistory();
-                stateMgr.processSavedEvent();
-
-                if(getContext().getDocumentHistory().getDocumentCount() > 0){
-                    ((ChartImpl) getContext()).getKarteSplitPane().setBottomComponent(null);
-                }
-                ((ChartImpl) getContext()).getKarteSplitPane().revalidate();
-                Log.outputFuncLog(Log.LOG_LEVEL_0, Log.FUNCTIONLOG_KIND_INFORMATION, "診療情報提供書", "保存成功");
-                impl.evoDirtyListClean(chart);
-                
-                return;
-            } else if (chart instanceof MedicalCertificateImpl) {
-                MedicalCertificateImpl obj = (MedicalCertificateImpl) doc.getDoc();
-                obj.viewToModel(true);
-                LetterModule model = obj.getModel();
-                LetterDelegater ddl = new LetterDelegater();
-                long result = 0;
-                try {
-                    result = ddl.saveOrUpdateLetter(model);
-                } catch (Exception ex) {
-                    Logger.getLogger(MedicalCertificateImpl.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-                }
-                model.setId(result);
-                if (boundSupport != null) {
-                    Log.outputFuncLog(Log.LOG_LEVEL_0, Log.FUNCTIONLOG_KIND_INFORMATION, "診断書", "保存成功", "インスペクタの終了");
-                    setChartDocDidSave(true);
-                    return;
-                }
-
-                getContext().getDocumentHistory().getLetterHistory();
-                stateMgr.processSavedEvent();
-
-                if(getContext().getDocumentHistory().getDocumentCount() > 0){
-                    ((ChartImpl) getContext()).getKarteSplitPane().setBottomComponent(null);
-                }
-                ((ChartImpl) getContext()).getKarteSplitPane().revalidate();
-                Log.outputFuncLog(Log.LOG_LEVEL_0, Log.FUNCTIONLOG_KIND_INFORMATION, "診断書", "保存成功");
-                impl.evoDirtyListClean(chart);
-
-                return;
-            } else if (chart instanceof Reply1Impl) {
-                Reply1Impl obj = (Reply1Impl) doc.getDoc();
-                obj.viewToModel(true);
-                LetterModule model = obj.getModel();
-                LetterDelegater ddl = new LetterDelegater();
-                long result = 0;
-                try {
-                    result = ddl.saveOrUpdateLetter(model);
-                } catch (Exception ex) {
-                    Logger.getLogger(Reply1Impl.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-                }
-                model.setId(result);
-                if (boundSupport != null) {
-                    Log.outputFuncLog(Log.LOG_LEVEL_0, Log.FUNCTIONLOG_KIND_INFORMATION, "紹介患者経過報告書", "保存成功", "インスペクタの終了");
-                    setChartDocDidSave(true);
-                    return;
-                }
-
-                getContext().getDocumentHistory().getLetterHistory();
-                stateMgr.processSavedEvent();
-
-                if(getContext().getDocumentHistory().getDocumentCount() > 0){
-                    ((ChartImpl) getContext()).getKarteSplitPane().setBottomComponent(null);
-                }
-                ((ChartImpl) getContext()).getKarteSplitPane().revalidate();
-                Log.outputFuncLog(Log.LOG_LEVEL_0, Log.FUNCTIONLOG_KIND_INFORMATION, "紹介患者経過報告書", "保存成功");
-                impl.evoDirtyListClean(chart);
-
-                return;
-            } else if (chart instanceof Reply2Impl) {
-                Reply2Impl obj = (Reply2Impl) doc.getDoc();
-                obj.viewToModel(true);
-                LetterModule model = obj.getModel();
-                LetterDelegater ddl = new LetterDelegater();
-                long result = 0;
-                try {
-                    result = ddl.saveOrUpdateLetter(model);
-                } catch (Exception ex) {
-                    Logger.getLogger(Reply2Impl.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-                }
-                model.setId(result);
-                if (boundSupport != null) {
-                    Log.outputFuncLog(Log.LOG_LEVEL_0, Log.FUNCTIONLOG_KIND_INFORMATION, "ご　報　告", "保存成功", "インスペクタの終了");
-                    setChartDocDidSave(true);
-                    return;
-                }
-
-                getContext().getDocumentHistory().getLetterHistory();
-                stateMgr.processSavedEvent();
-
-                if(getContext().getDocumentHistory().getDocumentCount() > 0){
-                    ((ChartImpl) getContext()).getKarteSplitPane().setBottomComponent(null);
-                }
-                ((ChartImpl) getContext()).getKarteSplitPane().revalidate();
-                Log.outputFuncLog(Log.LOG_LEVEL_0, Log.FUNCTIONLOG_KIND_INFORMATION, "ご　報　告", "保存成功");
-                impl.evoDirtyListClean(chart);
-
-                return;
-            }
-
-        }
-
-        viewToModel(true);
-
-        DBTask task = new DBTask<Boolean, Void>(getContext()) {
-
-            @Override
-            protected Boolean doInBackground() throws Exception {
-
-                LetterDelegater ddl = new LetterDelegater();
-                long result = ddl.saveOrUpdateLetter(model);
-                model.setId(result);
-                return true;
-            }
-
-            @Override
-            protected void succeeded(Boolean result) {
-//minagawa^ Chartの close box 押下で保存する場合、保存終了を通知しておしまい。                    
-                // 2013/04/19
-                if (boundSupport != null) {
-                    Log.outputFuncLog(Log.LOG_LEVEL_0, Log.FUNCTIONLOG_KIND_INFORMATION, "診断書", "保存成功", "インスペクタの終了");
-                    setChartDocDidSave(true);
-                    return;
-                }
-//minagawa$                
-// minagawa 紹介状等の履歴に遷移 ^                
-                getContext().getDocumentHistory().getLetterHistory();
-//                getContext().getDocumentHistory().getDocumentHistory();
-// minagawa $
-                stateMgr.processSavedEvent();
-
-                ((ChartImpl) getContext()).getKarteSplitPane().setBottomComponent(null);
-                ((ChartImpl) getContext()).getKarteSplitPane().revalidate();
-                Log.outputFuncLog(Log.LOG_LEVEL_0, Log.FUNCTIONLOG_KIND_INFORMATION, "診断書", "保存成功");
-            }
-        };
-
-        task.execute();
     }
 
     @Override

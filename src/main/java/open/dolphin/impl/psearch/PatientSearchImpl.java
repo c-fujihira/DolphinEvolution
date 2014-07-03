@@ -47,7 +47,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import javafx.application.Platform;
 import javax.swing.*;
 import javax.swing.event.*;
 import open.dolphin.client.*;
@@ -68,7 +67,7 @@ import open.dolphin.table.ColumnSpecHelper;
 import open.dolphin.table.ListTableModel;
 import open.dolphin.table.ListTableSorter;
 import open.dolphin.table.StripeTableCellRenderer;
-import open.dolphin.util.AgeCalculater;
+import open.dolphin.util.AgeCalculator;
 import open.dolphin.util.Log;
 import open.dolphin.util.StringTool;
 
@@ -113,6 +112,9 @@ public class PatientSearchImpl extends AbstractMainComponent implements Property
 
     // 選択されている患者情報
     private PatientModel selectedPatient;
+
+    // 選択されている患者情報
+    private int[] selectedPatients;
 
     // 年齢表示
     private boolean ageDisplay;
@@ -188,6 +190,15 @@ public class PatientSearchImpl extends AbstractMainComponent implements Property
 
     public PatientModel getSelectedPatinet() {
         return selectedPatient;
+    }
+
+    public List<PatientModel> getSelectedPatinets() {
+        selectedPatients = view.getTable().getSelectedRows();
+        List<PatientModel> list = new LinkedList<>();
+        for (int i = 0; i < selectedPatients.length; i++) {
+            list.add((PatientModel) sorter.getObject(selectedPatients[i]));
+        }
+        return list;
     }
 
     public void setSelectedPatinet(PatientModel model) {
@@ -365,7 +376,7 @@ public class PatientSearchImpl extends AbstractMainComponent implements Property
 
                     if (p != null) {
                         int showMonth = Project.getInt("ageToNeedMonth", 6);
-                        ret = AgeCalculater.getAgeAndBirthday(p.getBirthday(), showMonth);
+                        ret = AgeCalculator.getAgeAndBirthday(p.getBirthday(), showMonth);
                     }
                 } else {
 
@@ -429,7 +440,7 @@ public class PatientSearchImpl extends AbstractMainComponent implements Property
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            openKarte();
+            openKartes();
         }
     }
 
@@ -630,7 +641,7 @@ public class PatientSearchImpl extends AbstractMainComponent implements Property
             // 受け付けを通していないのでログイン情報及び設定ファイルを使用する
             // 診療科名、診療科コード、医師名、医師コード、JMARI
             // 2.0
-            //---------------------------------------------------------
+            //--------------------------------------------------------- 
             pvt.setDeptName(Project.getUserModel().getDepartmentModel().getDepartmentDesc());
             pvt.setDeptCode(Project.getUserModel().getDepartmentModel().getDepartment());
             pvt.setDoctorName(Project.getUserModel().getCommonName());
@@ -647,6 +658,48 @@ public class PatientSearchImpl extends AbstractMainComponent implements Property
 
             // カルテコンテナを生成する
             getContext().openKarte(pvt);
+        }
+    }
+
+    /**
+     * カルテを開く。
+     *
+     * @param value 対象患者
+     */
+    public void openKartes() {
+
+        List<PatientModel> list = getSelectedPatinets();
+        for (int i = 0; i < list.size(); i++) {
+            if (canOpen(list.get(i))) {
+
+                // 来院情報を生成する
+                PatientVisitModel pvt = new PatientVisitModel();
+                pvt.setId(0L);
+                pvt.setNumber(number++);
+                pvt.setPatientModel(list.get(i));
+
+                //--------------------------------------------------------
+                // 受け付けを通していないのでログイン情報及び設定ファイルを使用する
+                // 診療科名、診療科コード、医師名、医師コード、JMARI
+                // 2.0
+                //--------------------------------------------------------- 
+                pvt.setDeptName(Project.getUserModel().getDepartmentModel().getDepartmentDesc());
+                pvt.setDeptCode(Project.getUserModel().getDepartmentModel().getDepartment());
+                pvt.setDoctorName(Project.getUserModel().getCommonName());
+                if (Project.getUserModel().getOrcaId() != null) {
+                    pvt.setDoctorId(Project.getUserModel().getOrcaId());
+                } else {
+                    pvt.setDoctorId(Project.getUserModel().getUserId());
+                }
+                pvt.setJmariNumber(Project.getString(Project.JMARI_CODE));
+
+                // 来院日
+                pvt.setFacilityId(Project.getUserModel().getFacilityModel().getFacilityId());
+                pvt.setPvtDate(ModelUtils.getDateTimeAsString(new Date()));
+
+                // カルテコンテナを生成する
+                getContext().openKarte(pvt);
+            }
         }
     }
 

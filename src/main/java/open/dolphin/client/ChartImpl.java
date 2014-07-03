@@ -76,7 +76,7 @@ import static open.dolphin.infomodel.IInfoModel.STATUS_NONE;
 import open.dolphin.plugin.PluginLister;
 import open.dolphin.plugin.PluginLoader;
 import open.dolphin.project.Project;
-import open.dolphin.util.AgeCalculater;
+import open.dolphin.util.AgeCalculator;
 import open.dolphin.util.GUIDGenerator;
 import open.dolphin.util.Log;
 import open.dolphin.util.MMLDate;
@@ -499,14 +499,20 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
                 baseTabPane.setOwner(ChartImpl.this);
                 baseTabPane.addTab(karteBean.getPatientModel().getPatientId(), makePanel());
                 baseTabPane.getTabbedPane().setToolTipTextAt(baseTabPane.getTabbedPane().getTabCount() - 1, karteBean.getPatientModel().getFullName());
-                application.evoWindow.addTabPane(baseTabPane);
-                application.evoWindow.getPanel2().setLayout(new GridLayout(1, 1));
-                application.evoWindow.reFleshJFrame2();
                 baseTabPane.setPatientIdList(patientIdList);
                 baseTabPane.setPatientIdMap(patientIdMap);
                 baseTabPane.setChartImplMap(chartImplMap);
 
                 scl.publishKarteOpened(getPatientVisit());
+
+                // カルテオープン時にはカルテ表示させる
+                int cnt;
+                for(cnt=0; cnt<application.evoWindow.mainView.getTabbedPane().getTabCount(); cnt++){
+                    if(application.evoWindow.mainView.getTabbedPane().getTitleAt(cnt).equals("カルテ")){
+                        break;
+                    }
+                }
+                application.evoWindow.mainView.getTabbedPane().setSelectedIndex(cnt);
 
                 SwingUtilities.invokeLater(new Runnable() {
                     @Override
@@ -699,9 +705,14 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
         karteSplitPane.setDividerLocation(myPanel.getSize().height / 2);
         // Document プラグインのタブを生成する
         tabbedPane = loadDocuments();
-        karteSplitPane.setTopComponent(tabbedPane);
-        karteSplitPane.setBottomComponent(null);
 
+        if(Boolean.valueOf(Project.getString(Project.KARTE_SPLIT_SELECT))) {   
+            karteSplitPane.setTopComponent(tabbedPane);
+            karteSplitPane.setBottomComponent(null);
+        } else {
+            karteSplitPane.setTopComponent(null);
+            karteSplitPane.setBottomComponent(tabbedPane);
+        }
         karteSplitPane.addPropertyChangeListener(createPropatyChangeListener());
        
         myPanel.add(myToolPanel, BorderLayout.PAGE_START);
@@ -1037,8 +1048,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
     /**
      * 新規カルテを作成する。
      */
-    public void newKarte() {
-
+    public void newKarte() {        
         if (DEBUG) {
             ClientContext.getBootLogger().debug("newKarte did enter");
         }
@@ -1670,27 +1680,23 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
      * @param params 追加するドキュメントの情報を保持する NewKarteParams
      */
     public void addChartDocument(ChartDocument doc, NewKarteParams params) {
-        if(getDocumentHistory().getDocumentCount() > 0){
-            if(Boolean.valueOf(Project.getString(Project.KARTE_SPLIT_SELECT))) {        
-                karteSplitPane.setTopComponent(new JPanel().add(tabbedPane));
-            } else {
-                karteSplitPane.setBottomComponent(new JPanel().add(tabbedPane));
-            }
-        }else{
-            if(Boolean.valueOf(Project.getString(Project.KARTE_SPLIT_SELECT))) {        
-                karteSplitPane.setTopComponent(null);
-            } else {
-                karteSplitPane.setBottomComponent(null);
-            }
+        if(Boolean.valueOf(Project.getString(Project.KARTE_SPLIT_SELECT))) {   
+            karteSplitPane.setTopComponent(new JPanel().add(tabbedPane));
+            karteSplitPane.setDividerLocation(150);
+        } else {
+            karteSplitPane.setBottomComponent(new JPanel().add(tabbedPane));
+            karteSplitPane.setDividerLocation(karteSplitPane.getHeight() - 150);
         }
         int index = tabbedPane.getTabCount();
         providers.put(String.valueOf(index), doc);
         
-        if(Boolean.valueOf(Project.getString("karte.split.reserve"))){
-            int location = Project.getInt("karte.split.reserve.edit.position");
-            getKarteSplitPane().setDividerLocation(location);
-        } else {
-            getKarteSplitPane().setDividerLocation(myPanel.getSize().height / 2);
+        if (getDocumentHistory().getDocumentCount() > 0) {
+            if (Boolean.valueOf(Project.getString("karte.split.reserve"))) {
+                int location = Project.getInt("karte.split.reserve.edit.position");
+                getKarteSplitPane().setDividerLocation(location);
+            } else {
+                getKarteSplitPane().setDividerLocation(myPanel.getSize().height / 2);
+            }
         }
         
         //- カルテ記入時、エディタ上下反転設定追加
@@ -1699,6 +1705,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
         } else {
             karteSplitPane.setTopComponent(doc.getUI());
         }
+        enabledAction(GUIConst.ACTION_NEW_DOCUMENT, false);
         
         application.evoWindow.reFleshJFrame2();
     }
@@ -1710,36 +1717,34 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
      * @param title タブタイトル
      */
     public void addChartDocument(ChartDocument doc, String title) {
-        if(getDocumentHistory().getDocumentCount() > 0){
-            if(Boolean.valueOf(Project.getString(Project.KARTE_SPLIT_SELECT))) {
-                karteSplitPane.setTopComponent(new JPanel().add(tabbedPane));
-            } else {
-                karteSplitPane.setBottomComponent(new JPanel().add(tabbedPane));
-            }
-        }else{
-            if(Boolean.valueOf(Project.getString(Project.KARTE_SPLIT_SELECT))) {
-                karteSplitPane.setTopComponent(null);
-            } else {
-                karteSplitPane.setBottomComponent(null);
-            }
+        if(Boolean.valueOf(Project.getString(Project.KARTE_SPLIT_SELECT))) {   
+            karteSplitPane.setTopComponent(new JPanel().add(tabbedPane));
+            karteSplitPane.setDividerLocation(150);
+        } else {
+            karteSplitPane.setBottomComponent(new JPanel().add(tabbedPane));
+            karteSplitPane.setDividerLocation(karteSplitPane.getHeight() - 150);
         }
+
         int index = tabbedPane.getTabCount();
         providers.put(String.valueOf(index), doc);
         
-        if(Boolean.valueOf(Project.getString("karte.split.reserve"))){
-            int location = Project.getInt("karte.split.reserve.edit.position");
-            getKarteSplitPane().setDividerLocation(location);
-        } else {
-            getKarteSplitPane().setDividerLocation(myPanel.getSize().height / 2);
-        }        
-        
+        if (getDocumentHistory().getDocumentCount() > 0) {
+            if (Boolean.valueOf(Project.getString("karte.split.reserve"))) {
+                int location = Project.getInt("karte.split.reserve.edit.position");
+                getKarteSplitPane().setDividerLocation(location);
+            } else {
+                getKarteSplitPane().setDividerLocation(myPanel.getSize().height / 2);
+            }
+        }
+
         //- カルテ記入時、エディタ上下反転設定追加
         if(Boolean.valueOf(Project.getString(Project.KARTE_SPLIT_SELECT))) {
             karteSplitPane.setBottomComponent(doc.getUI());
         } else {
             karteSplitPane.setTopComponent(doc.getUI());
         }
-        
+        enabledAction(GUIConst.ACTION_NEW_DOCUMENT, false);
+
         application.evoWindow.reFleshJFrame2();
     }
 
@@ -1892,7 +1897,7 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
                     data.put("pt_birth_era", "");
                 }
 
-                String age = AgeCalculater.getAge(getPatient().getBirthday(), 6);
+                String age = AgeCalculator.getAge(getPatient().getBirthday(), 6);
                 data.put("pt_age", getOdtString(age));
 
                 data.put("pt_zip", getOdtString(getPatient().contactZipCode()));
@@ -2092,10 +2097,6 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
             public void actionPerformed(ActionEvent e) {
                 dialog.setVisible(false);
                 dialog.dispose();
-                if(karteSplitPane.getBottomComponent() != null){
-                    JOptionPane.showMessageDialog(getFrame(), "編集中のカルテや文書を保存してから実行してください");
-                    return;
-                }
                 
                 NameValuePair pair = (NameValuePair) docList.getSelectedValue();
                 String test = pair.getValue();
@@ -2482,6 +2483,9 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
                         if (doc.isNeedSave()) {
                             dirtyList.add(doc);
                             ChartDocument chart = doc.getDoc();
+                            if(chart instanceof KarteEditor){
+                                this.setKarteEditor((KarteEditor)chart);
+                            }
                             chart.save();
                         }
                     }
@@ -2498,6 +2502,10 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
                     // cancel
                     return "2";
 //                    return false;
+                    
+                default:
+                    // cancel
+                    return "2";
             }
 
         } else {
@@ -2505,9 +2513,6 @@ public class ChartImpl extends AbstractMainTool implements Chart, IInfoModel {
             return "3";
 //            return true;
         }
-
-        return "9";
-//        return false;
     }
 
     //minagawa^ LSC red flag, moved here due to the thread suspicious  
