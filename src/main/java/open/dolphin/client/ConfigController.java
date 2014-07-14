@@ -688,7 +688,7 @@ public class ConfigController extends AnchorPane implements Initializable {
 
     //予定カルテを使用する
     public void setInsKarteScheduleCheckBox() {
-        if (Boolean.valueOf(Project.getString(Project.CONTAINER))) {
+        if (Boolean.valueOf(Project.getString(Project.USE_SCHEDULE_KARTE))) {
             insKarteSchedule.setSelected(true);
         } else {
             insKarteSchedule.setSelected(false);
@@ -1576,7 +1576,7 @@ public class ConfigController extends AnchorPane implements Initializable {
         }
 
         //予定カルテ機能を使用する
-        Project.setString(Project.CONTAINER, String.valueOf(insKarteSchedule.isSelected()));
+        Project.setString(Project.USE_SCHEDULE_KARTE, String.valueOf(insKarteSchedule.isSelected()));
 
         Project.setString(Project.DOC_HISTORY_ASCENDING, String.valueOf(docAscending.isSelected()));
 
@@ -1896,7 +1896,7 @@ public class ConfigController extends AnchorPane implements Initializable {
 
         //- 設定保存&読み直し
         Project.saveUserDefaults();
-//        Project.setProjectStub(new ProjectStub());
+        Project.setProjectStub(new ProjectStub());
         application.Dialog.close();
     }
 

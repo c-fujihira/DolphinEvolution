@@ -51,7 +51,7 @@ public class MyJTabbedPane{
     private static final Icon icon = new CloseTabIcon();
 
     // Variables declaration - do not modify                     
-    private DnDTabbedPane dndTabbedPane = new DnDTabbedPane();
+    private final DnDTabbedPane dndTabbedPane = new DnDTabbedPane();
     // カルテタブ表示分の患者ID保持用
     private List<String> patientIdList = null;
     // カルテタブのロック解除用情報保持用
@@ -115,7 +115,6 @@ public class MyJTabbedPane{
                         tabClosingFunc(patientId, chart, c);
                     } else if (ret.equals("2")) {
                         // キャンセル時、何もしない
-                        return;
                     } else if (ret.equals("3")){
                         // dirtyListが無い時カルテタブを閉じる処理を行う
                         tabClosingFunc(patientId, chart, c);
@@ -131,7 +130,6 @@ public class MyJTabbedPane{
                         tabClosingFunc(patientId, chart, c);
                     } else if (ret.equals("2")) {
                         // キャンセル時、何もしない
-                        return;
                     }
                 }
             }
@@ -166,7 +164,6 @@ public class MyJTabbedPane{
                         tabClosingFunc(patientId, chart, c);
                     } else if (ret.equals("2")) {
                         // キャンセル時、何もしない
-                        return;
                     } else if (ret.equals("3")){
                         // dirtyListが無い時カルテタブを閉じる処理を行う
                         tabClosingFunc(patientId, chart, c);
@@ -182,7 +179,6 @@ public class MyJTabbedPane{
                         tabClosingFunc(patientId, chart, c);
                     } else if (ret.equals("2")) {
                         // キャンセル時、何もしない
-                        return;
                     }
                 }
             }
@@ -272,17 +268,23 @@ public class MyJTabbedPane{
 //        setTableListFocus(chart);
         // カルテがすべて閉じられた場合には受付リストを表示させ、リストへフォーカスする
         if(dndTabbedPane.getTabCount() == 0){
-            owner.getApp().evoWindow.mainView.getTabbedPane().setSelectedIndex(0);
-            int row, col;
-            WatingListView wview = (WatingListView) owner.getApp().evoWindow.mainView.getTabbedPane().getComponentAt(0);
-            wview.getTable().setRowSelectionAllowed(true);
-            row = wview.getTable().getSelectedRow() < 0 ? 0 : wview.getTable().getSelectedRow();
-            col = wview.getTable().getSelectedColumn() < 0 ? 0 : wview.getTable().getSelectedColumn();
-//            wview.getTable().changeSelection(row, col, false, false);
-            if(wview.getTable().getRowCount() > 0){
-                wview.getTable().setRowSelectionInterval(row, row);
+            if(owner.getApp().evoWindow.getTrace().equals("WatingList")){
+                owner.getApp().evoWindow.mainView.getTabbedPane().setSelectedIndex(0);
+                int row, col;
+                WatingListView wview = (WatingListView) owner.getApp().evoWindow.mainView.getTabbedPane().getComponentAt(0);
+                wview.getTable().setRowSelectionAllowed(true);
+                row = wview.getTable().getSelectedRow() < 0 ? 0 : wview.getTable().getSelectedRow();
+                col = wview.getTable().getSelectedColumn() < 0 ? 0 : wview.getTable().getSelectedColumn();
+    //            wview.getTable().changeSelection(row, col, false, false);
+                if(wview.getTable().getRowCount() > 0){
+                    wview.getTable().setRowSelectionInterval(row, row);
+                }
+                wview.getTable().requestFocusInWindow();
+            }else if(owner.getApp().evoWindow.getTrace().equals("PatientSearch")){
+                owner.getApp().evoWindow.mainView.getTabbedPane().setSelectedIndex(1);
+            }else if(owner.getApp().evoWindow.getTrace().equals("NLaboTestImporter")){
+                owner.getApp().evoWindow.mainView.getTabbedPane().setSelectedIndex(2);
             }
-            wview.getTable().requestFocusInWindow();
         }
     }
     

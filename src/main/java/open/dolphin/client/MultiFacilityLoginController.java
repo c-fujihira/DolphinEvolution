@@ -96,6 +96,7 @@ public class MultiFacilityLoginController extends AnchorPane implements Initiali
     protected PropertyChangeSupport boundSupport;
 
     private String facility = null;
+    private ProjectStub projectStub = null;          
 
     /**
      * Initializes the controller class.
@@ -109,7 +110,7 @@ public class MultiFacilityLoginController extends AnchorPane implements Initiali
         userId.setText(Project.getProjectStub().getUserId());
         buttonAbout.setText(ClientContext.getProductName() + "について");
 
-        final ProjectStub projectStub = Project.getProjectStub();
+        projectStub = Project.getProjectStub();
         final String[] facilityNameArray = projectStub.getString("login.set.facility.name", null).split(",");
         final String[] facilityIdArray = projectStub.getString("login.set.facility.id", null).split(",");
         final String[] baseUriArray = projectStub.getString("login.set.base.uri", null).split(",");

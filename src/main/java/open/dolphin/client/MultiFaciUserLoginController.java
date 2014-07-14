@@ -96,6 +96,7 @@ public class MultiFaciUserLoginController extends AnchorPane implements Initiali
 
     private String facility = null;
     private String userId = null;
+    private ProjectStub projectStub = null;          
     
     /**
      * Initializes the controller class.
@@ -108,7 +109,7 @@ public class MultiFaciUserLoginController extends AnchorPane implements Initiali
         status.setText("");
         buttonAbout.setText(ClientContext.getProductName() + "について");
 
-        final ProjectStub projectStub = Project.getProjectStub();
+        projectStub = Project.getProjectStub();
         final String[] facilityNameArray = projectStub.getString("login.set.facility.name", null).split(",");
         final String[] facilityIdArray = projectStub.getString("login.set.facility.id", null).split(",");
         final String[] userIdArray = projectStub.getString("login.set.users", null).split(",");

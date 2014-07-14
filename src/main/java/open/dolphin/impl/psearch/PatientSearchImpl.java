@@ -628,6 +628,7 @@ public class PatientSearchImpl extends AbstractMainComponent implements Property
      * @param value 対象患者
      */
     public void openKarte() {
+        getContext().setTrace("PatientSearch");
 
         if (canOpen(getSelectedPatinet())) {
 
@@ -667,6 +668,7 @@ public class PatientSearchImpl extends AbstractMainComponent implements Property
      * @param value 対象患者
      */
     public void openKartes() {
+        getContext().setTrace("PatientSearch");
 
         List<PatientModel> list = getSelectedPatinets();
         for (int i = 0; i < list.size(); i++) {

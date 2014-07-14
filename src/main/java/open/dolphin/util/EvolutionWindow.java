@@ -238,6 +238,7 @@ public final class EvolutionWindow implements MainWindow {
     private final int delay = 300; // 300 mmsec
 
     private CardLayout subWindowLayout;
+    private String trace;
 
     public EvolutionWindow() {
         //- プラグインのプロバイダマップを生成する
@@ -2021,5 +2022,13 @@ public final class EvolutionWindow implements MainWindow {
         // メモ内容保存
         chart.getPatientInspector().dispose();
         patientIdMap.remove(patientId);
+    }
+    
+    public void setTrace(String trace){
+        this.trace = trace;
+    }
+
+    public String getTrace(){
+        return this.trace;
     }
 }

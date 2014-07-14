@@ -827,6 +827,7 @@ public class WatingListImpl extends AbstractMainComponent implements PropertyCha
     }
 
     public void openKarte() {
+        getContext().setTrace("WatingList");
 
         PatientVisitModel pvt = getSelectedPvt();
         if (pvt == null) {
@@ -836,6 +837,7 @@ public class WatingListImpl extends AbstractMainComponent implements PropertyCha
     }
 
     public void openKartes() {
+        getContext().setTrace("WatingList");
 
         List<PatientVisitModel> pvt = getSelectedPvts();
         if (pvt == null) {

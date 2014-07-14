@@ -39,10 +39,8 @@
 package open.dolphin.client;
 
 import java.awt.Color;
-import java.awt.Font;
 import javax.swing.GroupLayout;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.BoxView;
@@ -72,6 +70,8 @@ public class KartePanel2M extends Panel2 {
     private javax.swing.JTextPane soaTextPane;
     private javax.swing.JLabel timeStampLabel;
     private final int fontSize;
+    private JLabel leftLabel;
+    private JLabel rightLabel;
 
     public KartePanel2M() {
         fontSize = Project.getInt("karte.font.size.default");
@@ -100,11 +100,11 @@ public class KartePanel2M extends Panel2 {
         GroupLayout jPanelLayout = new GroupLayout(jPanel2);
         jPanel2.setLayout(jPanelLayout);
 
-        JLabel leftLabel = new JLabel("既往症・原因・主要症状・経過等");
+        leftLabel = new JLabel("既往症・原因・主要症状・経過等");
         leftLabel.setHorizontalAlignment(SwingConstants.CENTER);
         leftLabel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         leftLabel.setBackground(new Color(195, 195, 195));
-        JLabel rightLabel = new JLabel("処　方・手　術・処　置　等");
+        rightLabel = new JLabel("処方・手術・処置等");
         rightLabel.setHorizontalAlignment(SwingConstants.CENTER);
         rightLabel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         rightLabel.setBackground(new Color(195, 195, 195));
@@ -235,5 +235,21 @@ public class KartePanel2M extends Panel2 {
     
      public javax.swing.JPanel getTimeStampPanel() {
         return jPanel2;
+    }
+
+    public JLabel getLeftLabel() {
+        return leftLabel;
+    }
+
+    public void setLeftLabel(JLabel leftLabel) {
+        this.leftLabel = leftLabel;
+    }
+
+    public JLabel getRightLabel() {
+        return rightLabel;
+    }
+
+    public void setRightLabel(JLabel rightLabel) {
+        this.rightLabel = rightLabel;
     }
 }

@@ -93,4 +93,6 @@ public interface MainWindow {
     public JTabbedPane getTabbedPane();
 
     public Component getCurrentComponent();
+    
+    public void setTrace(String trace);
 }

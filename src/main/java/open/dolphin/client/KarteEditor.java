@@ -1332,7 +1332,7 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel, NC
     // (予定カルテ対応)
     //private void checkInteraction(final SaveParams params) {
     private boolean checkInteraction(final SaveParamsM params) {
-        boolean cancelFlag = false;
+        boolean cancelFlg = false;
 
 //masuda^ 薬剤相互作用チェック
 //        if (Project.getBoolean(Project.INTERACTION_CHECK) && Project.canSearchMaster()) {
@@ -1343,20 +1343,24 @@ public class KarteEditor extends AbstractChartDocument implements IInfoModel, NC
 
             final CheckMedication ci = new CheckMedication();
             String result = ci.main(getContext(), stamps);
-            if (result.equals("0")) {
-                cancelFlag = true;
-            }//  禁忌あるが無視のとき                   
-            else if (result.equals("1")) {
-                save2(params);
-                // 禁忌がない
-            } else if (result.equals("2")) {
-                save2(params);
+            switch (result) {
+                case "0":
+                    // 禁忌ありにより取消のとき
+                    cancelFlg = true;
+                    break;
+                case "1":
+                    // 禁忌あるが無視のとき
+                    save2(params);
+                    break;
+                case "2":
+                    // 禁忌がない
+                    save2(params);
+                    break;
             }
-
         } else {
             save2(params);
         }
-        return cancelFlag;
+        return cancelFlg;
     }
 
     /**

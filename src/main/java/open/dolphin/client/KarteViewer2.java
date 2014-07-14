@@ -177,10 +177,17 @@ public class KarteViewer2 extends KarteViewer {
                 //timeStampLabel.setOpaque(true);
                 //timeStampLabel.setBackground(GUIConst.TEMP_SAVE_KARTE_COLOR);
                 //timeStampLabel.setForeground(Color.WHITE);
+                kp2.setBackground(bkColor);
                 kp2.getTimeStampPanel().setBackground(bkColor);
                 timeStampLabel.setOpaque(true);
                 timeStampLabel.setBackground(bkColor);
                 timeStampLabel.setForeground(foreColor);
+                if (bkColor.equals(GUIConst.TEMP_SAVE_KARTE_BK_COLOR)) {
+                    kp2.getLeftLabel().setForeground(GUIConst.TEMP_SAVE_KARTE_FORE_COLOR);
+                    kp2.getLeftLabel().setBorder(javax.swing.BorderFactory.createLineBorder(GUIConst.TEMP_SAVE_KARTE_FORE_COLOR));
+                    kp2.getRightLabel().setForeground(GUIConst.TEMP_SAVE_KARTE_FORE_COLOR);
+                    kp2.getRightLabel().setBorder(javax.swing.BorderFactory.createLineBorder(GUIConst.TEMP_SAVE_KARTE_FORE_COLOR));
+                }
             }
             if (model.getUserModel().getCommonName()!=null) {
                 StringBuilder sb = new StringBuilder();

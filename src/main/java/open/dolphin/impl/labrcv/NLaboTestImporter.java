@@ -141,6 +141,7 @@ public class NLaboTestImporter extends AbstractMainComponent implements Property
     }
 
     public void openKarte() {
+        getContext().setTrace("NLaboTestImporter");
 
         boolean showReceiptMessage = Project.getBoolean("showReceiptMessage", true);
         if (showReceiptMessage) {
@@ -206,6 +207,8 @@ public class NLaboTestImporter extends AbstractMainComponent implements Property
 
 //s.oh^ 2013/09/20 ラボレシーバを表示
     public void openLaboTest() {
+        getContext().setTrace("NLaboTestImporter");
+
         if (selectedLabo == null) {
             return;
         }
